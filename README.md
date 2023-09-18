@@ -144,3 +144,6 @@ again replace "master" with the branch youre currently working on.
 ## Merging Code
 
 So syempre we'll be working on different parts of the code and we'll be merging it to the master branch. So everytime you want to merge your code to the master branch you'll need to create a pull request on github. So pag ka open nyo ng repository natin sa github may makikita kayong button na "pull request" and click nyo lang yun and follow the instructions there.
+
+## Attendance 
+Ramos, Eric - Done 
