@@ -3,7 +3,7 @@ import pandas as pd
 
 #school
 school_choices = ['ust', 'adu', 'feu', 'tip', 'anon']
-school_weights = [0.40, 0.05, 0.35, 0.10, 0.10]
+school_weights = [0.40, 0.05, 0.35, 0.10, 0.10] 
 
 #gender
 gender_choices = ['M', 'F']
