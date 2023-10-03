@@ -8,7 +8,7 @@ import datetime
 fake = Faker()
 
 #school
-school_choices = ['ust', 'adu', 'feu', 'tip', 'anon']
+school_choices = ['UST', 'AdU', 'FEU', 'TIP', 'OTHER']
 school_weights = [0.4, 0.1, 0.1, 0.1, 0.3]  # Adjusted weights
 
 #employment
@@ -55,17 +55,18 @@ for i in range(num_rows):
         last_names[i] = None
         extension_durations[i] = None
 
-# Determine if employment is school or job
+# employment is school or job
 employment_data = np.random.choice(['school', 'job'], size=num_rows, p=[0.6, 0.4])
 
-# Choose employment based on the category (school or job)
+#category (school or job)
 employment_list = []
 for category in employment_data:
     if category == 'school':
         employment = np.random.choice(school_choices, p=school_weights)
+        employment_list.append(employment)
     else:
         employment = np.random.choice(employment_choices, p=employment_weights)
-    employment_list.append(employment)
+        employment_list.append(employment)
 
 birthdays = []
 for category in employment_data:
@@ -82,7 +83,7 @@ data = pd.DataFrame({
     'User ID': user_ids,
     'First Name': first_names,
     'Last Name': last_names,
-    'Employment': employment_data,
+    'Employment': employment_list,
     'Gender': np.random.choice(gender_choices, size=num_rows, p=gender_weights),
     'Birthday': birthdays,
     'Time In': start_times,
