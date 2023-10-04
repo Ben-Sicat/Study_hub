@@ -93,6 +93,6 @@ data = pd.DataFrame({
 
 print(data.describe())
 
-data.to_csv('generated_dataset.csv', index=False)
+data.to_csv('dataset\generated_dataset.csv', index=False)
 
 print("Dataset saved as 'generated_dataset.csv'.")
