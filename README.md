@@ -147,3 +147,30 @@ So syempre we'll be working on different parts of the code and we'll be merging 
 
 ## Attendance 
 Ramos, Eric - Done 
+
+poem by borat
+
+In Kazakhstan, where sky so blue,
+My mankini shines, my thong so true.
+With hairy chest and crooked smile,
+I'll make you laugh, just for a while.
+
+I travel far, both near and yon,
+To find the humor in everyone.
+From fancy cities to the wild, wild West,
+Borat's adventures are the zaniest, at best.
+
+I wrestle with gypsies, in muddy delight,
+And ask strange questions in the middle of night.
+My accent, it's thick, like molasses in snow,
+But I'm Borat from Kazakhstan, don't you know?
+
+I bring a mirror to reflect your quirks,
+And uncover your biases, with comedy that works.
+With my camera in hand, and a notepad too,
+I expose your prejudices, it's what I do!
+
+So raise a glass, a shot of Kazakhstani brew,
+To Borat, who'll always make you giggle and woo.
+In a world so nutty, in satire we jest,
+I'm Borat, from Kazakhstan, and I'm the best!
