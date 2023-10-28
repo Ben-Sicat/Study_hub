@@ -15,7 +15,8 @@ const config: Config = {
         mobile: "360px",
       },
       colors: {
-        bg: "#FFFAF6",
+        'regal-blue': "#243c5a",
+        'bg': "#EBE0D0",
       },
     },
   },
