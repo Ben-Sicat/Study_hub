@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Study Hub",
   description: "Study Hub",
 };
+//WALA NA BA TAYO FILE FOR TAILWIND?
 
 export default function Home() {
   return (

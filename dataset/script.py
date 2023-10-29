@@ -19,7 +19,7 @@ employment_weights = [0.4, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1]
 gender_choices = ['M', 'F']
 gender_weights = [0.50, 0.50]
 
-#age
+#age REPLACE WITH BIRTHDAY
 # age_choices = ['20-25', '15-20', '25-30', '40-above']
 # age_weights = [0.30, 0.15, 0.30, 0.25]
 
@@ -30,7 +30,7 @@ num_rows = 1000
 birthday = [fake.date_of_birth() for _ in range(num_rows)]
 
 #user IDs
-user_ids = [random.randint(1000, 9999) for _ in range(num_rows)]
+user_ids = [random.randint(1000, 9999) for _ in range(num_rows)] #replace with autoincrement starting in 1000
 first_names = [fake.first_name() for _ in range(num_rows)]
 last_names = [fake.last_name() for _ in range(num_rows)]
 
