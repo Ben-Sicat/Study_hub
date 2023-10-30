@@ -1,10 +1,12 @@
 import React from "react";
 import Teste from "../components/account";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 function Page() {
   return (
     <div>
       <Teste
+        backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         title="Find your account"
         subTitle1="Enter your username, email, or mobile number"
       />
