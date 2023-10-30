@@ -3,16 +3,16 @@
 from re import template
 from flask import Flask, request, jsonify
 import mysql.connector #re install modules
-import psycopg2
+# import psycopg2
 
 app = Flask(__name__)
 
 
 #mysql connect
 mysql_connection = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='158934benBEN',
+    host='brain_and_brew',
+    user='brain_and_brew',
+    password='utotnijc',
     database='bnb'
 )
 #
