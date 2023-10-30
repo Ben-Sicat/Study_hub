@@ -52,5 +52,7 @@ mysql> show tables
 
 docker command to run container:
 ``` docker run -d -p 5000:5000  --name brain_and_brew brain_and_brew:latest```
+or 
+```docker run -p 5000:5000 brain_and_brew```
 docker command to see images:
 ```docker images```
