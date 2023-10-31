@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 function Page() {
   return (
-    <div>
+    <div className="flex min-h-full flex-col bg-bg">
       <Teste
         backButtonIcon={<CloseIcon style={{ fontSize: 25 }} />}
         title="Help Center"
@@ -23,7 +23,7 @@ function Page() {
         commodo consequat.
       </p>
 
-      <h1 className=" text-stone-700 text-base font-extrabold py-2 px-2 ml-7 mt-3 mr-7">
+      <h1 className=" text-stone-700 text-base font-extrabold py-2 px-2 ml-7 mt-3 mr-7 mb-1">
         Username and Password Troubleshooting
       </h1>
 

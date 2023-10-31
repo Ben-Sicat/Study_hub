@@ -1,10 +1,11 @@
 import React from "react";
 import Teste from "../components/account";
+import Butt from "../components/button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 function Page() {
   return (
-    <div>
+    <div className="flex min-h-full flex-col bg-bg">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         title="Find your account"
@@ -14,6 +15,8 @@ function Page() {
       <p className="text-redwood font-normal text-xs ml-8 py-1 px-1">
         Can't reset your password?
       </p>
+
+      <Butt title="Find account" />
     </div>
   );
 }

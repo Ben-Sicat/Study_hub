@@ -18,6 +18,7 @@ const config: Config = {
         'regal-blue': "#243c5a",
         'bg': "#EBE0D0",
         'redwood': "#9F5757",
+        'qr': "#1C1B1F",
       },
     },
   },
