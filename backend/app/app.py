@@ -1,6 +1,6 @@
-# this will containt code for the backend flask python code
 
-from re import template
+
+
 from flask import Flask, request, jsonify
 import mysql.connector #re install modules
 # import psycopg2
@@ -8,16 +8,16 @@ import mysql.connector #re install modules
 app = Flask(__name__)
 
 
-#mysql connect
+
 mysql_connection = mysql.connector.connect(
     host='brain_and_brew',
     user='brain_and_brew',
     password='utotnijc',
     database='bnb'
 )
-#
+
 # route funtion template
-@app.route('/mysql-data', methods=['GET'])#replace with actual link
+@app.route('/', methods=['GET'])#replace with actual link
 def get_mysql_data():
     cursor = mysql_connection.cursor()
     cursor.execute('SELECT * FROM User') #replace with actual table

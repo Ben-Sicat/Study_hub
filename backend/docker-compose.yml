@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+
+  db:
+    images: mysql:5.7
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    entrypoint: 
+      MYSQL_ROOT_PASSWORD: bnb
+      MYSQL_DATABASE: bnb
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+  
+  app:
+    build:
+      context: /app
+    port:
+      - 5000:5000
+    depends_on:
+      - db 

@@ -1,8 +1,9 @@
 FROM python:3.8
+EXPOSE 5000
 
 WORKDIR /app
 
-COPY app.py .
+COPY app.py /app
 COPY venv venv
 
 ENV FLASK_APP=app.py
@@ -12,7 +13,7 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
+
 
 
 CMD ["python", "app.py"]

@@ -1,0 +1,10 @@
+FROM mysql:5.7
+
+ENV MYSQL_ROOT_PASSWORD=bnb
+ENV MYSQL_DATABASE=bnb
+
+COPY ./db/init.sql /docker-entrypoint-initdb.d/init.sql
+
+#run commands now command is:  docker build -t your-image-name -f Dockerfile-mysql .
+#run commands now command is: docker run -d -p 3306:3306 --name your-container-name your-image-name
+
