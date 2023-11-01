@@ -3,9 +3,10 @@ import Button from "@mui/material/Button";
 
 type ButtProps = {
   title: string;
+  Bgcolor: string;
 };
 
-function Butt({ title }: ButtProps) {
+function Butt({ title, Bgcolor = "" }: ButtProps) {
   return (
     <div className="text-center mt-5 mb-3">
       <Button
@@ -13,7 +14,7 @@ function Butt({ title }: ButtProps) {
         variant="contained"
         color="primary"
         style={{
-          backgroundColor: "#FFF1E4",
+          backgroundColor: Bgcolor,
           borderRadius: "20px",
           height: "28px",
           width: "302px",

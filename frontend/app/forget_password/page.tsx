@@ -5,7 +5,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 function Page() {
   return (
-    <div className="flex min-h-full flex-col bg-bg">
+    <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         title="Find your account"
@@ -16,7 +16,7 @@ function Page() {
         Can't reset your password?
       </p>
 
-      <Butt title="Find account" />
+      <Butt title="Find account" Bgcolor="#EBE0D0" />
     </div>
   );
 }

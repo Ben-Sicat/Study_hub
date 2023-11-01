@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 function Page() {
   return (
-    <div className="flex min-h-full flex-col bg-bg">
+    <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<CloseIcon style={{ fontSize: 25 }} />}
         title="Help Center"

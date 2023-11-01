@@ -6,7 +6,7 @@ import Butt from "../components/button";
 
 function Page() {
   return (
-    <div className="flex min-h-full flex-col bg-bg">
+    <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         title="Reserved Successfully"
@@ -17,7 +17,7 @@ function Page() {
         {<QrCodeIcon style={{ fontSize: 300 }} />}
       </div>
 
-      <Butt title="View Transaction" />
+      <Butt title="View Transaction" Bgcolor="#FFF1E4" />
     </div>
   );
 }

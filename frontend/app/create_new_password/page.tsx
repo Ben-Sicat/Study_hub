@@ -5,14 +5,14 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 function Page() {
   return (
-    <div className="flex min-h-full flex-col bg-bg">
+    <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         title="Create a new password"
         subTitle1="Create a password with at least 6 letters and numbers. You'll need this password to log into your account."
       />
 
-      <Butt title="Continue" />
+      <Butt title="Continue" Bgcolor="#EBE0D0" />
     </div>
   );
 }
