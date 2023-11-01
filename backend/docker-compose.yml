@@ -8,14 +8,24 @@ services:
       - "5000:5000"
     depends_on:
       - db
+    deploy:  
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
 
 
   db:
-    image: mysql:5.7
+    image: mysql:8.2
     ports:
-      - "32000:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./data:/var/lib/mysql
+    deploy:  
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
+      

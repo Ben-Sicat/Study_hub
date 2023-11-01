@@ -1,4 +1,5 @@
 CREATE DATABASE employees;
+
 USE employees;
 
 
@@ -8,8 +9,7 @@ CREATE TABLE employee_data (
 );
 
 
-INSERT INTO employee_data
-  (Employee_Name, Title)
+INSERT INTO employee_data (Employee_Name, Title)
 VALUES
   ('Amit Khanna', 'Manager'),
   ('Anjali Gupta', 'Engineer');
