@@ -1,19 +1,7 @@
-FROM python:3.8
+FROM python:3.6
 EXPOSE 5000
-
 WORKDIR /app
-
+COPY requirements.txt /app
+RUN pip install -r requirements.txt
 COPY app.py /app
-COPY venv venv
-
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-
-
-
-CMD ["python", "app.py"]
+CMD python app.py

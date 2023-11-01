@@ -49,7 +49,7 @@ mysql> show tables
 | Users         |
 +---------------+
 
-
+  
 docker command to run container:
 ``` docker run -d -p 5000:5000  --name brain_and_brew brain_and_brew:latest```
 or 
