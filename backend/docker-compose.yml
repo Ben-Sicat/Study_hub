@@ -11,7 +11,7 @@ services:
     deploy:  
       resources:
         limits:
-          cpus: "0.5"
+          cpus: "2"
           memory: "512M"
 
 
@@ -26,6 +26,6 @@ services:
     deploy:  
       resources:
         limits:
-          cpus: "0.5"
+          cpus: "2"
           memory: "512M"
       
