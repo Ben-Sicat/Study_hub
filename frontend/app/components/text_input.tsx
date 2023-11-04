@@ -17,7 +17,7 @@ function TextInput({ placeholder, width, height }: InputProps) {
       <div className="relative" style={{ width: InputStyle.width }}>
         <input
           type="text"
-          className="w-full h-full rounded-lg border border-black text-transparent bg-transparent px-2"
+          className="w-full h-full rounded-lg border border-gray-700 text-transparent bg-transparent px-2"
           style={{ height: InputStyle.height }}
         />
         <div className="absolute top-1 left-2 text-xs text-gray-400 pointer-events-none">

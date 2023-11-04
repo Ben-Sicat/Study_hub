@@ -19,7 +19,7 @@ function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
   return (
     <div className="text-center mt-6 mb-3">
       <Button
-        className="text-stone-700 text-sm font-medium tracking-wider"
+        className="text-textcolor text-sm font-medium tracking-wider"
         variant="contained"
         color="primary"
         style={{
