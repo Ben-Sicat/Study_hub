@@ -2,6 +2,7 @@ import React from "react";
 import Teste from "../components/account";
 import Butt from "../components/button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import TextInput from "../components/text_input";
 
 function Page() {
   return (
@@ -11,6 +12,8 @@ function Page() {
         title="Confirm your account"
         subTitle1="We sent you a code to your email. Enter that code to confirm your account."
       />
+
+      <TextInput placeholder="Enter Code" />
 
       <Butt title="Continue" Bgcolor="#EBE0D0" />
 
