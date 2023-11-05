@@ -1,11 +1,22 @@
 import React from "react";
 import Teste from "../components/account";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import QrCodeIcon from "@mui/icons-material/QrCode";
+import QR from "../components/QR";
 import Butt from "../components/button";
 import Info from "../components/qr_info";
 
 function Page() {
+  const reservationData = {
+    reservationId: '12345',
+    name: 'John Doe',
+    checkInDate: '2023-11-05',
+    tableNumber: '1',
+    reservedTime: '12:00',
+    duration: '2 hours',
+    paymentDetails: 'GCash',
+  };
+  const qrCodeData = JSON.stringify(reservationData);
+
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
@@ -15,13 +26,13 @@ function Page() {
       />
 
       <div className="text-center text-qr mt-7 mb-5">
-        {<QrCodeIcon style={{ fontSize: 300 }} />}
+        <QR data={qrCodeData} />
       </div>
 
-      <Info title="Table Number:" />
-      <Info title="Reserved Time:" />
-      <Info title="Duration:" />
-      <Info title="Payment Details:" />
+      <Info title={`Table Number: ${reservationData.tableNumber}`} />
+      <Info title={`Reserved Time: ${reservationData.reservedTime}`} />
+      <Info title={`Duration: ${reservationData.duration}`} />
+      <Info title={`Payment Details: ${reservationData.paymentDetails}`} />
 
       <div className="mt-5"></div>
 
