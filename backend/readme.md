@@ -50,6 +50,22 @@ mysql> show tables
 +---------------+
 
 
+
+docker command to build
+only use this if you have changed the dockerfile
+```docker build -t brain_and_brew .```
+```docker compose up -d```
+```docker exec -it <container name> /bin/bash```
+```curl localhost:5000```
+
+PS C:\Users\bensi\study_hub\backend> docker exec -it backend-app-1 /bin/bash
+root@8be65a7b419f:/app# curl http://localhost:5000
+{"Employee Data":[{"Employee_Name":"Amit Khanna","Title":"Manager"},{"Employee_Name":"Anjali Gupta","Title":"Engineer"},{"Employee_Name":"Siddharth Sharma","Title":"Analyst"}]}
+root@8be65a7b419f:/app#
+
+
+
+ all commands below situational hehe 
 docker command to run container:
 ``` docker run -d -p 5000:5000  --name brain_and_brew brain_and_brew:latest```
 or 
