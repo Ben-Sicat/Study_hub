@@ -6,10 +6,8 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.14.15",
     "@mui/material": "^5.14.15",
-<<<<<<< HEAD
-    "@mui/styles": "^5.14.16"
-=======
+
+    "@mui/styles": "^5.14.16",
     "qrcode.react": "^3.1.0"
->>>>>>> a453a529a7aef536aba6e3ea3d496feb9580f6dd
   }
 }
