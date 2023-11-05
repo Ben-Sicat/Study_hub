@@ -23,7 +23,7 @@ function Drop({ width, height, options }: DropProps) {
             height: DropStyle.height,
             backgroundColor: "#FFFAF6",
           }}
-          className=" border border-gray-700 text-black text-sm rounded-md py-2 px-3 focus:border-blue-500 focus:outline-none"
+          className=" border border-gray-300 text-black text-sm rounded-md py-2 px-3 focus:border-blue-500 focus:outline-none"
         >
           {options.map((option, index) => (
             <option key={index} value={option}>

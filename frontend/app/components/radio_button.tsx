@@ -15,7 +15,7 @@ function Radio({ input, width, height }: RadioProps) {
   return (
     <div>
       <div
-        className="flex items-center border border-gray-700 text-black text-sm rounded-md py-2 px-3 focus:border-blue-500 focus:outline-none"
+        className="flex items-center border border-gray-300 text-black text-sm rounded-md py-2 px-3 focus:border-blue-500 focus:outline-none"
         style={{
           width: RadioStyle.width,
           height: RadioStyle.height,

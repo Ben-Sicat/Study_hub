@@ -13,9 +13,9 @@ function Page() {
         subTitle1="Create a password with at least 6 letters and numbers. You'll need this password to log into your account."
       />
 
-      <TextInput placeholder="New Password" />
+      <TextInput placeholder="New Password" width="343px" />
 
-      <Butt title="Continue" Bgcolor="#EBE0D0" />
+      <Butt title="Continue" Bgcolor="#EBE0D0" width="343px" />
     </div>
   );
 }

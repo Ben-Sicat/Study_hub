@@ -13,9 +13,9 @@ function Page() {
         subTitle1="We sent you a code to your email. Enter that code to confirm your account."
       />
 
-      <TextInput placeholder="Enter Code" />
+      <TextInput placeholder="Enter Code" width="343px" />
 
-      <Butt title="Continue" Bgcolor="#EBE0D0" />
+      <Butt title="Continue" Bgcolor="#EBE0D0" width="343px" />
 
       <p className="text-center text-stone-700 font-normal text-xs py-1 px-1">
         Send code again
