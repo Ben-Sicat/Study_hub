@@ -152,7 +152,12 @@ function Page() {
 
       <div className="mt-16"></div>
 
-      <Butt title="Create account" Bgcolor="#EBE0D0" width="325px" />
+      <Butt
+        title="Create account"
+        Bgcolor="#EBE0D0"
+        width="325px"
+        height="34px"
+      />
     </div>
   );
 }

@@ -1,17 +1,17 @@
 import React from "react";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type DropDownProps = {
   title: string;
+  LeftArrow: JSX.Element;
 };
 
-function Dropdown({ title }: DropDownProps) {
+function Dropdown({ title, LeftArrow }: DropDownProps) {
   return (
     <div
       className="flex text-stone-700 ml-9 mt-2 mb-4"
       style={{ position: "relative" }}
     >
-      <h1 className="text-sm font-bold mt-1">{title}</h1>
+      <h1>{title}</h1>
       <div
         style={{
           position: "absolute",
@@ -20,9 +20,7 @@ function Dropdown({ title }: DropDownProps) {
           transform: "translateY(-50%)",
         }}
       >
-        <button className="stroke-stone-700">
-          <KeyboardArrowDownIcon style={{ fontSize: 23 }} />
-        </button>
+        <button>{LeftArrow}</button>
       </div>
     </div>
   );

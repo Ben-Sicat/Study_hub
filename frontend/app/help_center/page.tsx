@@ -2,6 +2,7 @@ import React from "react";
 import Teste from "../components/account";
 import Dropdown from "../components/dropdown";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 function Page() {
   return (
@@ -27,9 +28,20 @@ function Page() {
         Username and Password Troubleshooting
       </h1>
 
-      <Dropdown title="Recover your Brand password" />
-      <Dropdown title="Forgot your Brand username?" />
-      <Dropdown title="Links in pass reset email not working?" />
+      <div className="text-sm font-semibold mt-1">
+        <Dropdown
+          title="Recover your Brand password"
+          LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
+        />
+        <Dropdown
+          title="Forgot your Brand username?"
+          LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
+        />
+        <Dropdown
+          title="Links in pass reset email not working?"
+          LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
+        />
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import IcoButt from "./iconed_button";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
+import Line from "./line";
 
 function Reserv() {
   return (
@@ -27,9 +28,7 @@ function Reserv() {
         <h4 className="mr-16">&#8369; 80.00</h4>
       </div>
 
-      <div className="flex justify-center mt-4">
-        <div className=" border-t border-line border-solid border-1 w-[21.5rem]"></div>
-      </div>
+      <Line></Line>
 
       <div className="flex justify-between">
         <p className=" text-textcolor text-sm font-semibold py-2 px-2 ml-7 mt-3">
