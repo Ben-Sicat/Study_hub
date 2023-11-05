@@ -1,0 +1,31 @@
+version: "2"
+services:
+  app:
+    build: ./app
+    links:
+      - db
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    deploy:  
+      resources:
+        limits:
+          cpus: "2"
+          memory: "512M"
+
+
+  db:
+    image: mysql:8.2
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    deploy:  
+      resources:
+        limits:
+          cpus: "2"
+          memory: "512M"
+      

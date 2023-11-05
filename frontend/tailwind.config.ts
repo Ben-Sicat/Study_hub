@@ -32,6 +32,7 @@ const config: Config = {
         mobile: "360px",
       },
       colors: {
+
         "regal-blue": "#243c5a",
         bg: "#EBE0D0",
         redwood: "#9F5757",
@@ -42,6 +43,12 @@ const config: Config = {
         "gradient-2": "#FFD4BC",
         "gradient-1": "#F8FFE2",
         "parrot-pink": "#DC9D94",
+        backcolor: "#FFFAF6",
+        qr: "#1C1B1F",
+        textcolor: "#4F483F",
+        line: "#C7C7C7",
+        buttonborder: "#EDC2B5",
+
       },
     },
   },
