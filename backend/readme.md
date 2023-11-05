@@ -52,6 +52,8 @@ mysql> show tables
 
 
 docker command to build
+only use this if you have changed the dockerfile
+```docker build -t brain_and_brew .```
 ```docker compose up -d```
 ```docker exec -it <container name> /bin/bash```
 ```curl localhost:5000```
