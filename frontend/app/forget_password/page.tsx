@@ -17,9 +17,12 @@ function Page() {
         Can't reset your password?
       </p>
 
-      <TextInput placeholder="Username, email, or mobile number" />
+      <TextInput
+        placeholder="Username, email, or mobile number"
+        width="343px"
+      />
 
-      <Butt title="Find account" Bgcolor="#EBE0D0" />
+      <Butt title="Find account" Bgcolor="#EBE0D0" width="343px" />
     </div>
   );
 }
