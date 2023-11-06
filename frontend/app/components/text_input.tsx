@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 
-type TextFieldProps = {
+type TextInputProps = {
   placeholder: string;
   width?: string;
   height?: string;
   labelFontSize?: string;
+  onInputChange: (value: string) => void;
 };
 
 function TextInput({
@@ -13,11 +14,20 @@ function TextInput({
   width = "18.875rem",
   height = "2.5rem",
   labelFontSize = "14px",
-}: TextFieldProps) {
+  onInputChange,
+}: TextInputProps) {
   const inputLabelProps = {
     style: {
       fontSize: labelFontSize,
     },
+  };
+
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setInputValue(newValue);
+    onInputChange(newValue);
   };
 
   return (
@@ -34,6 +44,8 @@ function TextInput({
           },
         }}
         InputLabelProps={inputLabelProps}
+        value={inputValue}
+        onChange={handleInputChange}
       />
     </div>
   );

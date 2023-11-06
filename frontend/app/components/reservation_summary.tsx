@@ -1,5 +1,5 @@
 import React from "react";
-import Butt from "../components/button";
+import Butt from "./button";
 import IcoButt from "./iconed_button";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";

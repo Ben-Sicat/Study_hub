@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 
 type ButtProps = {
@@ -7,13 +7,20 @@ type ButtProps = {
   width?: string;
   height?: string;
   borderRadius?: string;
+  onClick?: () => void;
 };
 
-function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
+function Butt({ title, Bgcolor = "", width, height, borderRadius, onClick }: ButtProps) {
   const ButtStyle = {
     width: width || "302px",
     height: height || "28px",
     borderRadius: borderRadius || "10px",
+  };
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(); // Call the provided onClick function when the button is clicked
+    }
   };
 
   return (
@@ -30,6 +37,7 @@ function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
           textTransform: "none",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
         }}
+        onClick={handleClick}
       >
         {title}
       </Button>
