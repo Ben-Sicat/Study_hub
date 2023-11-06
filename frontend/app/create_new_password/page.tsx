@@ -4,6 +4,8 @@ import Butt from "../components/button";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import TextInput from "../components/text_input";
 
+import Pass from "../components/text_input_pass";
+
 function Page() {
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -13,7 +15,7 @@ function Page() {
         subTitle1="Create a password with at least 6 letters and numbers. You'll need this password to log into your account."
       />
 
-      <TextInput placeholder="New Password" width="343px" />
+      <Pass width="343px"></Pass>
 
       <Butt title="Continue" Bgcolor="#EBE0D0" width="343px" />
     </div>
