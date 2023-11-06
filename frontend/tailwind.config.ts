@@ -33,6 +33,7 @@ const config: Config = {
       },
       colors: {
 
+
         "regal-blue": "#243c5a",
         bg: "#EBE0D0",
         redwood: "#9F5757",
@@ -48,6 +49,7 @@ const config: Config = {
         textcolor: "#4F483F",
         line: "#C7C7C7",
         buttonborder: "#EDC2B5",
+
 
       },
     },
