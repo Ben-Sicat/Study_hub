@@ -3,6 +3,8 @@ import { Logo, Painting } from "../components/svgs";
 import About from "./components/About";
 import Discounts from "./components/Discounts";
 import Footer from "./components/Footer";
+import Butt from "../components/button";
+import { Button } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Brew & Brain",
@@ -66,7 +68,24 @@ export default function Home() {
           <div className="mobile:mt-6">Come, sip, and succeed!</div>
         </div>
 
-        <div className="mobile:pt-3 mobile:pb-9">Sign in Learn More</div>
+        <div className="mobile:pt-3 mobile:pb-9 flex mx-auto gap-16 relative mobile:bottom-6">
+          <Butt
+            title="Sign in"
+            textColor="#FFFAF6"
+            Bgcolor="#DC9D94"
+            width="120px"
+            height="36px"
+            borderRadius="50px"
+          />
+          <Butt
+            title="Learn More"
+            textColor="#DC9D94"
+            Bgcolor="#FFF1E4"
+            width="120px"
+            height="36px"
+            borderRadius="50px"
+          />
+        </div>
       </section>
       <section>
         <About />

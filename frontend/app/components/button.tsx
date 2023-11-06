@@ -7,9 +7,17 @@ type ButtProps = {
   width?: string;
   height?: string;
   borderRadius?: string;
+  textColor: string;
 };
 
-function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
+function Butt({
+  title,
+  Bgcolor = "",
+  width,
+  height,
+  borderRadius,
+  textColor = "",
+}: ButtProps) {
   const ButtStyle = {
     width: width || "302px",
     height: height || "28px",
@@ -19,10 +27,11 @@ function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
   return (
     <div className="text-center mt-6 mb-3">
       <Button
-        className="text-textcolor text-sm font-medium tracking-wider"
+        className="text-sm font-medium tracking-wider"
         variant="contained"
         color="primary"
         style={{
+          color: textColor,
           backgroundColor: Bgcolor,
           borderRadius: ButtStyle.borderRadius,
           height: ButtStyle.height,
