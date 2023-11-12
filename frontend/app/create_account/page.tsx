@@ -6,6 +6,7 @@ import TextInput from "../components/text_input";
 import Butt from "../components/button";
 import Drop from "../components/dropdown_button";
 import Radio from "../components/radio_button";
+import router, { useRouter } from 'next/router';
 
 import { signIn } from "next-auth/react";
 
@@ -133,12 +134,20 @@ function Page() {
   };
   const handleSignInWithGoogle = async () => {
     try {
-      
-      await signIn("google");
-      console.log("Sign in with Google");
+      // Sign in with Google
+      const response = await signIn('google');
+      console.log('Google Sign-In Response:', response);
+      console.log(process.env)
+
+      // Check if the sign-in was successful
+      if (response?.error) {
+        console.error('Error during Google Sign-In:', response.error);
+      } else {
+        // Redirect to the login page
+        router.push('/login');
+      }
     } catch (error) {
-      console.error("Error during Google Sign-In:", error);
-      
+      console.error('Error during Google Sign-In:', error);
     }
   };
 
@@ -250,7 +259,7 @@ function Page() {
       <Butt
         onClick={handleSignInWithGoogle}
         title="Sign up with Google"
-        Bgcolor="#4285F4" // Google's blue color
+        Bgcolor="#4285F4" 
         width="325px"
         height="34px"
       />

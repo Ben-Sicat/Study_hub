@@ -8,6 +8,7 @@ function AuthForm() {
 
   const handleSignInWithGoogle = async () => {
     setIsLoading(true); 
+    console.log(process.env.local)
 
     try {
      
@@ -21,6 +22,7 @@ function AuthForm() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div>
