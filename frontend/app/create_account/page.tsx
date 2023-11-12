@@ -6,6 +6,9 @@ import TextInput from "../components/text_input";
 import Butt from "../components/button";
 import Drop from "../components/dropdown_button";
 import Radio from "../components/radio_button";
+
+import { signIn } from "next-auth/react";
+
 function Page() {
   const options = [
     "January",
@@ -128,6 +131,16 @@ function Page() {
       [field]: value,
     });
   };
+  const handleSignInWithGoogle = async () => {
+    try {
+      
+      await signIn("google");
+      console.log("Sign in with Google");
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+      
+    }
+  };
 
   const handleBirthdateChange = (field: keyof typeof formData["birthdate"], value: string) => {
     setFormData({
@@ -139,7 +152,7 @@ function Page() {
     });
   };
   const handleCreateAccount = () => {
-    // Log the collected form data
+    // Log
     console.log("Form Data:", formData);
   };
 
@@ -233,6 +246,16 @@ function Page() {
       </div>
 
       <div className="mt-16"></div>
+
+      <Butt
+        onClick={handleSignInWithGoogle}
+        title="Sign up with Google"
+        Bgcolor="#4285F4" // Google's blue color
+        width="325px"
+        height="34px"
+      />
+
+      
 
       <Butt onClick={handleCreateAccount} title="Create account" Bgcolor="#EBE0D0" width="325px" height="34px" />
     </div>
