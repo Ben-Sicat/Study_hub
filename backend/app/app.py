@@ -36,12 +36,12 @@ def Users():
     connection = get_db_connection()
     if connection:
         try:
-            cursor = connection.cursor()
+            cursor = connection.cursor(dictionary=True)
             cursor.execute('SELECT UserID, GoogleID, Username, Email,  Name, Birthday, Gender, School  FROM Users')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
-            return results 
+            return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
@@ -60,15 +60,15 @@ def write_to_Reservations(UserID,  ReservationDate, ReservationTime, Reservation
             print(f"Error: {err}")
 
 def Reservations():
-    connection = get_db_conncetion()
+    connection = get_db_connection()
     if connection:
         try:
-            cursor = connection.cursor()
+            cursor = connection.cursor(dictionary=True)
             cursor.execute('SELECT ReservationID, UserID, ReservationDate, ReservationTime, ReservationSite, Status FROM Reservations')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
-            return results 
+            return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
@@ -99,10 +99,11 @@ def QR_Codes():
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+
 @app.route('/')
 def index():
-    write_to_user('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University')
-    return jsonify({'User Data': User()})
+    write_to_Users('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University')
+    return jsonify({'User Data': Users()})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
