@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask,jsonify
 import mysql.connector
 
 app = Flask(__name__)
@@ -9,7 +9,7 @@ def get_db_connection():
         'password': 'root',
         'host': 'db',
         'port': '3306',
-        'database': 'employees'
+        'database': 'BrewandBrain'
     }
     try:
         connection = mysql.connector.connect(**config)
@@ -18,13 +18,13 @@ def get_db_connection():
         print(f"Error: {err}")
         return None
 
-def write_to_employee_data(employee_name, title):
+def write_to_User(GoogleID, Username, Email, Name, Birthday, Gender, School):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            query = "INSERT INTO employee_data (Employee_Name, Title) VALUES (%s, %s)"
-            values = (employee_name, title)
+            query = "INSERT INTO users_data (GoogleID, Username, Email, Name, Birthday, Gender, School) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            values = (GoogleID, Username, Email, Name, Birthday, Gender, School)
             cursor.execute(query, values)
             connection.commit()
             cursor.close()
@@ -32,12 +32,66 @@ def write_to_employee_data(employee_name, title):
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-def employee_data():
+def User():
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute('SELECT UserID, GoogleID, Username, Email,  Name, Birthday, Gender, School  FROM users_data')
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return results 
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+def write_to_Reservation(UserID,  ReservationDate, ReservationTime, ReservationSite, Status):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = "INSERT INTO reservations_data (UserID, ReservationDate, ReservationTime, ReservationSite, Status) VALUES (%s, CURRENT_DATE(), CURRENT_TIME(), %s, %s)"
+            values = (UserID,  ReservationDate, ReservationTime, ReservationSite, Status)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+def Reservation():
+    connection = get_db_conncetion()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute('SELECT ReservationID, UserID, ReservationDate, ReservationTime, ReservationSite, Status FROM reservations_data')
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return results 
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+def write_to_QR_Codes(ReservationID, QRCodeData):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = "INSERT INTO qr_codes_data (ReservationID, QRCodeData) VALUES (%s, %s)"
+            values = (ReservationID, QRCodeData)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+def QR_Codes():
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.execute('SELECT Employee_Name, Title FROM employee_data')
+            cursor.execute('SELECT QRCodeID, ReservationID, QRCodeData FROM QR_Codes')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -47,8 +101,8 @@ def employee_data():
 
 @app.route('/')
 def index():
-    write_to_employee_data("Siddharth Sharma", "Analyst")
-    return jsonify({'Employee Data': employee_data()})
+    write_to_user('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University')
+    return jsonify({'User Data': User()})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
