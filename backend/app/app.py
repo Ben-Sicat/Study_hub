@@ -18,12 +18,12 @@ def get_db_connection():
         print(f"Error: {err}")
         return None
 
-def write_to_User(GoogleID, Username, Email, Name, Birthday, Gender, School):
+def write_to_Users(GoogleID, Username, Email, Name, Birthday, Gender, School):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            query = "INSERT INTO users_data (GoogleID, Username, Email, Name, Birthday, Gender, School) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO Users (GoogleID, Username, Email, Name, Birthday, Gender, School) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             values = (GoogleID, Username, Email, Name, Birthday, Gender, School)
             cursor.execute(query, values)
             connection.commit()
@@ -32,12 +32,12 @@ def write_to_User(GoogleID, Username, Email, Name, Birthday, Gender, School):
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-def User():
+def Users():
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute('SELECT UserID, GoogleID, Username, Email,  Name, Birthday, Gender, School  FROM users_data')
+            cursor.execute('SELECT UserID, GoogleID, Username, Email,  Name, Birthday, Gender, School  FROM Users')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -45,12 +45,12 @@ def User():
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-def write_to_Reservation(UserID,  ReservationDate, ReservationTime, ReservationSite, Status):
+def write_to_Reservations(UserID,  ReservationDate, ReservationTime, ReservationSite, Status):
     connection = get_db_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            query = "INSERT INTO reservations_data (UserID, ReservationDate, ReservationTime, ReservationSite, Status) VALUES (%s, CURRENT_DATE(), CURRENT_TIME(), %s, %s)"
+            query = "INSERT INTO Reservations (UserID, ReservationDate, ReservationTime, ReservationSite, Status) VALUES (%s, CURRENT_DATE(), CURRENT_TIME(), %s, %s)"
             values = (UserID,  ReservationDate, ReservationTime, ReservationSite, Status)
             cursor.execute(query, values)
             connection.commit()
@@ -59,12 +59,12 @@ def write_to_Reservation(UserID,  ReservationDate, ReservationTime, ReservationS
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-def Reservation():
+def Reservations():
     connection = get_db_conncetion()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute('SELECT ReservationID, UserID, ReservationDate, ReservationTime, ReservationSite, Status FROM reservations_data')
+            cursor.execute('SELECT ReservationID, UserID, ReservationDate, ReservationTime, ReservationSite, Status FROM Reservations')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -77,7 +77,7 @@ def write_to_QR_Codes(ReservationID, QRCodeData):
     if connection:
         try:
             cursor = connection.cursor()
-            query = "INSERT INTO qr_codes_data (ReservationID, QRCodeData) VALUES (%s, %s)"
+            query = "INSERT INTO QR_Codes (ReservationID, QRCodeData) VALUES (%s, %s)"
             values = (ReservationID, QRCodeData)
             cursor.execute(query, values)
             connection.commit()

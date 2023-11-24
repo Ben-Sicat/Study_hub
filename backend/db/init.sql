@@ -14,7 +14,7 @@ CREATE TABLE Users (
 );
 
 /*
-INSERT INTO users_data (GoogleID, Username, Email, Name, Birthday, Gender, School)
+INSERT INTO Users (GoogleID, Username, Email, Name, Birthday, Gender, School)
 VALUES ('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University'), 
 	('eric.id', 'jerome_ramos', 'jeric@gmail.com', 'Eric Jerome Ramos', '2002-08-07', 'Male', 'Adamson University')
 ; 
@@ -32,9 +32,9 @@ CREATE TABLE Reservations (
 );
 
 /*
-INSERT INTO reservations_data (UserID, ReservationDate, ReservationTime, ReservationSite, Status)
-VALUES (1, CURRENT_DATE(), CURRENT_TIME, 'Manila', 'Booked'),
-	(2, CURRENT_DATE(), CURRENT_TIME, 'Manila', 'Completed')
+INSERT INTO Reservations (UserID, ReservationDate, ReservationTime, ReservationSite, Status)
+VALUES (1, CURRENT_DATE(), CURRENT_TIME(), 'Manila', 'Booked'),
+	(2, CURRENT_DATE(), CURRENT_TIME(), 'Manila', 'Completed')
 ;
 */
 
