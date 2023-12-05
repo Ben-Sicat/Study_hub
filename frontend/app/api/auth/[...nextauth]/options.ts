@@ -36,7 +36,7 @@ export const options: NextAuthOptions = {
       console.debug('SignIn Callback - Email:', email);
       console.debug('SignIn Callback - Credentials:', credentials);
 
-      return true; // Return true to allow sign-in
+      return true; 
     },
     
   },
