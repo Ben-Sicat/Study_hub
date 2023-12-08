@@ -1,11 +1,25 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Teste from "../components/account";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import QR from "../components/QR";
 import Butt from "../components/button";
 import Info from "../components/qr_info";
 
+import { useRouter } from "next/navigation";
+
 function Page() {
+  const router = useRouter();
+
+  const handleBackButtonClick = () => {
+    router.back();
+  };
+
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Today's Reservation";
+  }, []);
+
   const reservationData = {
     reservationId: "12345",
     name: "John Doe",
@@ -21,6 +35,7 @@ function Page() {
     <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
+        onBackButtonClick={handleBackButtonClick}
         title="Today's Reservation"
         subTitle1="Simply scan the QR Code, and our friendly staff will be delighted to assist you with any inquiries or requests you may have during your time with us."
       />

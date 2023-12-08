@@ -6,8 +6,12 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.14.15",
     "@mui/material": "^5.14.15",
-
     "@mui/styles": "^5.14.16",
-    "qrcode.react": "^3.1.0"
+    "@types/react-router-dom": "^5.3.3",
+    "qrcode.react": "^3.1.0",
+    "react-router-dom": "^6.18.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0"
   }
 }
