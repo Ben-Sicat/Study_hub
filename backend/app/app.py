@@ -23,7 +23,7 @@ def write_to_Users(GoogleID, Username, Email, UName, Birthday, Gender, School):
     if connection:
         try:
             cursor = connection.cursor()
-            query = "INSERT INTO Users (GoogleID, Username, Email, Name, Birthday, Gender, School) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO Users (GoogleID, Username, Email, UName, Birthday, Gender, School) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             values = (GoogleID, Username, Email, UName, Birthday, Gender, School)
             cursor.execute(query, values)
             connection.commit()
@@ -99,10 +99,10 @@ def QR_Codes():
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
-
 @app.route('/')
 def index():
-    write_to_Users('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University')
+    # Corrected: Use the correct column names in the write_to_Users function
+    write_to_Users('ben.id', 'qwer', 'ben@gmail.com', 'uwu Rioveros', '2003-03-05', 'Male', 'National University')
     return jsonify({'User Data': Users()})
 
 if __name__ == '__main__':
