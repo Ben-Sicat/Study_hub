@@ -98,6 +98,8 @@ def QR_Codes():
             return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
+            
+    # aight time to do this shit ako naman   
 
 @app.route('/')
 def index():
