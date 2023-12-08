@@ -7,9 +7,17 @@ type ButtProps = {
   width?: string;
   height?: string;
   borderRadius?: string;
+  disabled?: boolean; // Add the disabled prop
 };
 
-function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
+function Butt({
+  title,
+  Bgcolor = "",
+  width,
+  height,
+  borderRadius,
+  disabled = false, // Default value for disabled
+}: ButtProps) {
   const ButtStyle = {
     width: width || "302px",
     height: height || "28px",
@@ -30,6 +38,7 @@ function Butt({ title, Bgcolor = "", width, height, borderRadius }: ButtProps) {
           textTransform: "none",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
         }}
+        disabled={disabled} // Pass the disabled prop to the Button component
       >
         {title}
       </Button>

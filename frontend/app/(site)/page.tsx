@@ -3,6 +3,8 @@ import { Logo, Painting } from "../components/svgs";
 import About from "./components/About";
 import Discounts from "./components/Discounts";
 import Footer from "./components/Footer";
+import Butt from "../components/button";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Brew & Brain",
@@ -66,7 +68,16 @@ export default function Home() {
           <div className="mobile:mt-6">Come, sip, and succeed!</div>
         </div>
 
-        <div className="mobile:pt-3 mobile:pb-9">Sign in Learn More</div>
+        <div className="mobile:pt-3 mobile:pb-9">
+          <Link href="/sign_in">
+            <Butt
+              title="Sign In"
+              Bgcolor="#EBE0D0"
+              width="343px"
+              height="40px"
+            />
+          </Link>
+        </div>
       </section>
       <section>
         <About />

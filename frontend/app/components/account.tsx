@@ -7,14 +7,25 @@ type TesteProps = {
   backButtonIcon: JSX.Element;
   title: string;
   subTitle1: string;
+  onBackButtonClick?: () => void;
 };
 
-function Teste({ title, subTitle1, backButtonIcon }: TesteProps) {
+function Teste({
+  title,
+  subTitle1,
+  backButtonIcon,
+  onBackButtonClick,
+}: TesteProps) {
   return (
     <div>
-      <button className="flex items-center text-textcolor py-2 px-2 mt-8 ml-7 mb-2 stroke-stone-700 ">
-        {backButtonIcon}
-      </button>
+      {onBackButtonClick && (
+        <button
+          className="flex items-center text-textcolor py-2 px-2 mt-8 ml-7 mb-2 stroke-stone-700 "
+          onClick={onBackButtonClick}
+        >
+          {backButtonIcon}
+        </button>
+      )}
 
       <h2 className=" text-textcolor text-xl font-extrabold py-2 px-2 ml-7">
         {title}

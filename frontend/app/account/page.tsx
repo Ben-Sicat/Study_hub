@@ -9,6 +9,13 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Line from "../components/line";
 import Butt from "../components/button";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Account",
+  description: "Brew * Brain",
+};
+
 function page() {
   return (
     <div className="flex min-h-full flex-col bg-backcolor">

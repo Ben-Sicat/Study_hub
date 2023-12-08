@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -19,8 +19,8 @@ function Pass({
   height = "2.5rem",
   labelFontSize = "14px",
 }: TextFieldProps) {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState(""); // Track input value
+  const [showPassword, setShowPassword] = useState(false);
+  const [inputValue, setInputValue] = useState(""); // Track input value
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
