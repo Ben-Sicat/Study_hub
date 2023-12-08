@@ -2,12 +2,13 @@ import React from "react";
 
 type InfoProps = {
   title: string;
+  value: string;
 };
 
-function Info({ title }: InfoProps) {
+function Info({ title, value }: InfoProps) {
   return (
     <div
-      className="flex text-stone-700 ml-20 mt-1 mb-1"
+      className="flex text-stone-700 ml-20 mt-2 mb-1"
       style={{ position: "relative" }}
     >
       <h1 className="text-xs mt-1">{title}</h1>
@@ -21,13 +22,7 @@ function Info({ title }: InfoProps) {
           alignItems: "center",
         }}
       >
-        <div
-          style={{
-            width: "135px",
-            height: "1.5px",
-            background: "#C7C7C7",
-          }}
-        ></div>
+        <div className="text-xs">{value}</div>
       </div>
     </div>
   );

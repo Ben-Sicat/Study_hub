@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from "react";
+"use client";
+import React, { useState }, { useEffect } from "react";
 import Teste from "../components/account";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "../components/account_image";
@@ -8,7 +9,20 @@ import TextInput from "../components/text_input";
 import Drop from "../components/dropdown_button";
 import Butt from "../components/button";
 
+import { useRouter } from "next/navigation";
+
 function Page() {
+  const router = useRouter();
+
+  const handleBackButtonClick = () => {
+    router.back();
+  };
+
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Edit Profile";
+  }, []);
+
   const options = ["Male", "Female", "Others"];
 
   const options1 = ["Student", "Worker"];
@@ -42,6 +56,7 @@ function Page() {
     <div className="flex items-center space-x-1">
         <Teste
           backButtonIcon={<CloseIcon style={{ fontSize: 24 }} />}
+          onBackButtonClick={handleBackButtonClick}
           title=""
           subTitle1=""
         />
@@ -54,25 +69,20 @@ function Page() {
         ></Image>
       </div>
 
-      <div className="mt-8">
-        <TextInput 
-        placeholder="Username" 
-        width="335px" 
-        height="35px" 
-        onInputChange={(value) => handleInputChange("userName", value)}
+      <div>
+        <Butt
+          title="Edit"
+          Bgcolor="#E5E4E2"
+          width="100px"
+          height="28px"
+          borderRadius="50px"
         />
-        <TextInput 
-        placeholder="Email" 
-        width="335px" 
-        height="35px" 
-        onInputChange={(value) => handleInputChange("email", value)}
-        />
-        <TextInput 
-        placeholder="Phone Number" 
-        width="335px" 
-        height="35px" 
-        onInputChange={(value) => handleInputChange("phoneNumber", value)}
-        />
+      </div>
+
+      <div className="mt-6">
+        <TextInput placeholder="Username" width="335px" height="35px" />
+        <TextInput placeholder="Email" width="335px" height="35px" />
+        <TextInput placeholder="Phone Number" width="335px" height="35px" />
 
         <div className="flex text-redwood text-xs ml-12 space-x-32 mt-2">
           <p>Gender</p>

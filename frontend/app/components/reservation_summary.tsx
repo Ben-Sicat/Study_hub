@@ -75,10 +75,6 @@ function Reserv() {
         title="Paymaya"
         marginRight="205px"
       ></IcoButt>
-
-      <div className="mt-10"></div>
-
-      <Butt title="Proceed Transaction" Bgcolor="#ECECEC" width="340px" />
     </div>
   );
 }
