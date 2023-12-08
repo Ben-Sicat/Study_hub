@@ -1,18 +1,17 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import TextInput from "../components/text_input";
 import Pass from "../components/text_input_pass";
 import Butt from "../components/button";
 import { Logo, Painting } from "../components/svgs";
 import Link from "next/link";
 
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Sign In",
-  description: "Brew * Brain",
-};
-
 function Page() {
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Find Account";
+  }, []);
+
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <div>
