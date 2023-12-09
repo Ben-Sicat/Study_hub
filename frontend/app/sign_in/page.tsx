@@ -6,6 +6,7 @@ import Butt from "../components/button";
 import { Logo, Painting } from "../components/svgs";
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 function Page() {
   const [username, setUsername] = useState("");
@@ -19,62 +20,96 @@ function Page() {
     setPassword(value);
   };
   const handleLogin = async () => {
-    try{
-      const response = await fetch('http://localhost:5000/api/sign_in', {
-        method: 'POST',
+    try {
+      const response = await fetch("http://localhost:5000/api/sign_in", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
-      if(response.ok){
+      if (response.ok) {
         const data = await response.json();
-        console.log("login success")
-        console.log( "data", data)
-        console.log("data", data.acces_token)
+        console.log("login success");
+        console.log("data", data);
+        console.log("data", data.acces_token);
       }
     } catch (error) {
       console.error(error);
-
     }
-
   };
   useEffect(() => {
-
     document.title = "Find Account";
   }, []);
-
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <div>
-        <div className="flex justify-center items-center mt-36 mb-36">
+        <motion.div
+          initial={{ y: 25, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 0.75,
+          }}
+          className="flex justify-center items-center mt-36 mb-36"
+        >
           <Logo className="text-9xl" />
-        </div>
-
-        <TextInput
-          placeholder="Username, email, or mobile number"
-          width="343px"
-          onInputChange={handleUsernameChange}
-        />
-
-        <Pass 
-        width="343px"
-        onInputChange={handlePasswordChange}
-        />
+        </motion.div>
+        <motion.div
+          initial={{ y: 25, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 1,
+          }}
+        >
+          <TextInput
+            placeholder="Username, email, or mobile number"
+            width="343px"
+            onInputChange={handleUsernameChange}
+          />
+        </motion.div>
+        <motion.div
+          initial={{ y: 25, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 1.25,
+          }}
+        >
+          <Pass width="343px" onInputChange={handlePasswordChange} />
+        </motion.div>
       </div>
 
       <p className="text-end text-parrot text-xs mr-10">
         <Link href="/forget_password">Forgot Password?</Link>
       </p>
 
-      <Butt title="Log In" Bgcolor="#EBE0D0" width="343px"  onClick={handleLogin}/>
+      <motion.div
+        initial={{ y: 25, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          duration: 1.5,
+        }}
+      >
+        <Butt
+          title="Log In"
+          Bgcolor="#EBE0D0"
+          width="343px"
+          onClick={handleLogin}
+        />
+      </motion.div>
 
       <div className="mt-40"></div>
-
-      <Link href="/create_account">
-        <Butt title="Create Account" Bgcolor="#FFFAF6" width="343px" />
-      </Link>
+      <motion.div
+        initial={{ y: 25, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          duration: 1.75,
+        }}
+      >
+        <Link href="/create_account">
+          <Butt title="Create Account" Bgcolor="#FFFAF6" width="343px" />
+        </Link>
+      </motion.div>
     </div>
   );
 }
