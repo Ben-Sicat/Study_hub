@@ -1,2 +1,4 @@
 Flask
 mysql-connector-python
+Flask-JWT-Extended
+bcrypt
