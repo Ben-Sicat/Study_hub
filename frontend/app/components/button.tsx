@@ -7,7 +7,8 @@ type ButtProps = {
   width?: string;
   height?: string;
   borderRadius?: string;
-  disabled?: boolean; // Add the disabled prop
+  disabled?: boolean;
+  onClick?: () => void; // Add the onClick prop
 };
 
 function Butt({
@@ -16,7 +17,8 @@ function Butt({
   width,
   height,
   borderRadius,
-  disabled = false, // Default value for disabled
+  disabled = false,
+  onClick, // Include the onClick prop
 }: ButtProps) {
   const ButtStyle = {
     width: width || "302px",
@@ -38,7 +40,8 @@ function Butt({
           textTransform: "none",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
         }}
-        disabled={disabled} // Pass the disabled prop to the Button component
+        disabled={disabled}
+        onClick={onClick} // Attach the onClick handler to the Button component
       >
         {title}
       </Button>

@@ -8,21 +8,30 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 
-type TextFieldProps = {
+type PassProps = {
   width?: string;
   height?: string;
   labelFontSize?: string;
+  onInputChange: (value: string) => void;
+  onClick?: () => void; // Add the onClick prop
 };
 
 function Pass({
   width = "18.875rem",
   height = "2.5rem",
   labelFontSize = "14px",
-}: TextFieldProps) {
+  onInputChange,
+  onClick, // Include the onClick prop
+}: PassProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [inputValue, setInputValue] = useState(""); // Track input value
+  const [inputValue, setInputValue] = useState("");
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => {
+    setShowPassword((show) => !show);
+    if (onClick) {
+      onClick(); // Invoke the onClick handler if provided
+    }
+  };
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -42,8 +51,8 @@ function Pass({
         <InputLabel
           htmlFor="outlined-adornment-password"
           style={{
-            fontSize: focused || inputValue ? "12px" : labelFontSize, // Smaller font when focused or input value is not empty
-            top: focused || inputValue ? "-8px" : "50%", // Move higher when focused or input value is not empty
+            fontSize: focused || inputValue ? "12px" : labelFontSize,
+            top: focused || inputValue ? "-8px" : "50%",
             transform:
               focused || inputValue ? "translateY(0)" : "translateY(-50%)",
             paddingLeft: "13px",
@@ -72,7 +81,10 @@ function Pass({
           sx={{ height: height, borderRadius: "10px" }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          onChange={(e) => setInputValue(e.target.value)} // Update input value
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            onInputChange(e.target.value);
+          }}
         />
       </FormControl>
     </div>

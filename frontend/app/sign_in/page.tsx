@@ -5,12 +5,31 @@ import Pass from "../components/text_input_pass";
 import Butt from "../components/button";
 import { Logo, Painting } from "../components/svgs";
 import Link from "next/link";
+import { useState } from "react";
 
 function Page() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+  };
+  const handleLogin = () => {
+
+    console.log("Logging in...");
+    console.log("Username:", username);
+    console.log("Password:", password);
+
+  };
   useEffect(() => {
-    // Set the title directly for the browser tab
+
     document.title = "Find Account";
   }, []);
+
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -22,16 +41,20 @@ function Page() {
         <TextInput
           placeholder="Username, email, or mobile number"
           width="343px"
+          onInputChange={handleUsernameChange}
         />
 
-        <Pass width="343px"></Pass>
+        <Pass 
+        width="343px"
+        onInputChange={handlePasswordChange}
+        />
       </div>
 
       <p className="text-end text-parrot text-xs mr-10">
         <Link href="/forget_password">Forgot Password?</Link>
       </p>
 
-      <Butt title="Log In" Bgcolor="#EBE0D0" width="343px" />
+      <Butt title="Log In" Bgcolor="#EBE0D0" width="343px"  onClick={handleLogin}/>
 
       <div className="mt-40"></div>
 
