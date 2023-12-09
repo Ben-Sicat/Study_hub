@@ -1,22 +1,21 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Upper from "../components/upperleft_icon";
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "../components/account_image";
 import CircleIcon from "@mui/icons-material/Circle";
 import Dropdown from "../components/dropdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Line from "../components/line";
 import Butt from "../components/button";
-
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Account",
-  description: "Brew * Brain",
-};
+import Link from "next/link";
 
 function page() {
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Account";
+  }, []);
+
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <Upper
@@ -37,18 +36,22 @@ function page() {
         </p>
 
         <div className="text-sm mt-4">
-          <Dropdown
-            title="Edit Profile"
-            LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
-          />
+          <Link href="/edit_profile">
+            <Dropdown
+              title="Edit Profile"
+              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
+            />
+          </Link>
           <Line></Line>
         </div>
 
         <div className="text-sm mt-4">
-          <Dropdown
-            title="Rewards"
-            LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
-          />
+          <Link href="#">
+            <Dropdown
+              title="Rewards"
+              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
+            />
+          </Link>
           <Line></Line>
         </div>
       </div>
@@ -59,26 +62,32 @@ function page() {
         </p>
 
         <div className="text-sm mt-4">
-          <Dropdown
-            title="Help Center"
-            LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
-          />
+          <Link href="/help_center">
+            <Dropdown
+              title="Help Center"
+              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
+            />
+          </Link>
           <Line></Line>
         </div>
 
         <div className="text-sm mt-4">
-          <Dropdown
-            title="Terms and Agreements"
-            LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
-          />
+          <Link href="/terms_and_agreements">
+            <Dropdown
+              title="Terms and Agreements"
+              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
+            />
+          </Link>
           <Line></Line>
         </div>
 
         <div className="text-sm mt-4">
-          <Dropdown
-            title="Notifications"
-            LeftArrow={<KeyboardArrowDownIcon style={{ fontSize: 23 }} />}
-          />
+          <Link href="#">
+            <Dropdown
+              title="Notifications"
+              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
+            />
+          </Link>
           <Line></Line>
         </div>
       </div>

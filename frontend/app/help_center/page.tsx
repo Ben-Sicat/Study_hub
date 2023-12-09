@@ -1,21 +1,29 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import Teste from "../components/account";
 import Dropdown from "../components/dropdown";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Help Center",
-  description: "Brew * Brain",
-};
+import { useRouter } from "next/navigation";
 
 function Page() {
+  const router = useRouter();
+
+  const handleBackButtonClick = () => {
+    router.back();
+  };
+
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Help Center";
+  }, []);
+
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<CloseIcon style={{ fontSize: 25 }} />}
+        onBackButtonClick={handleBackButtonClick}
         title="Help Center"
         subTitle1=""
       />
