@@ -1,7 +1,13 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 import mysql.connector
+import bcrypt
+import datetime
 
 app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = "your-secret-key"  # Change this to a secret key
+jwt = JWTManager(app)
+
 
 def get_db_connection():
     config = {
@@ -44,6 +50,20 @@ def Users():
             return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
+def get_user_by_username(username):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = 'SELECT UserID, GoogleID, Username, Password, Email, UName, Birthday, Gender, School FROM Users WHERE Username = %s'
+            cursor.execute(query, (username,))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            return result
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
 
 def write_to_Reservations(UserID,  ReservationDate, ReservationTime, ReservationSite, Status):
     connection = get_db_connection()
@@ -100,6 +120,41 @@ def QR_Codes():
             print(f"Error: {err}")
             
     # aight time to do this shit ako naman   
+    
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+def verify_password(hashed_password, password):
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+
+@app.route('/api/sign-in', methods=['POST'])
+def sign_in():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    user_data = get_user_by_username(username)
+    if user_data and verify_password(user_data.get('Password'), password):
+        access_token = create_access_token(identity=username, expires_delta=datetime.timedelta(days=1))
+        return jsonify(access_token=access_token), 200
+    return jsonify(message='Invalid username or password'), 401
+
+@app.route('/api/create-account', methods=['POST'])
+def create_account():
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    hashed_password = hash_password(password)
+    write_to_Users('unique_google_id', username, email, 'UName', '2003-03-05', 'Male', 'Sample School')
+    return jsonify(message='Account created successfully'), 200
+
+@app.route('/test-create-account', methods=['POST'])
+def test_create_account():
+    return jsonify(message='Test route for create account works!')
+
+
 
 @app.route('/')
 def index():
@@ -108,4 +163,4 @@ def index():
     return jsonify({'User Data': Users()})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

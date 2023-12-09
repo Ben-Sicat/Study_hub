@@ -18,11 +18,25 @@ function Page() {
   const handlePasswordChange = (value: string) => {
     setPassword(value);
   };
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    try{
+      const response = await fetch('http://localhost:5000/api/sign_in', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      if(response.ok){
+        const data = await response.json();
+        console.log("login success")
+        console.log( "data", data)
+        console.log("data", data.acces_token)
+      }
+    } catch (error) {
+      console.error(error);
 
-    console.log("Logging in...");
-    console.log("Username:", username);
-    console.log("Password:", password);
+    }
 
   };
   useEffect(() => {
