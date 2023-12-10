@@ -27,6 +27,8 @@ CREATE TABLE Reservations (
   SeatCode VARCHAR(50),
   HourAndRate DECIMAL(8, 2),
   Status ENUM('Booked', 'Cancelled', 'Completed') NOT NULL,
+  Amount DECIMAL(8, 2),
+  Extension DECIMAL(8, 2),
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 

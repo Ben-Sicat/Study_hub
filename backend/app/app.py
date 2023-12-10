@@ -85,13 +85,40 @@ def Reservations():
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.execute('SELECT ReservationID, UserID, ReservationDate, ReservationTime, ReservationSite, SeatCode, HourAndRate, Status FROM Reservations')
+            cursor.execute('SELECT * FROM Reservations')
             results = cursor.fetchall()
             cursor.close()
             connection.close()
             return results
         except mysql.connector.Error as err:
             print(f"Error fetching Reservations: {err}")
+            
+def get_reservation_by_id(ReservationID):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = 'SELECT * FROM Reservations WHERE ReservationID = %s'
+            cursor.execute(query, (ReservationID,))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            return result
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+def update_reservation(reservation_id, new_reservation_time, new_amount_paid):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = "UPDATE Reservations SET ReservationTime = %s, Amount = %s, Extension = CURRENT_TIME() WHERE ReservationID = %s"
+            values = (new_reservation_time, new_amount_paid, reservation_id)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error updating reservation: {err}")
 
 def write_to_QR_Codes(ReservationID, QRCodeData):
     connection = get_db_connection()
@@ -196,6 +223,28 @@ def create_account():
 # @app.route('/test-create-account', methods=['POST'])
 # def test_create_account():
 #     return jsonify(message='Test route for create account works!')
+
+@app.route('/api/extend-reservation', methods=['POST'])
+def extend_reservation():
+    try:
+        data = request.get_json()
+        reservation_id = data.get('reservation_id')
+        new_reservation_time = data.get('new_reservation_time')
+        new_amount_paid = data.get('new_amount_paid')
+
+        # Fetch the existing reservation
+        existing_reservation = get_reservation_by_id(reservation_id)
+
+        # Check if the reservation exists
+        if existing_reservation:
+            # Update the existing reservation with new data
+            update_reservation(reservation_id, new_reservation_time, new_amount_paid)
+            return jsonify(message='Reservation extended successfully'), 200
+        else:
+            return jsonify(message='Reservation not found'), 404
+    except Exception as e:
+        print(f"Error extending reservation: {e}")
+        return jsonify(message='Error extending reservation'), 500
 
 
 
