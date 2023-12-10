@@ -6,6 +6,7 @@ import DateComponent from "../components/date";
 import TimeComponent from "../components/time";
 import DatePick from "../components/date_picker";
 import Butt from "../components/button";
+import DataGridDemo from "../components/data_grid";
 
 function Page() {
   useEffect(() => {
@@ -69,6 +70,10 @@ function Page() {
             <DatePick text="To:"></DatePick>
           </div>
         </div>
+      </div>
+
+      <div className="container justify-center items-center mt-5">
+        <DataGridDemo></DataGridDemo>
       </div>
 
       <div className="container flex space-x-5 justify-center items-center">
