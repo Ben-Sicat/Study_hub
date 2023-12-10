@@ -62,7 +62,7 @@ const PayChart: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "90%",
+        width: "93%",
         padding: "10px",
         marginBottom: "0",
       }}
@@ -75,7 +75,7 @@ const PayChart: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          backgroundColor: "white",
+          backgroundColor: "#FFFAF6",
           boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
         }}
       >

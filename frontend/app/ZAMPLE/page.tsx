@@ -2,14 +2,25 @@
 import React, { useEffect, useState } from "react";
 import Teste from "../components/account";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import TextInput from "../components/text_input";
 import Butt from "../components/button";
-import Drop from "../components/dropdown_button";
-import Radio from "../components/radio_button";
 import CheckBox from "../components/checkbox";
 import Link from "next/link";
+import { Box, Grid, Button } from "@mui/material";
 
 import { useRouter } from "next/navigation";
+import BarStat from "../components/CZAMPLE";
+import PayChart from "../components/CZAMPLE";
+
+interface BarStatConfig {
+  statusField: string;
+  size: number;
+  title: string;
+}
+
+const barStatConfig: BarStatConfig[] = [
+  { statusField: "status", size: 11.7, title: "Reservation" },
+  // Remove other configurations if you want to display only one chart
+];
 
 function Page() {
   const router = useRouter();
@@ -60,9 +71,7 @@ function Page() {
         title="Create Account"
         subTitle1=""
       />
-
       <div className="mt-5"></div>
-
       <div className="text-xs text-textcolor flex ml-5">
         <CheckBox label="" onChange={handleCheckboxChange} />
         <p className="mt-3">
@@ -70,7 +79,6 @@ function Page() {
           <Link href="/terms_and_agreements">Terms and Agreements</Link>
         </p>
       </div>
-
       {/* Disable the button if the checkbox is not checked */}
       <Butt
         title="Create account"
@@ -79,6 +87,10 @@ function Page() {
         height="34px"
         disabled={!isChecked} // Disable the button if isChecked is false
       />
+
+      <div className="flex justify-center items-center">
+        <PayChart></PayChart>
+      </div>
     </div>
   );
 }

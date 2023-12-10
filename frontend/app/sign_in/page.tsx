@@ -9,7 +9,7 @@ import Link from "next/link";
 function Page() {
   useEffect(() => {
     // Set the title directly for the browser tab
-    document.title = "Find Account";
+    document.title = "Sign In";
   }, []);
 
   return (

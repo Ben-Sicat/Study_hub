@@ -9,18 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.19",
+    "@mui/material": "^5.14.20",
+    "@mui/x-date-pickers": "^6.18.4",
     "@ramonak/react-progress-bar": "^5.0.3",
-
     "@svgr/webpack": "^8.1.0",
-
     "@types/qrcode": "^1.5.4",
-
     "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "dayjs": "^1.11.10",
     "next": "13.5.5",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
-    "react-icons": "^4.11.0"
+    "react-icons": "^4.11.0",
+    "recharts": "^2.10.3"
   },
   "devDependencies": {
     "@types/node": "^20",
