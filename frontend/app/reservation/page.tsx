@@ -5,8 +5,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import TextInput from "../components/text_input";
 import Butt from "../components/button";
 import TemporaryDrawer from "../components/side_bar";
+import { getSession } from "next-auth/react";
 
 function Page() {
+ 
+
     useEffect(() => {
         // Set the title directly for the browser tab
         document.title = "Reservation";
@@ -30,32 +33,66 @@ function Page() {
             [field]: value,
         });
     };
+    
 
     const handleReservation = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/reservations", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    STime: formData.STime,
-                    ETime: formData.ETime,
-                    Seat: formData.Seat,
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Reservation created successfully:", data.message);
-                // Do something with the response data, like updating the UI
+          // Retrieve user_id from localStorage or cookies
+          const user_id = localStorage.getItem('user_id') || getCookie('user_id');
+          
+          if (!user_id) {
+            console.error('User not authenticated');
+            // Handle the case when the user is not authenticated
+            return;
+          }
+      
+          const response = await fetch(`http://localhost:5000/api/reservations/${user_id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('access_token') || getCookie('access_token')}`,
+            },
+            body: JSON.stringify({
+              STime: formData.STime,
+              ETime: formData.ETime,
+              Seat: formData.Seat,
+            }),
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+      
+            if (data && data.message) {
+              console.log("Reservation created successfully:", data.message);
+              // Do something with the response data
             } else {
-                console.error("Error creating reservation:", await response.json());
+              console.error("Invalid response format:", data);
             }
+          } else {
+            const errorData = await response.json();
+            if (errorData && errorData.message) {
+              console.error("Error creating reservation:", errorData.message);
+            } else {
+              console.error("Invalid error response format:", errorData);
+            }
+          }
         } catch (error) {
-            console.error("Error creating reservation:", error);
+          console.error("Error creating reservation:", error);
         }
-    };
+      };
+      
+      function getCookie(name: string | any[]) {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Check if this cookie contains the name we're looking for
+          if (cookie.startsWith(name + '=')) {
+            return cookie.substring(name.length + 1);
+          }
+        }
+        return null;
+      }
+      
 
     return (
         <div className="flex min-h-full flex-col bg-backcolor">

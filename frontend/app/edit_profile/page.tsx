@@ -1,6 +1,6 @@
-'use client'
+
 "use client";
-import React, { useState }, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Teste from "../components/account";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "../components/account_image";

@@ -21,10 +21,9 @@ CREATE TABLE Users (
 CREATE TABLE Reservations (
   ReservationID INT AUTO_INCREMENT PRIMARY KEY,
   UserID INT, 
-  StartTime TIME NOT NULL,
+  StartTime VARCHAR(255) NOT NULL,
   EndTime VARCHAR(225) NOT NULL,
-  Seat VARCHAR(50),
-  FOREIGN KEY (UserID) REFERENCES Users(UserID)
+  Seat VARCHAR(50)
 );
 
 
