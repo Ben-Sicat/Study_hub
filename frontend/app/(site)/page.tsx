@@ -1,3 +1,4 @@
+"use client";
 import type { Metadata } from "next";
 import { Logo, Painting } from "../components/svgs";
 import About from "./components/About";
@@ -5,15 +6,17 @@ import Discounts from "./components/Discounts";
 import Footer from "./components/Footer";
 import Butt from "../components/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Brew & Brain",
-  description: "Brew * Brain",
-};
+// export const metadata: Metadata = {
+//   title: "Brew & Brain",
+//   description: "Brew * Brain",
+// };
 //WALA NA BA TAYO FILE FOR TAILWIND?
 //sino to? AHAHAHAHAHAHA Eric?
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div
       className="'
@@ -69,14 +72,13 @@ export default function Home() {
         </div>
 
         <div className="mobile:pt-3 mobile:pb-9">
-          <Link href="/sign_in">
-            <Butt
-              title="Sign In"
-              Bgcolor="#EBE0D0"
-              width="343px"
-              height="40px"
-            />
-          </Link>
+          <Butt
+            title="Sign In"
+            Bgcolor="#EBE0D0"
+            width="343px"
+            height="40px"
+            onClick={() => router.push("/sign_in")}
+          />
         </div>
       </section>
       <section>

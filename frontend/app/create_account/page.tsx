@@ -114,6 +114,74 @@ function Page() {
     "2022",
     "2023",
   ];
+  const [formData, setFormData] = useState<{
+    firstName: string;
+    lastName: string;
+    username: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    birthdate: {
+      month: string;
+      day: string;
+      year: string;
+    };
+    gender: string;
+    userType: string;
+  }>({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    birthdate: {
+      month: "",
+      day: "",
+      year: "",
+    },
+    gender: "",
+    userType: "",
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+  const handleSignInWithGoogle = async () => {
+    try {
+      // Sign in with Google
+      const response = await signIn('google');
+      console.log('Google Sign-In Response:', response);
+      console.log(process.env)
+
+      // Check if the sign-in was successful
+      if (response?.error) {
+        console.error('Error during Google Sign-In:', response.error);
+      } else {
+        // Redirect to the login page
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Error during Google Sign-In:', error);
+    }
+  };
+
+  const handleBirthdateChange = (field: keyof typeof formData["birthdate"], value: string) => {
+    setFormData({
+      ...formData,
+      birthdate: {
+        ...formData.birthdate,
+        [field]: value,
+      },
+    });
+  };
+  const handleCreateAccount = () => {
+    // Log
+    console.log("Form Data:", formData);
+  };
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -127,33 +195,63 @@ function Page() {
       <div className="mt-5"></div>
 
       <div className="flex justify-center space-x-5">
-        <TextInput placeholder="First Name" width="157px" height="35px" />
-        <TextInput placeholder="Last Name" width="157px" height="35px" />
+        <TextInput
+          placeholder="First Name"
+          width="157px"
+          height="35px"
+          onInputChange={(value) => handleInputChange("firstName", value)}
+        />
+        <TextInput
+          placeholder="Last Name"
+          width="157px"
+          height="35px"
+          onInputChange={(value) => handleInputChange("lastName", value)}
+        />
       </div>
 
-      <TextInput placeholder="Username" width="335px" height="35px" />
-      <TextInput placeholder="Email" width="335px" height="35px" />
-      <TextInput placeholder="Phone Number" width="335px" height="35px" />
-      <TextInput placeholder="Password" width="335px" height="35px" />
+      <TextInput
+        placeholder="Username"
+        width="335px"
+        height="35px"
+        onInputChange={(value) => handleInputChange("username", value)}
+      />
+      <TextInput
+        placeholder="Email"
+        width="335px"
+        height="35px"
+        onInputChange={(value) => handleInputChange("email", value)}
+      />
+      <TextInput
+        placeholder="Phone Number"
+        width="335px"
+        height="35px"
+        onInputChange={(value) => handleInputChange("phoneNumber", value)}
+      />
+      <TextInput
+        placeholder="Password"
+        width="335px"
+        height="35px"
+        onInputChange={(value) => handleInputChange("password", value)}
+      />
 
-      <p className=" text-redwood font-normal text-sm text-justify ml-8 mt-4 py-2 px-2">
+      <p className="text-redwood font-normal text-sm text-justify ml-8 mt-4 py-2 px-2">
         Birthdate
       </p>
 
       <div className="flex justify-center space-x-3">
-        <Drop options={options}></Drop>
-        <Drop options={options1}></Drop>
-        <Drop options={options2}></Drop>
+        <Drop options={options} onSelect={(value) => handleBirthdateChange("month", value)} />
+        <Drop options={options1} onSelect={(value) => handleBirthdateChange("day", value)} />
+        <Drop options={options2} onSelect={(value) => handleBirthdateChange("year", value)} />
       </div>
 
-      <p className=" text-redwood font-normal text-sm text-justify ml-8 mt-4 py-2 px-2">
+      <p className="text-redwood font-normal text-sm text-justify ml-8 mt-4 py-2 px-2">
         Gender
       </p>
 
       <div className="flex justify-center space-x-3">
-        <Radio input="Female"></Radio>
-        <Radio input="Male"></Radio>
-        <Radio input="Others"></Radio>
+        <Radio input="Female" onRadioChange={(value) => handleInputChange("gender", value)} />
+        <Radio input="Male" onRadioChange={(value) => handleInputChange("gender", value)} />
+        <Radio input="Others" onRadioChange={(value) => handleInputChange("gender", value)} />
       </div>
 
       <div className="flex justify-center space-x-5 text-xs">
@@ -163,6 +261,7 @@ function Page() {
           width="152px"
           height="25px"
           borderRadius="7px"
+          onClick={() => handleInputChange("userType", "Student")}
         />
         <Butt
           title="Worker"
@@ -170,6 +269,7 @@ function Page() {
           width="152px"
           height="25px"
           borderRadius="7px"
+          onClick={() => handleInputChange("userType", "Worker")}
         />
       </div>
 
@@ -184,14 +284,20 @@ function Page() {
       </div>
 
       <Butt
-        title="Create account"
-        Bgcolor="#EBE0D0"
+        onClick={handleSignInWithGoogle}
+        title="Sign up with Google"
+        Bgcolor="#4285F4" 
         width="325px"
         height="34px"
         disabled={!isChecked} // Disable the button if isChecked is false
       />
+
+      
+
+      <Butt onClick={handleCreateAccount} title="Create account" Bgcolor="#EBE0D0" width="325px" height="34px" />
     </div>
   );
 }
+
 
 export default Page;

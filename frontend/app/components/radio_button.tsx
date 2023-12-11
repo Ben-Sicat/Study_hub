@@ -4,12 +4,17 @@ type RadioProps = {
   input: string;
   width?: string;
   height?: string;
+  onRadioChange: (selectedOption: string) => void;
 };
 
-function Radio({ input, width, height }: RadioProps) {
+function Radio({ input, width, height, onRadioChange }: RadioProps) {
   const RadioStyle = {
     width: width || "100px",
     height: height || "35px",
+  };
+
+  const handleRadioChange = () => {
+    onRadioChange(input); // Call the provided onRadioChange function with the selected option
   };
 
   return (
@@ -23,19 +28,20 @@ function Radio({ input, width, height }: RadioProps) {
           position: "relative",
         }}
       >
-        <label htmlFor="start" style={{ position: "relative" }}>
+        <label htmlFor={input} style={{ position: "relative" }}>
           {input}
         </label>
 
         <input
           type="radio"
-          id="start"
-          name="position"
-          value="start"
+          id={input}
+          name="radioOptions"
+          value={input}
           style={{
             position: "absolute",
             right: "10px",
           }}
+          onChange={handleRadioChange}
         />
       </div>
     </div>
