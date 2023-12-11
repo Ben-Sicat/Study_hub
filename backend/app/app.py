@@ -97,6 +97,7 @@ def get_user_by_id(user_id):
             print(f"Error fetching user by ID: {err}")
 
 
+
 def get_user_by_email_or_username(email_or_username):
     connection = get_db_connection()
     if connection:
@@ -125,17 +126,31 @@ def create_reservation(user_id, reservation_data):
                 VALUES (%s, %s, %s, %s)
             """
             values = (
-                    user_id,
-                    reservation_data['STime'],
-                    reservation_data['ETime'],
-                    reservation_data['Seat'],
-                )
+                user_id,
+                reservation_data['STime'],
+                reservation_data['ETime'],
+                reservation_data['Seat'],
+            )
             cursor.execute(query, values)
             connection.commit()
             cursor.close()
             connection.close()
+
+            # Fetch the reservation ID after insertion
+            reservation_id = cursor.lastrowid
+
+            # Return the reservation details
+            return {
+                "ReservationID": reservation_id,
+                "StartTime": reservation_data['STime'],
+                "EndTime": reservation_data['ETime'],
+                "Seat": reservation_data['Seat']
+            }
         except mysql.connector.Error as err:
             print(f"Error creating reservation: {err}")
+            return {"error": f"Error creating reservation: {err}"}
+    else:
+        return {"error": "Failed to connect to the database"}
 def get_user_reservations(user_id):
     connection = get_db_connection()
     if connection:
@@ -162,16 +177,34 @@ def sign_in():
     if user and user['Password'] == data['password']:
         access_token = create_access_token(identity=user['Username'])
         
+        # Fetch additional user data
+        user_data = get_user_by_id(user['UserID'])
+
         # Create a response object
-        response = make_response(jsonify(access_token=access_token), 200)
+        response_data = {
+            'access_token': access_token,
+            'user': {
+                'UserID': user_data['UserID'],
+                'Username': user_data['Username'],
+                'Email': user_data['Email'],
+                'FirstName': user_data['FirstName'],
+                'LastName': user_data['LastName'],
+                'PhoneNumber': user_data['PhoneNumber'],
+                'UName': user_data['UName'],
+                'Birthday': user_data['Birthday'],
+                'Gender': user_data['Gender'],
+                'School': user_data['School']
+                # Add other user properties as needed
+            }
+        }
+
+        response = make_response(jsonify(response_data), 200)
         
         # Set HttpOnly flag for the access token cookie
-        response.set_cookie('access_token', value=access_token, httponly=True)
         
         return response
     else:
         return jsonify({"message": "Invalid login credentials"}), 401
-
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:
@@ -194,11 +227,20 @@ def update_account(user_id):
         print(f"Error updating account: {e}")
         return jsonify(message='Error updating account'), 500
 
+@app.route('/api/get-reservations/<int:user_id>', methods=['GET'])
+def get_reservations(user_id):
+    try:
+        reservations = get_user_reservations(user_id)
+        return jsonify(reservations)
+    except Exception as e:
+        print(f"Error fetching reservations: {e}")
+        return jsonify(error='Error fetching reservations'), 500
+
 @app.route('/api/reservations', methods=['POST'])
 def make_reservation():
     try:
         data = request.get_json()
-        user_id = 1  # Replace with the actual user ID; you need to identify the user somehow
+        user_id = 5  # Replace with the actual user ID; you need to identify the user somehow
         result = create_reservation(user_id, data)
         return jsonify(result)
     except Exception as e:

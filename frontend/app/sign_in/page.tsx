@@ -7,8 +7,10 @@ import { Logo, Painting } from "../components/svgs";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { signIn, useSession } from "next-auth/react";
 
 function Page() {
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,6 +21,7 @@ function Page() {
   const handlePasswordChange = (value: string) => {
     setPassword(value);
   };
+
   const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/sign-in", {
@@ -26,21 +29,38 @@ function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ login:username, password }),
+        body: JSON.stringify({ login: username, password }),
       });
+  
       if (response.ok) {
         const data = await response.json();
         console.log("login success");
         console.log("data", data);
-        console.log("data", data.acces_token);
-        document.cookie = `access_token=${data.access_token}; path=/; HttpOnly`;
+        console.log("data", data.access_token);
+  
+        localStorage.setItem('access_token', data.access_token);
         window.location.href = "/reservation";
-
       }
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
     }
   };
+  
+  const useSession = () => {
+    const tokenFromLocalStorage = localStorage.getItem("access_token");
+  
+    return {
+      token: tokenFromLocalStorage,
+    };
+  };
+  
+ 
+
+  const session = useSession();
+  console.log("Current session token:", session.user);
+
+
+  
   useEffect(() => {
     document.title = "Find Account";
   }, []);
