@@ -9,6 +9,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Line from "../components/line";
 import Butt from "../components/button";
 import Link from "next/link";
+import TemporaryDrawer from "../components/side_bar";
 
 function page() {
   useEffect(() => {
@@ -18,9 +19,7 @@ function page() {
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
-      <Upper
-        ButtonIcon={<MenuIcon style={{ fontSize: 30, color: "#D78215" }} />}
-      ></Upper>
+      <TemporaryDrawer ButtonIcon={undefined}></TemporaryDrawer>
 
       <div className="flex items-center space-x-2 mt-2 ml-7">
         <Image

@@ -1,8 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, make_response, request
 from flask_jwt_extended import JWTManager, create_access_token
 import mysql.connector
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 app.config["JWT_SECRET_KEY"] = "your-secret-key"  # Change this to a secure and secret key
 jwt = JWTManager(app)
 
@@ -112,14 +114,61 @@ def get_user_by_email_or_username(email_or_username):
             return result
         except mysql.connector.Error as err:
             print(f"Error fetching user by email or username: {err}")
-
+def create_reservation(user_id, reservation_data):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO Reservations 
+                (UserID, StartTime, EndTime, Seat)
+                VALUES (%s, %s, %s, %s)
+            """
+            values = (
+                    user_id,
+                    reservation_data['STime'],
+                    reservation_data['ETime'],
+                    reservation_data['Seat'],
+                )
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error creating reservation: {err}")
+def get_user_reservations(user_id):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = """
+                SELECT ReservationID, StartTime, EndTime, Seat
+                FROM Reservations
+                WHERE UserID = %s
+            """
+            cursor.execute(query, (user_id,))
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return results
+        except mysql.connector.Error as err:
+            print(f"Error fetching user reservations: {err}")
+            
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
     data = request.get_json()
     user = get_user_by_email_or_username(data['login'])
+    
     if user and user['Password'] == data['password']:
         access_token = create_access_token(identity=user['Username'])
-        return jsonify(access_token=access_token), 200
+        
+        # Create a response object
+        response = make_response(jsonify(access_token=access_token), 200)
+        
+        # Set HttpOnly flag for the access token cookie
+        response.set_cookie('access_token', value=access_token, httponly=True)
+        
+        return response
     else:
         return jsonify({"message": "Invalid login credentials"}), 401
 
@@ -144,6 +193,17 @@ def update_account(user_id):
     except Exception as e:
         print(f"Error updating account: {e}")
         return jsonify(message='Error updating account'), 500
+
+@app.route('/api/reservations', methods=['POST'])
+def make_reservation():
+    try:
+        data = request.get_json()
+        user_id = 1  # Replace with the actual user ID; you need to identify the user somehow
+        result = create_reservation(user_id, data)
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error creating reservation: {e}")
+        return jsonify(error='Error creating reservation'), 500 
 
 
 # Additional user-related functions
