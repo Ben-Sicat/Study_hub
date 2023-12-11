@@ -21,16 +21,12 @@ CREATE TABLE Users (
 CREATE TABLE Reservations (
   ReservationID INT AUTO_INCREMENT PRIMARY KEY,
   UserID INT, 
-  ReservationDate DATE NOT NULL,
-  ReservationTime TIME NOT NULL,
-  ReservationSite VARCHAR(225) NOT NULL,
-  SeatCode VARCHAR(50),
-  HourAndRate DECIMAL(8, 2),
-  Status ENUM('Booked', 'Cancelled', 'Completed') NOT NULL,
-  Amount DECIMAL(8, 2),
-  Extension DECIMAL(8, 2),
+  StartTime TIME NOT NULL,
+  EndTime VARCHAR(225) NOT NULL,
+  Seat VARCHAR(50),
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
 
 CREATE TABLE QR_Codes (
 	QRCodeID INT AUTO_INCREMENT PRIMARY KEY,

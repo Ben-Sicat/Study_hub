@@ -150,22 +150,44 @@ function Page() {
       [field]: value,
     });
   };
-  const handleSignInWithGoogle = async () => {
-    try {
-      // Sign in with Google
-      const response = await signIn('google');
-      console.log('Google Sign-In Response:', response);
-      console.log(process.env)
 
-      // Check if the sign-in was successful
-      if (response?.error) {
-        console.error('Error during Google Sign-In:', response.error);
+  const handleCreateAccount = async () => {
+    try {
+      const apiData = {
+        google_id: "", // Set a default value if not applicable
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone_number: formData.phoneNumber,
+        birthdate: {
+          month: formData.birthdate.month,
+          day: formData.birthdate.day,
+          year: formData.birthdate.year,
+        },
+        gender: formData.gender,
+        userType: formData.userType,
+      };
+  
+      const response = await fetch("http://localhost:5000/api/create-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(apiData),
+      });
+  
+      if (response.ok) {
+        // Successfully created account
+        console.log("Account created successfully!");
+        // Optionally, you can redirect the user to a login page or another page
       } else {
-        // Redirect to the login page
-        router.push('/login');
+        // Handle error cases
+        console.error("Error creating account:", await response.json());
       }
     } catch (error) {
-      console.error('Error during Google Sign-In:', error);
+      console.error("Error creating account:", error);
     }
   };
 
@@ -178,10 +200,7 @@ function Page() {
       },
     });
   };
-  const handleCreateAccount = () => {
-    // Log
-    console.log("Form Data:", formData);
-  };
+
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -283,14 +302,14 @@ function Page() {
         </p>
       </div>
 
-      <Butt
+      {/* <Butt
         onClick={handleSignInWithGoogle}
         title="Sign up with Google"
         Bgcolor="#4285F4" 
         width="325px"
         height="34px"
         disabled={!isChecked} // Disable the button if isChecked is false
-      />
+      /> */}
 
       
 

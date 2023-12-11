@@ -25,10 +25,12 @@
     "@types/qrcode": "^1.5.4",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
-    "date-fns": "^2.30.0",
-    "dayjs": "^1.11.10",
-    "next": "13.5.5",
-]
+
+    "framer-motion": "^10.16.16",
+    "isomorphic-unfetch": "^4.0.2",
+    "next": "^14.0.1",
+    "next-auth": "^4.24.5",
+
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.49.0",

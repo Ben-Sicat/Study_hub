@@ -21,18 +21,21 @@ function Page() {
   };
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/sign_in", {
+      const response = await fetch("http://localhost:5000/api/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ login:username, password }),
       });
       if (response.ok) {
         const data = await response.json();
         console.log("login success");
         console.log("data", data);
         console.log("data", data.acces_token);
+        document.cookie = `access_token=${data.access_token}; path=/; HttpOnly`;
+        window.location.href = "/reservation";
+
       }
     } catch (error) {
       console.error(error);
