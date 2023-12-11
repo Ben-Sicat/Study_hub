@@ -39,7 +39,10 @@ function Page() {
     }
   };
   useEffect(() => {
-    document.title = "Find Account";
+
+    // Set the title directly for the browser tab
+    document.title = "Sign In";
+
   }, []);
 
   return (

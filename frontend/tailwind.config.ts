@@ -49,6 +49,9 @@ const config: Config = {
         textcolor: "#4F483F",
         line: "#C7C7C7",
         buttonborder: "#EDC2B5",
+        macandcheese: "#F3C386",
+        buttonpink: "#F8D8D4",
+        amethyst: "#A081AB",
 
 
       },
