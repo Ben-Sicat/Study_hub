@@ -1,6 +1,6 @@
-'use client'
 "use client";
-import React, { useState }, { useEffect } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Teste from "../components/account";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "../components/account_image";
@@ -38,7 +38,7 @@ function Page() {
     email: "",
     phoneNumber: "",
     gender: options[0],
-    occupation: options1[0]
+    occupation: options1[0],
   });
   const handleInputChange = (field: string, value: string) => {
     setFormData({
@@ -49,11 +49,10 @@ function Page() {
   const handleUpdateProfile = () => {
     console.log(formData);
   };
-  
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
-    <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-1">
         <Teste
           backButtonIcon={<CloseIcon style={{ fontSize: 24 }} />}
           onBackButtonClick={handleBackButtonClick}
@@ -80,9 +79,30 @@ function Page() {
       </div>
 
       <div className="mt-6">
-        <TextInput placeholder="Username" width="335px" height="35px" />
-        <TextInput placeholder="Email" width="335px" height="35px" />
-        <TextInput placeholder="Phone Number" width="335px" height="35px" />
+        <TextInput
+          placeholder="Username"
+          width="335px"
+          height="35px"
+          onInputChange={function (value: string): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+        <TextInput
+          placeholder="Email"
+          width="335px"
+          height="35px"
+          onInputChange={function (value: string): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+        <TextInput
+          placeholder="Phone Number"
+          width="335px"
+          height="35px"
+          onInputChange={function (value: string): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
 
         <div className="flex text-redwood text-xs ml-12 space-x-32 mt-2">
           <p>Gender</p>
@@ -90,7 +110,7 @@ function Page() {
         </div>
 
         <div className="flex justify-center space-x-3">
-        <Drop
+          <Drop
             options={options}
             width="161px"
             onSelect={(value) => handleInputChange("gender", value)}
@@ -100,15 +120,15 @@ function Page() {
             width="161px"
             onSelect={(value) => handleInputChange("occupation", value)}
           />
-           </div>
-        <TextInput 
-        placeholder="School/Company" 
-        width="335px" 
-        height="35px"
-        onInputChange={(value) => handleInputChange("school", value)}
+        </div>
+        <TextInput
+          placeholder="School/Company"
+          width="335px"
+          height="35px"
+          onInputChange={(value) => handleInputChange("school", value)}
         />
       </div>
-      
+
       <div className="mt-16"></div>
 
       <Butt
@@ -119,7 +139,6 @@ function Page() {
         onClick={handleUpdateProfile}
       />
     </div>
-
   );
 }
 
