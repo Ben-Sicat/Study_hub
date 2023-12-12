@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 type PickProps = {
   text?: string;
@@ -10,9 +10,9 @@ type PickProps = {
   onInputChange: (value: string) => void;
 };
 
-function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
+function TimePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
   const PickStyle = {
-    text: text || "Date",
+    text: text || "Time",
   };
 
   const inputLabelProps = {
@@ -31,9 +31,9 @@ function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["DatePicker"]}>
+      <DemoContainer components={["TimePicker"]}>
         <div className="w-21">
-          <DatePicker
+          <TimePicker
             label={PickStyle.text}
             slotProps={{ textField: { size: "small" } }}
           />
@@ -43,4 +43,4 @@ function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
   );
 }
 
-export default DatePick;
+export default TimePick;

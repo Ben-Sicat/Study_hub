@@ -4,3 +4,7 @@ export { default as About1 } from "../svgs/about1.svg";
 export { default as About2 } from "../svgs/about2.svg";
 export { default as About3 } from "../svgs/about3.svg";
 export { default as About4 } from "../svgs/about4.svg";
+export { default as ChairRight } from "../svgs/chair.svg";
+export { default as ChairLeft } from "../svgs/chair_left.svg";
+export { default as ChairUp } from "../svgs/chair_up.svg";
+export { default as ChairDown } from "../svgs/chair_down.svg";

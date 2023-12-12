@@ -1,17 +1,40 @@
 "use client";
 import React, { useEffect } from "react";
-import { Logo, Painting } from "../components/svgs";
+import {
+  ChairDown,
+  ChairLeft,
+  ChairRight,
+  ChairUp,
+  Logo,
+  Painting,
+} from "../components/svgs";
 import DotLine from "../components/dot_line";
 import CircleIcon from "@mui/icons-material/Circle";
 import Link from "next/link";
 import DateComponent from "../components/date";
 import TimeComponent from "../components/time";
+import BasicModal from "../components/modal";
+import Butt from "../components/button";
 
 function Page() {
   useEffect(() => {
     // Set the title directly for the browser tab
     document.title = "Admin Area Map";
   }, []);
+
+  const [isModalOpen, setModalOpen] = React.useState(false);
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const refreshPage = () => {
+    location.reload();
+  };
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -59,46 +82,114 @@ function Page() {
         <p className="text-backcolor">____________</p>
       </div>
 
-      <div className="container bg-red-200 rounded-lg p-3 mt-5">
-        <p className="text-base text-black font-bold">#Area Map</p>
-      </div>
+      <div className="container mt-5">
+        <div
+          className="container mx-auto p-4"
+          style={{
+            backgroundImage: 'url("/images/area_map.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "400px",
+            height: "320px",
+            borderRadius: "20px",
+            border: "2px solid #DC9D94",
+          }}
+        >
+          <BasicModal isOpen={isModalOpen} onClose={handleModalClose} />
 
-      <div className="container bg-gray-200 rounded-lg p-3 mt-5">
-        <p className="text-base text-black font-bold">Time Calculation</p>
-        <div className="flex space-x-2 text-sm leading-8 mt-3 ml-5">
-          <div className="text-right">
-            <p>Seat 3</p>
-            <p>Seat 19</p>
-            <p>Seat 5</p>
-            <p>Con Room 1</p>
-            <p>Seat 26</p>
-          </div>
-          <div>
-            <DotLine
-              ButtonIcon={<CircleIcon style={{ fontSize: 7 }} />}
-            ></DotLine>
-            <DotLine
-              ButtonIcon={<CircleIcon style={{ fontSize: 7 }} />}
-            ></DotLine>
-            <DotLine
-              ButtonIcon={<CircleIcon style={{ fontSize: 7 }} />}
-            ></DotLine>
-            <DotLine
-              ButtonIcon={<CircleIcon style={{ fontSize: 7 }} />}
-            ></DotLine>
-            <DotLine
-              ButtonIcon={<CircleIcon style={{ fontSize: 7 }} />}
-            ></DotLine>
-          </div>
-          <div>
-            <p>Remaining Time: 1 hour</p>
-            <p>Remaining Time: 56 mins</p>
-            <p>Remaining Time: 12 mins</p>
-            <p>Remaining Time: 5 mins</p>
-            <p>Remaining Time: 12 mins</p>
-          </div>
+          <ChairRight
+            width="30px"
+            height="30px"
+            className="relative top-28 left-64"
+            onClick={handleModalOpen}
+          />
+
+          <ChairRight
+            width="30px"
+            height="30px"
+            className="relative left-64 top-32"
+            onClick={handleModalOpen}
+          />
+
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative bottom-5"
+            onClick={handleModalOpen}
+          />
+
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative left-16 bottom-12"
+            onClick={handleModalOpen}
+          />
+
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative left-10 bottom-2"
+            onClick={handleModalOpen}
+          />
+
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative top-1 left-10"
+            onClick={handleModalOpen}
+          />
+
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative top-5 left-32"
+            onClick={handleModalOpen}
+          />
+
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-44 bottom-2"
+            onClick={handleModalOpen}
+          />
+
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-48 bottom-48"
+            onClick={handleModalOpen}
+          />
+
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-64 bottom-56"
+            onClick={handleModalOpen}
+          />
+
+          <ChairDown
+            width="30px"
+            height="30px"
+            className="relative left-32 bottom-44"
+            onClick={handleModalOpen}
+          />
+
+          <ChairDown
+            width="30px"
+            height="30px"
+            className="relative left-44 bottom-52"
+            onClick={handleModalOpen}
+          />
         </div>
       </div>
+
+      <Butt
+        title="Refresh"
+        Bgcolor="#EBE0D0"
+        width="325px"
+        height="34px"
+        onClick={refreshPage}
+      />
     </div>
   );
 }
