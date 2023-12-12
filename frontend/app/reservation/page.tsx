@@ -30,7 +30,7 @@ function Page() {
       <TemporaryDrawer ButtonIcon={undefined}></TemporaryDrawer>
 
       <div className="text-textcolor text-xl font-extrabold py-2 px-2 ml-7">
-        <h2>Welcome to Brew & Brain!</h2>
+        <h2>Welcome to Brew & Brain.</h2>
 
         <h2 className="text-textcolor text-base font-bold py-2 px-2 mt-3">
           Area Map
