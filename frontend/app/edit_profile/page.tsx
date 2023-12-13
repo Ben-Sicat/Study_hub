@@ -49,7 +49,7 @@ function Page() {
   const handleUpdateProfile = () => {
     console.log(formData);
   };
-  
+  console.log(localStorage.getItem("user_data"))
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">

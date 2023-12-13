@@ -8,12 +8,12 @@ services:
       - "5000:5000"
     depends_on:
       - db
+      - warehouse_db
     deploy:  
       resources:
         limits:
           cpus: "2"
           memory: "512M"
-
 
   db:
     image: mysql:8.2
@@ -28,4 +28,17 @@ services:
         limits:
           cpus: "2"
           memory: "512M"
-      
+
+  warehouse_db:
+    image: mysql:8.2
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db/warehouse_init.sql:/docker-entrypoint-initdb.d/warehouse_init.sql
+    deploy:  
+      resources:
+        limits:
+          cpus: "2"
+          memory: "512M"
