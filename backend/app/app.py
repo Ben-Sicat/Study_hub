@@ -43,12 +43,13 @@ def write_to_users(data):
             cursor = connection.cursor()
             query = """
                 INSERT INTO Users 
-                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School, Occupation)
+                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
+            
             values = (
-                data['google_id'], data['username'], data['email'], data['password'],
-                data['first_name'], data['last_name'], data['phone_number'], 'UName', data['birthday'], data['gender'], data['school'], data['occupation']
+                1, data['username'], data['email'], data['password'],
+                data['firstName'], data['lastName'], data['phoneNumber'], 'UName', data['birthdate'], data['gender'], data['occupation']
             )
             cursor.execute(query, values)
             connection.commit()
@@ -97,7 +98,7 @@ def get_user_by_id(user_id):
         try:
             cursor = connection.cursor(dictionary=True)
             query = """
-                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School
+                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation
                 FROM Users
                 WHERE UserID = %s
             """
@@ -115,7 +116,7 @@ def get_user_by_email_or_username(email_or_username):
         try:
             cursor = connection.cursor(dictionary=True)
             query = """
-                SELECT UserID, GoogleID, Username, Password, Email, UName, Birthday, Gender, School
+                SELECT UserID, GoogleID, Username, Password, Email, UName, Birthday, Gender, Occupation
                 FROM Users
                 WHERE Email = %s OR Username = %s
             """
@@ -227,7 +228,6 @@ def sign_in():
                 'PhoneNumber': user_data['PhoneNumber'],
                 'Gender': user_data['Gender'],
                 'Occupation': user_data['Occupation'],
-                'School': user_data['School']
                 
                 # Add other user data fields as needed
             }
