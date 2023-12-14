@@ -14,17 +14,8 @@ import TemporaryDrawer from "../components/side_bar";
 function page() {
   const [username, setUsername] = useState("");
   useEffect(() => {
-    const accessToken = localStorage.getItem("access_token");
-
-    // Decode the JWT to get the user information
-    if (accessToken) {
-      const decodedToken = parseJwt(accessToken);
-      const userUsername = decodedToken?.sub; // Assuming 'sub' contains the Username
-
-      // Set the username in the state
-      setUsername(userUsername);
-    }
-    // Set the title directly for the browser tab
+    const accessToken = localStorage.getItem('user');
+    setUsername(accessToken ? JSON.parse(accessToken).Username : "")
     document.title = "Account";
   }, []);
 

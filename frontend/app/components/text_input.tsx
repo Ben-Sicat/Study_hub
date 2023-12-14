@@ -6,7 +6,7 @@ type TextInputProps = {
   width?: string;
   height?: string;
   labelFontSize?: string;
-  onInputChange: (value: string) => void;
+  onInputChange: (value: string) => string | any;
   value?: string; // Added value prop
 };
 

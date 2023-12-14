@@ -6,7 +6,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}) 
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, methods=["POST", "OPTIONS", "PUT"])
+
 jwt = JWTManager(app)
 
 # Database configurations
@@ -65,12 +66,12 @@ def update_user_details(user_id, updated_data):
             cursor = connection.cursor()
             query = """
                 UPDATE Users
-                SET FirstName = %s, LastName = %s, PhoneNumber = %s, Birthday = %s, Gender = %s, School = %s
+                SET Username = %s, Email = %s, PhoneNumber = %s, Gender = %s, Occupation = %s
                 WHERE UserID = %s
             """
             values = (
-                updated_data['first_name'], updated_data['last_name'], updated_data['phone_number'],
-                updated_data['birthday'], updated_data['gender'], updated_data['school'], user_id
+                updated_data['userName'], updated_data['email'], updated_data['phoneNumber']
+                , updated_data['gender'], updated_data['occupation'], user_id
             )
             cursor.execute(query, values)
             connection.commit()
@@ -201,8 +202,26 @@ def create_account():
     except Exception as e:
         print(f"Error creating account: {e}")
         return jsonify(message='Error creating account'), 500
-    
 
+# Existing routes and functions...
+
+@app.route('/api/update-account/<int:user_id>', methods=['POST'])
+def update_account(user_id):
+    try:
+        updated_data = request.get_json()
+        update_user_details(user_id, updated_data)
+        
+        # Check if the user exists after the update
+        updated_user = get_user_by_id(user_id)
+        if updated_user:
+            return jsonify({'message': 'Account updated successfully', 'updated_user': updated_user}), 200
+        else:
+            return jsonify({'error': 'User not found after update'}), 404
+    except Exception as e:
+        print(f"Error updating account: {e}")
+        return jsonify({'error': str(e)}), 500
+    
+    
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
     data = request.get_json()
@@ -238,16 +257,16 @@ def sign_in():
         return response
     else:
         return jsonify({"message": "Invalid login credentials"}), 401    
-@app.route('/api/update-account/', methods=['PUT'])
-def update_account(user_id):
-    try:
-        updated_data = request.get_json()
-        update_user_details(user_id, updated_data)
-        updated_user = get_user_by_id(user_id)
-        return jsonify({'message': 'Account updated successfully', 'updated_user': updated_user}), 200
-    except Exception as e:
-        print(f"Error updating account: {e}")
-        return jsonify(message='Error updating account'), 500
+# @app.route('/api/update-account/', methods=['PUT'])
+# def update_account(user_id):
+#     try:
+#         updated_data = request.get_json()
+#         update_user_details(user_id, updated_data)
+#         updated_user = get_user_by_id(user_id)
+#         return jsonify({'message': 'Account updated successfully', 'updated_user': updated_user}), 200
+#     except Exception as e:
+#         print(f"Error updating account: {e}")
+#         return jsonify(message='Error updating account'), 500
 
 # @app.route('/api/get-reservations/<int:user_id>', methods=['GET'])
 # def get_reservations(user_id):

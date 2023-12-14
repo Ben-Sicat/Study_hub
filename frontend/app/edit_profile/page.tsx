@@ -28,7 +28,7 @@ function Page() {
 
   // Fetch user data from local storage
   const storedUserData = localStorage.getItem('user');
-  const initialFormData = storedUserData ? JSON.parse(storedUserData) : undefined;
+  const initialFormData = storedUserData ? JSON.parse(storedUserData) : null;
 
   const [formData, setFormData] = useState<{
     userName: string;
@@ -45,18 +45,38 @@ function Page() {
     occupation: initialFormData ? initialFormData.Occupation : options1[0]
 
   });
-
+  const userId = initialFormData ? initialFormData.UserID : null; // Adjust this line based on your actual property name
+  console.log(userId)
   const handleInputChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
-
-  const handleUpdateProfile = () => {
-    console.log(formData);
-    // Perform the update logic with formData
+  console.log(formData)
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/update-account/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        const updatedUserData = await response.json();
+        localStorage.setItem('user', JSON.stringify(updatedUserData));
+        console.log("Profile updated successfully:", updatedUserData);
+        // Optionally, you can update the local state or perform other actions
+      } else {
+        console.error("Error updating profile:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
+
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -132,8 +152,6 @@ function Page() {
             onSelect={(value) => handleInputChange("occupation", value)}
           />
         </div>
-
-        {/* removed school option since wala naman sa create account */}
         {/* <TextInput
           placeholder="School/Company"
           width="335px"
