@@ -13,6 +13,7 @@ function Page() {
   
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const handleUsernameChange = (value: string) => {
     setUsername(value);
@@ -34,30 +35,25 @@ function Page() {
   
       if (response.ok) {
         const data = await response.json();
-        console.log("login success");
-        console.log("data", data);
-        console.log("data", data.access_token);
-  
-        localStorage.setItem('access_token', data.access_token);
+        console.log("login success", data);
+        console.log("data", data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
         window.location.href = "/reservation";
+      }else {
+        const errorData = await response.json();
+        console.error("Login failed:", errorData.message);
       }
     } catch (error) { 
       console.error(error);
     }
   };
   
-  const useSession = () => {
-    const tokenFromLocalStorage = localStorage.getItem("access_token");
-  
-    return {
-      token: tokenFromLocalStorage,
-    };
-  };
+
   
  
 
-  const session = useSession();
-  console.log("Current session token:", session.user);
+  // const session = useSession();
+  // console.log("Current session token:", session.user);
 
 
   

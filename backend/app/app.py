@@ -1,14 +1,15 @@
 from flask import Flask, jsonify, make_response, request
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, decode_token
 import mysql.connector
 from flask_cors import CORS
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-app.config["JWT_SECRET_KEY"] = "your-secret-key"  # Change this to a secure and secret key
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}) 
 jwt = JWTManager(app)
 
-# Database configuration
+# Database configurations
 db_config = {
     'user': 'root',
     'password': 'root',
@@ -17,9 +18,18 @@ db_config = {
     'database': 'BrewandBrain'
 }
 
-def get_db_connection():
+warehouse_db_config = {
+    'user': 'root',
+    'password': 'root',
+    'host': 'warehouse_db',
+    'port': '3308',
+    'database': 'BrewandBrain_warehouse'
+}
+
+
+def get_db_connection(config):
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = mysql.connector.connect(**config)
         return connection
     except mysql.connector.Error as err:
         print(f"Error connecting to the database: {err}")
@@ -27,18 +37,18 @@ def get_db_connection():
 
 # User-related functions
 def write_to_users(data):
-    connection = get_db_connection()
+    connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor()
             query = """
                 INSERT INTO Users 
-                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School)
+                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School, Occupation)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             values = (
                 data['google_id'], data['username'], data['email'], data['password'],
-                data['first_name'], data['last_name'], data['phone_number'], 'UName', '2003-03-05', 'Male', 'Sample School'
+                data['first_name'], data['last_name'], data['phone_number'], 'UName', data['birthday'], data['gender'], data['school'], data['occupation']
             )
             cursor.execute(query, values)
             connection.commit()
@@ -46,8 +56,9 @@ def write_to_users(data):
             connection.close()
         except mysql.connector.Error as err:
             print(f"Error writing to Users table: {err}")
+
 def update_user_details(user_id, updated_data):
-    connection= get_db_connection()
+    connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor()
@@ -66,8 +77,9 @@ def update_user_details(user_id, updated_data):
             connection.close()
         except mysql.connector.Error as err:
             print(f"Error updating user details: {err}")
+
 def get_all_users():
-    connection = get_db_connection()
+    connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
@@ -78,8 +90,9 @@ def get_all_users():
             return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
+
 def get_user_by_id(user_id):
-    connection = get_db_connection()
+    connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
@@ -96,10 +109,8 @@ def get_user_by_id(user_id):
         except mysql.connector.Error as err:
             print(f"Error fetching user by ID: {err}")
 
-
-
 def get_user_by_email_or_username(email_or_username):
-    connection = get_db_connection()
+    connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
@@ -115,96 +126,70 @@ def get_user_by_email_or_username(email_or_username):
             return result
         except mysql.connector.Error as err:
             print(f"Error fetching user by email or username: {err}")
-def create_reservation(user_id, reservation_data):
-    connection = get_db_connection()
-    if connection:
-        try:
-            cursor = connection.cursor()
-            query = """
-                INSERT INTO Reservations 
-                (UserID, StartTime, EndTime, Seat)
-                VALUES (%s, %s, %s, %s)
-            """
-            values = (
-                user_id,
-                reservation_data['STime'],
-                reservation_data['ETime'],
-                reservation_data['Seat'],
-            )
-            cursor.execute(query, values)
-            connection.commit()
-            cursor.close()
-            connection.close()
 
-            # Fetch the reservation ID after insertion
-            reservation_id = cursor.lastrowid
+def perform_warehouse_process():
+    try:
+        # Connect to operational database
+        operational_connection = get_db_connection(db_config)
+        if operational_connection:
+            operational_cursor = operational_connection.cursor(dictionary=True)
 
-            # Return the reservation details
-            return {
-                "ReservationID": reservation_id,
-                "StartTime": reservation_data['STime'],
-                "EndTime": reservation_data['ETime'],
-                "Seat": reservation_data['Seat']
-            }
-        except mysql.connector.Error as err:
-            print(f"Error creating reservation: {err}")
-            return {"error": f"Error creating reservation: {err}"}
-    else:
-        return {"error": "Failed to connect to the database"}
-def get_user_reservations(user_id):
-    connection = get_db_connection()
-    if connection:
-        try:
-            cursor = connection.cursor(dictionary=True)
-            query = """
-                SELECT ReservationID, StartTime, EndTime, Seat
-                FROM Reservations
-                WHERE UserID = %s
-            """
-            cursor.execute(query, (user_id,))
-            results = cursor.fetchall()
-            cursor.close()
-            connection.close()
-            return results
-        except mysql.connector.Error as err:
-            print(f"Error fetching user reservations: {err}")
-            
-@app.route('/api/sign-in', methods=['POST'])
-def sign_in():
-    data = request.get_json()
-    user = get_user_by_email_or_username(data['login'])
-    
-    if user and user['Password'] == data['password']:
-        access_token = create_access_token(identity=user['Username'])
-        
-        # Fetch additional user data
-        user_data = get_user_by_id(user['UserID'])
+            # Connect to warehouse database
+            warehouse_connection = get_db_connection(warehouse_db_config)
+            if warehouse_connection:
+                warehouse_cursor = warehouse_connection.cursor()
 
-        # Create a response object
-        response_data = {
-            'access_token': access_token,
-            'user': {
-                'UserID': user_data['UserID'],
-                'Username': user_data['Username'],
-                'Email': user_data['Email'],
-                'FirstName': user_data['FirstName'],
-                'LastName': user_data['LastName'],
-                'PhoneNumber': user_data['PhoneNumber'],
-                'UName': user_data['UName'],
-                'Birthday': user_data['Birthday'],
-                'Gender': user_data['Gender'],
-                'School': user_data['School']
-                # Add other user properties as needed
-            }
-        }
+                try:
+                    # Extract data from the operational database
+                    operational_cursor.execute("""
+                        SELECT UserID, School, Occupation
+                        FROM Users
+                    """)
+                    users_data = operational_cursor.fetchall()
 
-        response = make_response(jsonify(response_data), 200)
-        
-        # Set HttpOnly flag for the access token cookie
-        
-        return response
-    else:
-        return jsonify({"message": "Invalid login credentials"}), 401
+                    # Transform and load data into the warehouse
+                    for user in users_data:
+                        # Fetch reservations for the current user
+                        operational_cursor.execute("""
+                            SELECT StartTime, EndTime
+                            FROM Reservations
+                            WHERE UserID = %s
+                        """, (user['UserID'],))
+                        reservations_data = operational_cursor.fetchall()
+
+                        # Insert user and reservation data into the warehouse
+                        for reservation in reservations_data:
+                            warehouse_cursor.execute(
+                                """
+                                INSERT INTO UserSummary (UserID, School, Occupation, StartTime, EndTime)
+                                VALUES (%s, %s, %s, %s, %s)
+                                """,
+                                (user['UserID'], user['School'], user['Occupation'],
+                                 reservation['StartTime'], reservation['EndTime'])
+                            )
+
+                    # Commit changes to the warehouse database
+                    warehouse_connection.commit()
+                    print("Warehouse process completed successfully.")
+                except Exception as e:
+                    print(f"Error during ETL process: {e}")
+                    warehouse_connection.rollback()  # Rollback changes in case of an error
+
+                warehouse_cursor.close()
+                warehouse_connection.close()
+
+            operational_cursor.close()
+            operational_connection.close()
+
+    except Exception as e:
+        print(f"Error performing warehouse process: {e}")
+
+# Initialize the BackgroundScheduler
+scheduler = BackgroundScheduler()
+
+# Add the scheduled job to run the ETL process every 168 hours or 1 week
+scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
+
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:
@@ -216,7 +201,44 @@ def create_account():
         print(f"Error creating account: {e}")
         return jsonify(message='Error creating account'), 500
     
-@app.route('/api/update-account/<int:user_id>', methods=['PUT'])
+
+@app.route('/api/sign-in', methods=['POST'])
+def sign_in():
+    data = request.get_json()
+    user = get_user_by_email_or_username(data['login'])
+    
+    if user and user['Password'] == data['password']:
+        
+        # token = create_access_token(identity=user['Username'])
+        
+        # # Access the access_token directly from create_access_token
+        # access_token = decode_token(token)['identity']
+        # print(access_token)
+
+        # Fetch additional user data
+        user_data = get_user_by_id(user['UserID'])
+
+        # Create a response object
+        response_data = {
+            'user_data': {
+                'UserID': user_data['UserID'],
+                'Username': user_data['Username'],
+                'Email': user_data['Email'],
+                'PhoneNumber': user_data['PhoneNumber'],
+                'Gender': user_data['Gender'],
+                'Occupation': user_data['Occupation'],
+                'School': user_data['School']
+                
+                # Add other user data fields as needed
+            }
+        }
+
+        response = make_response(jsonify(response_data), 200)
+        
+        return response
+    else:
+        return jsonify({"message": "Invalid login credentials"}), 401    
+@app.route('/api/update-account/', methods=['PUT'])
 def update_account(user_id):
     try:
         updated_data = request.get_json()
@@ -227,25 +249,25 @@ def update_account(user_id):
         print(f"Error updating account: {e}")
         return jsonify(message='Error updating account'), 500
 
-@app.route('/api/get-reservations/<int:user_id>', methods=['GET'])
-def get_reservations(user_id):
-    try:
-        reservations = get_user_reservations(user_id)
-        return jsonify(reservations)
-    except Exception as e:
-        print(f"Error fetching reservations: {e}")
-        return jsonify(error='Error fetching reservations'), 500
+# @app.route('/api/get-reservations/<int:user_id>', methods=['GET'])
+# def get_reservations(user_id):
+#     try:
+#         reservations = get_user_reservations(user_id)
+#         return jsonify(reservations)
+#     except Exception as e:
+#         print(f"Error fetching reservations: {e}")
+#         return jsonify(error='Error fetching reservations'), 500
 
-@app.route('/api/reservations', methods=['POST'])
-def make_reservation():
-    try:
-        data = request.get_json()
-        user_id = 5  # Replace with the actual user ID; you need to identify the user somehow
-        result = create_reservation(user_id, data)
-        return jsonify(result)
-    except Exception as e:
-        print(f"Error creating reservation: {e}")
-        return jsonify(error='Error creating reservation'), 500 
+# @app.route('/api/reservations', methods=['POST'])
+# def make_reservation():
+#     try:
+#         data = request.get_json()
+#         user_id = 5  # Replace with the actual user ID; you need to identify the user somehow
+#         result = create_reservation(user_id, data)
+#         return jsonify(result)
+#     except Exception as e:
+#         print(f"Error creating reservation: {e}")
+#         return jsonify(error='Error creating reservation'), 500 
 
 
 # Additional user-related functions
@@ -269,4 +291,5 @@ def index():
     return jsonify({'User Data': 'Sample user created'})
 
 if __name__ == '__main__':
+    scheduler.start()
     app.run(host='0.0.0.0', debug=True)
