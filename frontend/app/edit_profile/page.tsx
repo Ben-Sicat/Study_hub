@@ -1,5 +1,7 @@
 
+
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Teste from "../components/account";
 import CloseIcon from "@mui/icons-material/Close";
@@ -35,11 +37,13 @@ function Page() {
     gender: string;
     occupation: string;
   }>({
+
     userName: initialFormData ? initialFormData.Username : "",
     email: initialFormData ? initialFormData.Email : "",
     phoneNumber: initialFormData ? initialFormData.PhoneNumber : "",
     gender: initialFormData ? initialFormData.Gender : options[0],
     occupation: initialFormData ? initialFormData.Occupation : options1[0]
+
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -87,22 +91,28 @@ function Page() {
           placeholder="Username"
           width="335px"
           height="35px"
+
           value={formData.userName}
           onInputChange={(value) => handleInputChange("userName", value)}
+
         />
         <TextInput
           placeholder="Email"
           width="335px"
           height="35px"
+
           value={formData.email}
           onInputChange={(value) => handleInputChange("email", value)}
+
         />
         <TextInput
           placeholder="Phone Number"
           width="335px"
           height="35px"
+
           value={formData.phoneNumber}
           onInputChange={(value) => handleInputChange("phoneNumber", value)}
+
         />
 
         <div className="flex text-redwood text-xs ml-12 space-x-32 mt-2">

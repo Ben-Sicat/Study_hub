@@ -1,143 +1,150 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
-import Upper from '../components/upperleft_icon';
-import MenuIcon from "@mui/icons-material/Menu";
-import TextInput from "../components/text_input";
 import Butt from "../components/button";
 import TemporaryDrawer from "../components/side_bar";
-import { getSession } from "next-auth/react";
+import { ChairRight, ChairLeft, ChairDown, ChairUp } from "../components/svgs";
+import BasicModal from "../components/modal";
 
 function Page() {
- 
+  useEffect(() => {
+    // Set the title directly for the browser tab
+    document.title = "Reservation";
+  }, []);
 
-    useEffect(() => {
-        // Set the title directly for the browser tab
-        document.title = "Reservation";
-    }, []);
+  const [isModalOpen, setModalOpen] = React.useState(false);
 
-    const [formData, setFormData] = useState<{
-        STime: string;
-        ETime: string;
-        Seat: string;
-    }>({
-        STime: "",
-        ETime: "",
-        Seat: "",
-    });
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
 
-    const [reservations, setReservations] = useState<any[]>([]);
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
-    const handleInputChange = (field: string, value: string) => {
-        setFormData({
-            ...formData,
-            [field]: value,
-        });
-    };
-    
+  const refreshPage = () => {
+    location.reload();
+  };
 
-    const handleReservation = async () => {
-        try {
-          // Retrieve user_id from localStorage or cookies
-          const user_id = localStorage.getItem('user_id') || getCookie('user_id');
-          
-          if (!user_id) {
-            console.error('User not authenticated');
-            // Handle the case when the user is not authenticated
-            return;
-          }
-      
-          const response = await fetch(`http://localhost:5000/api/reservations/${user_id}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem('access_token') || getCookie('access_token')}`,
-            },
-            body: JSON.stringify({
-              STime: formData.STime,
-              ETime: formData.ETime,
-              Seat: formData.Seat,
-            }),
-          });
-      
-          if (response.ok) {
-            const data = await response.json();
-      
-            if (data && data.message) {
-              console.log("Reservation created successfully:", data.message);
-              // Do something with the response data
-            } else {
-              console.error("Invalid response format:", data);
-            }
-          } else {
-            const errorData = await response.json();
-            if (errorData && errorData.message) {
-              console.error("Error creating reservation:", errorData.message);
-            } else {
-              console.error("Invalid error response format:", errorData);
-            }
-          }
-        } catch (error) {
-          console.error("Error creating reservation:", error);
-        }
-      };
-      
-      function getCookie(name: string | any[]) {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          // Check if this cookie contains the name we're looking for
-          if (cookie.startsWith(name + '=')) {
-            return cookie.substring(name.length + 1);
-          }
-        }
-        return null;
-      }
-      
+  return (
+    <div className="flex min-h-full flex-col bg-backcolor">
+      <TemporaryDrawer ButtonIcon={undefined}></TemporaryDrawer>
 
-    return (
-        <div className="flex min-h-full flex-col bg-backcolor">
+      <div className="text-textcolor text-xl font-extrabold py-2 px-2 ml-7">
+        <h2>Welcome to Brew & Brain.</h2>
 
-            <TemporaryDrawer ButtonIcon={undefined}></TemporaryDrawer>
+        <h2 className="text-textcolor text-base font-bold py-2 px-2 mt-3">
+          Area Map
+        </h2>
+      </div>
 
-            <div className="text-textcolor text-xl font-extrabold py-2 px-2 ml-7">
-                <h2>
-                    Today's Reservation
-                </h2>
+      <div
+        className="container mx-auto p-4"
+        style={{
+          backgroundImage: 'url("/images/area_map.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          width: "400px",
+          height: "320px",
+          borderRadius: "20px",
+          border: "2px solid #DC9D94",
+        }}
+      >
+        <BasicModal isOpen={isModalOpen} onClose={handleModalClose} />
 
-                <h2 className="text-textcolor text-base font-bold py-2 px-2 mt-3">
-                    Pick Time
-                </h2>
-            </div>
+        <ChairRight
+          width="30px"
+          height="30px"
+          className="relative top-28 left-64"
+          onClick={handleModalOpen}
+        />
 
-            <div className="flex justify-center space-x-5">
-                <TextInput
-                    placeholder="Start Time"
-                    width="157px"
-                    height="35px"
-                    onInputChange={(value) => handleInputChange("STime", value)}
-                />
-                <TextInput
-                    placeholder="End Time"
-                    width="157px"
-                    height="35px"
-                    onInputChange={(value) => handleInputChange("ETime", value)}
-                />
-            </div>
+        <ChairRight
+          width="30px"
+          height="30px"
+          className="relative left-64 top-32"
+          onClick={handleModalOpen}
+        />
 
-            <div className="flex justify-center items-center mt-5">
-                <img src="/images/map.png" alt={"Area Map"} style={{ width: '350px', height: 'auto' }} />
-            </div>
+        <ChairLeft
+          width="30px"
+          height="30px"
+          className="relative bottom-5"
+          onClick={handleModalOpen}
+        />
 
-            <TextInput
-                placeholder="Choose Seat"
-                width="335px"
-                height="35px"
-                onInputChange={(value) => handleInputChange("Seat", value)}
-            />
+        <ChairLeft
+          width="30px"
+          height="30px"
+          className="relative left-16 bottom-12"
+          onClick={handleModalOpen}
+        />
 
-            <Butt title="Create Reservation" Bgcolor="#EBE0D0" width="343px" onClick={handleReservation} />
-        </div>
-    );
+        <ChairLeft
+          width="30px"
+          height="30px"
+          className="relative left-10 bottom-2"
+          onClick={handleModalOpen}
+        />
+
+        <ChairLeft
+          width="30px"
+          height="30px"
+          className="relative top-1 left-10"
+          onClick={handleModalOpen}
+        />
+
+        <ChairUp
+          width="30px"
+          height="30px"
+          className="relative top-5 left-32"
+          onClick={handleModalOpen}
+        />
+
+        <ChairUp
+          width="30px"
+          height="30px"
+          className="relative left-44 bottom-2"
+          onClick={handleModalOpen}
+        />
+
+        <ChairUp
+          width="30px"
+          height="30px"
+          className="relative left-48 bottom-48"
+          onClick={handleModalOpen}
+        />
+
+        <ChairUp
+          width="30px"
+          height="30px"
+          className="relative left-64 bottom-56"
+          onClick={handleModalOpen}
+        />
+
+        <ChairDown
+          width="30px"
+          height="30px"
+          className="relative left-32 bottom-44"
+          onClick={handleModalOpen}
+        />
+
+        <ChairDown
+          width="30px"
+          height="30px"
+          className="relative left-44 bottom-52"
+          onClick={handleModalOpen}
+        />
+      </div>
+
+      <Butt
+        title="Refresh"
+        Bgcolor="#EBE0D0"
+        width="325px"
+        height="34px"
+        onClick={refreshPage}
+      />
+    </div>
+  );
 }
 
 export default Page;
