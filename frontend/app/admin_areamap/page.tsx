@@ -8,13 +8,11 @@ import {
   Logo,
   Painting,
 } from "../components/svgs";
-import DotLine from "../components/dot_line";
-import CircleIcon from "@mui/icons-material/Circle";
 import Link from "next/link";
 import DateComponent from "../components/date";
 import TimeComponent from "../components/time";
-import BasicModal from "../components/modal";
 import Butt from "../components/button";
+import ModalAdmin from "../components/modal_admin";
 
 function Page() {
   useEffect(() => {
@@ -95,7 +93,7 @@ function Page() {
             border: "2px solid #DC9D94",
           }}
         >
-          <BasicModal isOpen={isModalOpen} onClose={handleModalClose} />
+          <ModalAdmin isOpen={isModalOpen} onClose={handleModalClose} />
 
           <ChairRight
             width="30px"

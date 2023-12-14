@@ -24,18 +24,14 @@ interface BasicModalProps {
   onClose: () => void;
 }
 
-function BasicModal({ isOpen, onClose }: BasicModalProps) {
+function ModalExtend({ isOpen, onClose }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [formData, setFormData] = useState<{
-    Date: string;
-    StartTime: string;
     EndTime: string;
   }>({
-    Date: "",
-    StartTime: "",
     EndTime: "",
   });
 
@@ -50,8 +46,6 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
     try {
       const apiData = {
         chair_id: "", // Set a default value if not applicable
-        date: formData.Date,
-        starttime: formData.StartTime,
         endtime: formData.EndTime,
       };
 
@@ -89,24 +83,10 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
       >
         <Box sx={style}>
           <div className="text-textcolor text-xl font-bold">
-            <h2>Arrange Reservation</h2>
+            <h2>Extend Reservation</h2>
           </div>
 
           <div className="container">
-            <div className="flex justify-center items-center mt-3">
-              <DatePick
-                text="Date:"
-                onInputChange={(value) => handleInputChange("date", value)}
-              ></DatePick>
-            </div>
-
-            <div className="flex justify-center items-center mt-3">
-              <TimePick
-                text="Start Time:"
-                onInputChange={(value) => handleInputChange("starttime", value)}
-              ></TimePick>
-            </div>
-
             <div className="flex justify-center items-center mt-3">
               <TimePick
                 text="End Time:"
@@ -117,7 +97,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
 
           <Butt
             onClick={handleCreateAccount}
-            title="Reserve"
+            title="Continue"
             Bgcolor="#EBE0D0"
             width="325px"
             height="34px"
@@ -128,4 +108,4 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   );
 }
 
-export default BasicModal;
+export default ModalExtend;
