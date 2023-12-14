@@ -24,7 +24,7 @@ interface BasicModalProps {
   onClose: () => void;
 }
 
-export default function BasicModal({ isOpen, onClose }: BasicModalProps) {
+function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -118,7 +118,7 @@ export default function BasicModal({ isOpen, onClose }: BasicModalProps) {
           <Butt
             onClick={handleCreateAccount}
             title="Reserve"
-            Bgcolor="#DC9D94"
+            Bgcolor="#EBE0D0"
             width="325px"
             height="34px"
           />
@@ -127,3 +127,5 @@ export default function BasicModal({ isOpen, onClose }: BasicModalProps) {
     </div>
   );
 }
+
+export default BasicModal;
