@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, make_response, request
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, decode_token
 import mysql.connector
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -43,12 +43,12 @@ def write_to_users(data):
             cursor = connection.cursor()
             query = """
                 INSERT INTO Users 
-                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School)
+                (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School, Occupation)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             values = (
                 data['google_id'], data['username'], data['email'], data['password'],
-                data['first_name'], data['last_name'], data['phone_number'], 'UName', '2003-03-05', 'Male', 'Sample School'
+                data['first_name'], data['last_name'], data['phone_number'], 'UName', data['birthday'], data['gender'], data['school'], data['occupation']
             )
             cursor.execute(query, values)
             connection.commit()
@@ -184,50 +184,12 @@ def perform_warehouse_process():
     except Exception as e:
         print(f"Error performing warehouse process: {e}")
 
-    except Exception as e:
-        print(f"Error performing warehouse process: {e}")
-
 # Initialize the BackgroundScheduler
 scheduler = BackgroundScheduler()
 
 # Add the scheduled job to run the ETL process every 168 hours or 1 week
 scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
 
-
-@app.route('/api/sign-in', methods=['POST'])
-def sign_in():
-    data = request.get_json()
-    user = get_user_by_email_or_username(data['login'])
-    
-    if user and user['Password'] == data['password']:
-        
-        token = create_access_token(identity=user['Username'])
-        #now we need to get the third code from the token and split them with the dot
-        access_token = token.split('.')[2]
-        print(access_token)
-         
-        # Fetch additional user data
-        user_data = get_user_by_id(user['UserID'])
-        print(user_data)
-
-        # Create a response object
-        response_data = {
-            'access_token': access_token,
-            'user_data': {
-                'UserID': user_data['UserID'],
-                'Username': user_data['Username'],
-
-            }
-        }
-
-        response = make_response(jsonify(response_data), 200)
-        
-        
-
-        
-        return response
-    else:
-        return jsonify({"message": "Invalid login credentials"}), 401
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:
@@ -239,7 +201,44 @@ def create_account():
         print(f"Error creating account: {e}")
         return jsonify(message='Error creating account'), 500
     
-@app.route('/api/update-account/<int:user_id>', methods=['PUT'])
+
+@app.route('/api/sign-in', methods=['POST'])
+def sign_in():
+    data = request.get_json()
+    user = get_user_by_email_or_username(data['login'])
+    
+    if user and user['Password'] == data['password']:
+        
+        # token = create_access_token(identity=user['Username'])
+        
+        # # Access the access_token directly from create_access_token
+        # access_token = decode_token(token)['identity']
+        # print(access_token)
+
+        # Fetch additional user data
+        user_data = get_user_by_id(user['UserID'])
+
+        # Create a response object
+        response_data = {
+            'user_data': {
+                'UserID': user_data['UserID'],
+                'Username': user_data['Username'],
+                'Email': user_data['Email'],
+                'PhoneNumber': user_data['PhoneNumber'],
+                'Gender': user_data['Gender'],
+                'Occupation': user_data['Occupation'],
+                'School': user_data['School']
+                
+                # Add other user data fields as needed
+            }
+        }
+
+        response = make_response(jsonify(response_data), 200)
+        
+        return response
+    else:
+        return jsonify({"message": "Invalid login credentials"}), 401    
+@app.route('/api/update-account/', methods=['PUT'])
 def update_account(user_id):
     try:
         updated_data = request.get_json()

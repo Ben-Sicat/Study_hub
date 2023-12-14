@@ -15,6 +15,7 @@ CREATE TABLE Users (
   Birthday DATE,
   Gender ENUM('Male', 'Female', 'Other'),
   School VARCHAR(225),
+  Occupation VARCHAR(225),
   Level ENUM('User', 'Admin', 'Employee') DEFAULT 'User'
 );
 

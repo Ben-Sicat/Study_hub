@@ -3,3 +3,4 @@ mysql-connector-python
 Flask-JWT-Extended
 bcrypt
 Flask-CORS
+APScheduler
