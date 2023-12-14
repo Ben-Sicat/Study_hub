@@ -45,18 +45,38 @@ function Page() {
     occupation: initialFormData ? initialFormData.Occupation : options1[0]
 
   });
-
+  const userId = initialFormData ? initialFormData.UserID : null; // Adjust this line based on your actual property name
+  console.log(userId)
   const handleInputChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
-
-  const handleUpdateProfile = () => {
-    console.log(formData);
-    // Perform the update logic with formData
+  console.log(formData)
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/update-account/${userId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        const updatedUserData = await response.json();
+        localStorage.setItem('user', JSON.stringify(updatedUserData));
+        console.log("Profile updated successfully:", updatedUserData);
+        // Optionally, you can update the local state or perform other actions
+      } else {
+        console.error("Error updating profile:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
+
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -132,12 +152,12 @@ function Page() {
             onSelect={(value) => handleInputChange("occupation", value)}
           />
         </div>
-        <TextInput
+        {/* <TextInput
           placeholder="School/Company"
           width="335px"
           height="35px"
           onInputChange={(value) => handleInputChange("school", value)}
-        />
+        /> */}
       </div>
 
       <div className="mt-16"></div>

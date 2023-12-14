@@ -36,8 +36,8 @@ function Page() {
       if (response.ok) {
         const data = await response.json();
         console.log("login success", data);
-        console.log("data", data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        console.log("data", data.user_data);
+        localStorage.setItem('user', JSON.stringify(data.user_data));
         window.location.href = "/reservation";
       }else {
         const errorData = await response.json();

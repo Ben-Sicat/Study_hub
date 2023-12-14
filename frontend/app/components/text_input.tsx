@@ -6,7 +6,7 @@ type TextInputProps = {
   width?: string;
   height?: string;
   labelFontSize?: string;
-  onInputChange: (value: string) => void;
+  onInputChange: (value: string) => string | any;
   value?: string; // Added value prop
 };
 
@@ -16,7 +16,7 @@ function TextInput({
   height = "2.5rem",
   labelFontSize = "14px",
   onInputChange,
-  value = "", // Default value is an empty string
+  value, // Default value is an empty string
 }: TextInputProps) {
   const inputLabelProps = {
     style: {
