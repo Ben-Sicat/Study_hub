@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 function Page() {
   const [isChecked, setChecked] = useState(false); // State for checkbox
+  const [isSelected, setSelected] = useState(false)
 
   const handleCheckboxChange = () => {
     setChecked(!isChecked);

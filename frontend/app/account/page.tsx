@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Upper from "../components/upperleft_icon";
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "../components/account_image";
@@ -12,10 +12,29 @@ import Link from "next/link";
 import TemporaryDrawer from "../components/side_bar";
 
 function page() {
+  const [username, setUsername] = useState("");
   useEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
+
+    // Decode the JWT to get the user information
+    if (accessToken) {
+      const decodedToken = parseJwt(accessToken);
+      const userUsername = decodedToken?.sub; // Assuming 'sub' contains the Username
+
+      // Set the username in the state
+      setUsername(userUsername);
+    }
     // Set the title directly for the browser tab
     document.title = "Account";
   }, []);
+
+  const parseJwt = (token: string) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      return null;
+    }
+  };
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -26,7 +45,7 @@ function page() {
           ImageIcon={<CircleIcon style={{ fontSize: 98, color: "#C7C7C7" }} />}
         ></Image>
 
-        <p className="text-xl font-extrabold">Username</p>
+        <p className="text-xl font-extrabold">{username}</p>
       </div>
 
       <div className="mt-3">
