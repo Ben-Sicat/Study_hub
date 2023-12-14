@@ -16,7 +16,7 @@ function TextInput({
   height = "2.5rem",
   labelFontSize = "14px",
   onInputChange,
-  value = "", // Default value is an empty string
+  value, // Default value is an empty string
 }: TextInputProps) {
   const inputLabelProps = {
     style: {

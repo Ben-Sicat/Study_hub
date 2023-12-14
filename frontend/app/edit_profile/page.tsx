@@ -26,7 +26,7 @@ function Page() {
 
   // Fetch user data from local storage
   const storedUserData = localStorage.getItem('user');
-  const initialFormData = storedUserData ? JSON.parse(storedUserData) : null;
+  const initialFormData = storedUserData ? JSON.parse(storedUserData) : undefined;
 
   const [formData, setFormData] = useState<{
     userName: string;
@@ -122,12 +122,14 @@ function Page() {
             onSelect={(value) => handleInputChange("occupation", value)}
           />
         </div>
-        <TextInput
+
+        {/* removed school option since wala naman sa create account */}
+        {/* <TextInput
           placeholder="School/Company"
           width="335px"
           height="35px"
           onInputChange={(value) => handleInputChange("school", value)}
-        />
+        /> */}
       </div>
 
       <div className="mt-16"></div>

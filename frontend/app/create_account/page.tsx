@@ -128,7 +128,7 @@ function Page() {
       year: string;
     };
     gender: string;
-    userType: string;
+    occupation: string;
   }>({
     firstName: "",
     lastName: "",
@@ -142,7 +142,7 @@ function Page() {
       year: "",
     },
     gender: "",
-    userType: "",
+    occupation: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -154,21 +154,19 @@ function Page() {
 
   const handleCreateAccount = async () => {
     try {
+      const birthdateString = `${formData.birthdate.year}-${formData.birthdate.month}-${formData.birthdate.day}`;
+
       const apiData = {
         google_id: "", // Set a default value if not applicable
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        phone_number: formData.phoneNumber,
-        birthdate: {
-          month: formData.birthdate.month,
-          day: formData.birthdate.day,
-          year: formData.birthdate.year,
-        },
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNumber: formData.phoneNumber,
+        birthdate: birthdateString,
         gender: formData.gender,
-        userType: formData.userType,
+        occupation: formData.occupation,
       };
   
       const response = await fetch("http://localhost:5000/api/create-account", {
@@ -178,6 +176,8 @@ function Page() {
         },
         body: JSON.stringify(apiData),
       });
+
+      console.log(apiData);
   
       if (response.ok) {
         // Successfully created account
@@ -190,8 +190,8 @@ function Page() {
     } catch (error) {
       console.error("Error creating account:", error);
     }
+    
   };
-
   const handleBirthdateChange = (field: keyof typeof formData["birthdate"], value: string) => {
     setFormData({
       ...formData,
@@ -281,7 +281,7 @@ function Page() {
           width="152px"
           height="25px"
           borderRadius="7px"
-          onClick={() => handleInputChange("userType", "Student")}
+          onClick={() => handleInputChange("occupation", "Student")}
         />
         <Butt
           title="Worker"
@@ -289,7 +289,7 @@ function Page() {
           width="152px"
           height="25px"
           borderRadius="7px"
-          onClick={() => handleInputChange("userType", "Worker")}
+          onClick={() => handleInputChange("occupation", "Worker")}
         />
       </div>
 

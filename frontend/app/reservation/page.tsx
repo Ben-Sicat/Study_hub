@@ -34,7 +34,7 @@ function Page() {
         });
     };
     
-
+    console.log(localStorage.getItem('user'))
     const handleReservation = async () => {
         try {
           // Retrieve user_id from localStorage or cookies
