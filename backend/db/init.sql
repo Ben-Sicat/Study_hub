@@ -12,7 +12,7 @@ CREATE TABLE Users (
   LastName VARCHAR(100) NOT NULL,
   PhoneNumber VARCHAR(20),
   UName VARCHAR(225) NOT NULL,
-  Birthday DATE,
+  Birthday VARCHAR(225),
   Gender ENUM('Male', 'Female', 'Other'),
   School VARCHAR(225),
   Occupation VARCHAR(225),
@@ -35,5 +35,3 @@ CREATE TABLE QR_Codes (
     FOREIGN KEY (ReservationID) REFERENCES Reservations(ReservationID)
 );
 
-INSERT INTO Users (GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School)
-VALUES ('mel.id', 'mlss_riri', 'melaixrio@gmail.com', 'Melaissa', 'Rioveros', '1234567890', 'Melaissa Rioveros', '2003-03-05', 'Female', 'Adamson University');
