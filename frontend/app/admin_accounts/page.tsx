@@ -6,42 +6,58 @@ import DateComponent from "../components/date";
 import TimeComponent from "../components/time";
 import SearchBar from "../components/search_bar";
 import InfoTable from "../components/info_table";
+import { useRouter } from "next/navigation";
 
-type UserInfo = {
-  id: number;
-  name: string;
-  // Add more properties as needed
-};
+interface Accounts {
+  UserID: number;
+  Username: string;
+}
 
 function Page() {
+  const router = useRouter();
   useEffect(() => {
     // Set the title directly for the browser tab
     document.title = "Admin Modify Accounts";
   }, []);
 
-  const userData = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-    { id: 101, name: "Gian Limbaga" },
-    { id: 102, name: "The Fourth" },
-    { id: 103, name: "Melaissa Rioveros" },
-    { id: 104, name: "Chen Leonor" },
-    { id: 105, name: "Eric Ramos" },
-    // Add more user data as needed
-  ];
+  const [accounts, setAccounts] = useState<Accounts[]>([]);
+  const [filteredData, setFilteredData] = useState<Accounts[]>(accounts);
 
-  const [data, setData] = useState<UserInfo[]>(userData);
-  const [filteredData, setFilteredData] = useState<UserInfo[]>(data);
+  useEffect(() => {
+    fetch("http://localhost:5000/api/get-all-users")
+      .then((response) => response.json())
+      .then((data: { accounts: Accounts[] }) => {
+        const simplifiedData = data.accounts.map(({ UserID, Username }) => ({
+          UserID,
+          Username,
+        }));
+        setAccounts(simplifiedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    setFilteredData(accounts);
+  }, [accounts]);
+
+  // console.log(accounts);
 
   const handleDataSearch = (searchQuery: string) => {
     // Implement your filtering logic here
-    const filteredResults = data.filter(
+    const filteredResults = accounts.filter(
       (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        String(item.id).includes(searchQuery) // Convert id to string and check for inclusion
+        item.Username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        String(item.UserID).includes(searchQuery)
     );
 
     setFilteredData(filteredResults);
+  };
+  console.log(filteredData);
+  const handleEditClick = (userId: number) => {
+    // Navigate to the [id] folder
+    router.push(`/${userId}`);
   };
 
   return (
@@ -78,9 +94,8 @@ function Page() {
         <Link href="/admin_sales">
           <p>Sales Ledger</p>
         </Link>
-        <Link href="/admin_accounts">
-          <p className="text-amber-500">Edit Accounts</p>
-        </Link>
+
+        <p className="text-amber-500">Edit Account</p>
       </div>
 
       <div className="container flex items-center justify-center space-x-8 text-xs text-black font-bold mb-2">

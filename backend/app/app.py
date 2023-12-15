@@ -93,6 +93,7 @@ def get_all_users():
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+
 def get_user_by_id(user_id):
     connection = get_db_connection(db_config)
     if connection:
@@ -110,6 +111,9 @@ def get_user_by_id(user_id):
             return result
         except mysql.connector.Error as err:
             print(f"Error fetching user by ID: {err}")
+            return None
+        
+        
 
 def get_user_by_email_or_username(email_or_username):
     connection = get_db_connection(db_config)
@@ -245,6 +249,18 @@ def get_reservations():
         print(f"Error fetching reservations: {e}")
         return jsonify(error='Error fetching reservations'), 500
     
+@app.route('/api/get-all-users', methods=['GET'])
+def get_all_users_route():
+    try:
+        all_users = get_all_users()
+        if all_users:
+            return jsonify({'accounts': all_users})
+        else:
+            return jsonify(error='No users found'), 404  # Change to 404 status code
+    except Exception as e:
+        print(f"Error in route: {e}")
+        return jsonify(error='Internal server error'), 500
+
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
     data = request.get_json()
