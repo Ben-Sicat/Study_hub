@@ -7,7 +7,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 type PickProps = {
   text?: string;
   labelFontSize?: string;
-  onInputChange: (value: string) => void;
+  onInputChange: (value: string) => string | any;
 };
 
 function TimePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {

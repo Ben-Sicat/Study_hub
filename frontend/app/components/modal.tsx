@@ -30,9 +30,9 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const handleClose = () => setOpen(false);
 
   const [formData, setFormData] = useState<{
-    Date: string;
-    StartTime: string;
-    EndTime: string;
+    Date: string | any ;
+    StartTime: string | any;
+    EndTime: string | any;
   }>({
     Date: "",
     StartTime: "",
@@ -54,6 +54,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
         starttime: formData.StartTime,
         endtime: formData.EndTime,
       };
+      console.log(apiData)
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",

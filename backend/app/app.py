@@ -128,7 +128,22 @@ def get_user_by_email_or_username(email_or_username):
             return result
         except mysql.connector.Error as err:
             print(f"Error fetching user by email or username: {err}")
-
+def get_all_reservations():
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                            SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat
+                            FROM Reservations
+                            JOIN Users ON Reservations.UserID = Users.UserID
+                        """)
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return results
+        except mysql.connector.Error as err:
+            print(f"Error Fetching Reservations: {err}")
 def perform_warehouse_process():
     try:
         # Connect to operational database
@@ -221,6 +236,14 @@ def update_account(user_id):
         print(f"Error updating account: {e}")
         return jsonify({'error': str(e)}), 500
     
+@app.route('/api/get-reservations', methods=['GET'])
+def get_reservations():
+    try:
+        reservations = get_all_reservations()
+        return jsonify({'message': 'Reservations fetched successfully', 'reservations': reservations})
+    except Exception as e:
+        print(f"Error fetching reservations: {e}")
+        return jsonify(error='Error fetching reservations'), 500
     
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
