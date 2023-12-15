@@ -60,18 +60,6 @@ function Page() {
         <p className="text-backcolor">____________</p>
       </div>
 
-      <div className="container bg-macandcheese rounded-lg mt-5 text-sm">
-        <div className="flex items-center justify-center space-x-1">
-          <div className="p-2 mb-1">
-            <DatePick text="From:"></DatePick>
-          </div>
-
-          <div className="p-2 mb-1">
-            <DatePick text="To:"></DatePick>
-          </div>
-        </div>
-      </div>
-
       <div className="container justify-center items-center mt-5">
         <DataGridDemo></DataGridDemo>
       </div>

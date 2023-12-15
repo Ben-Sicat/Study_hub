@@ -7,7 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 type PickProps = {
   text?: string;
   labelFontSize?: string;
-  onInputChange: (value: string) => void;
+  onInputChange: (value: string) => string | any;
 };
 
 function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
