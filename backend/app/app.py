@@ -211,6 +211,34 @@ scheduler = BackgroundScheduler()
 # Add the scheduled job to run the ETL process every 168 hours or 1 week
 scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
 
+def create_reservation(user_id, reservation_data):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
+                VALUES (%s, %s, %s, %s)
+            """
+            values = (user_id, reservation_data['starttime'], reservation_data['endtime'], reservation_data.get('seat'))
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error creating reservation: {err}")
+
+@app.route('/api/create-reservation', methods=['POST'])
+def create_reservation_route():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')  # Change this to fetch the user_id from your authentication mechanism
+        create_reservation(user_id, data)
+        return jsonify({'message': 'Reservation created successfully'}), 200
+    except Exception as e:
+        print(f"Error creating reservation: {e}")
+        return jsonify(message='Error creating reservation'), 500
+
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:

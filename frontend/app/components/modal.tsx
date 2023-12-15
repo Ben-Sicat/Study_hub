@@ -32,7 +32,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const router = useRouter();
 
   const [formData, setFormData] = useState<{
-    Date: string | any ;
+    Date: string | any;
     StartTime: string | any;
     EndTime: string | any;
   }>({
@@ -50,11 +50,6 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const redirectUrl = "http://localhost:3000/qr_success_reservation"; //change this to a page after ng payment so magamit yung handleCreateAccount function. Dun pa dapat ma-ce-create yung reservation
   const getName = "Gian"; //change get the name of user from session or local storage kung san man naka store
   const tableFee = 140; //change den sa calculation
-  const proceedPayment = () => {
-    router.push(
-      `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-    );
-  };
 
   const handleCreateAccount = async () => {
     try {
@@ -64,7 +59,9 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
         starttime: formData.StartTime,
         endtime: formData.EndTime,
       };
-      console.log(apiData)
+      router.push(
+        `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+      );
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",
@@ -127,7 +124,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
           </div>
 
           <Butt
-            onClick={proceedPayment}
+            onClick={handleCreateAccount}
             title="Reserve"
             Bgcolor="#EBE0D0"
             width="325px"

@@ -55,10 +55,6 @@ function Page() {
     setFilteredData(filteredResults);
   };
   console.log(filteredData);
-  const handleEditClick = (userId: number) => {
-    // Navigate to the [id] folder
-    router.push(`/${userId}`);
-  };
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
