@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import Butt from "./button";
 import DatePick from "./date_picker";
 import TimePick from "./time_picker";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -28,6 +29,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const router = useRouter();
 
   const [formData, setFormData] = useState<{
     Date: string;
@@ -44,6 +46,14 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
       ...formData,
       [field]: value,
     });
+  };
+  const redirectUrl = "http://localhost:3000/qr_success_reservation"; //change this to a page after ng payment so magamit yung handleCreateAccount function. Dun pa dapat ma-ce-create yung reservation
+  const getName = "Gian"; //change get the name of user from session or local storage kung san man naka store
+  const tableFee = 140; //change den sa calculation
+  const proceedPayment = () => {
+    router.push(
+      `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+    );
   };
 
   const handleCreateAccount = async () => {
@@ -116,7 +126,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
           </div>
 
           <Butt
-            onClick={handleCreateAccount}
+            onClick={proceedPayment}
             title="Reserve"
             Bgcolor="#EBE0D0"
             width="325px"
