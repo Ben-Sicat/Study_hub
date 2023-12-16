@@ -6,7 +6,17 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import Line from "./line";
 
-function Reserv() {
+type ResProps = {
+  time?: string;
+  price?: string;
+};
+
+function Reserv({ time, price }: ResProps) {
+  const ResDetails = {
+    time: time || "0",
+    price: price || "0",
+  };
+
   return (
     <div>
       <p className=" text-textcolor text-sm font-semibold py-2 px-2 ml-7 mt-3">
@@ -15,17 +25,12 @@ function Reserv() {
 
       <div className="flex text-xs ml-14 mt-2 justify-between">
         <div>
-          <div className="flex font-bold">
+          <div className="flex font-bold space-x-2">
             <p>Time Reserved:</p>
-            <p>5:30 PM</p>
-          </div>
-          <div className="flex space-x-1">
-            <p className="font-bold">1x</p>
-            <p>1 hour</p>
-            <p>(Individual Seat)</p>
+            <p>{ResDetails.time}</p>
           </div>
         </div>
-        <h4 className="mr-16">&#8369; 80.00</h4>
+        <h4 className="mr-16 font-bold">&#8369; {ResDetails.price}</h4>
       </div>
 
       <Line></Line>
@@ -35,7 +40,7 @@ function Reserv() {
           Subtotal Fee
         </p>
         <p className=" text-textcolor text-sm font-semibold py-2 px-2 mt-3 mr-10">
-          &#8369; 80.00
+          &#8369; {ResDetails.price}
         </p>
       </div>
 
@@ -63,17 +68,6 @@ function Reserv() {
         }
         title="GCash"
         marginRight="220px"
-      ></IcoButt>
-
-      <IcoButt
-        Icon={
-          <AddToHomeScreenIcon
-            className="mr-3"
-            style={{ fontSize: 28, color: "#EDC2B5" }}
-          />
-        }
-        title="Paymaya"
-        marginRight="205px"
       ></IcoButt>
     </div>
   );
