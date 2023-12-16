@@ -23,8 +23,8 @@ CREATE TABLE UserSummary (
 -- Create an index on the UserID column
 CREATE INDEX idx_UserSummary_UserID ON UserSummary(UserID);
 
--- INSERT INTO UserSummary (UserID, ReservationID, School, Occupation, StartTime, EndTime, Seat, Gender)
--- VALUES
---     (1, 101, 'University of the Philippines', 'Student', '2023-01-01 08:00:00', '2023-01-01 10:00:00', 'A1', 'Male'),
---     (2, 102, 'Tech Institute', 'Engineer', '2023-01-02 09:00:00', '2023-01-02 12:00:00', 'B2', 'Female'),
---     (3, 103, 'Business School', 'Entrepreneur', '2023-01-03 10:00:00', '2023-01-03 11:30:00', 'C3', 'Other');
+INSERT INTO UserSummary (UserID, ReservationID, School, Occupation, StartTime, EndTime, Seat, Gender)
+VALUES
+    (1, 101, 'University of the Philippines', 'Student', '2023-01-01 08:00:00', '2023-01-01 10:00:00', 'A1', 'Male'),
+    (2, 102, 'Tech Institute', 'Engineer', '2023-01-02 09:00:00', '2023-01-02 12:00:00', 'B2', 'Female'),
+    (3, 103, 'Business School', 'Entrepreneur', '2023-01-03 10:00:00', '2023-01-03 11:30:00', 'C3', 'Other');

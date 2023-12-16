@@ -345,7 +345,20 @@ def sign_in():
         
         return response
     else:
-        return jsonify({"message": "Invalid login credentials"}), 401    
+        return jsonify({"message": "Invalid login credentials"}), 401
+    
+@app.route('/api/get-user/<int:user_id>', methods=['GET'])
+def get_user_by_id_route(user_id):
+    try:
+        user = get_user_by_id(user_id)
+        if user:
+            return jsonify({'user': user}), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    except Exception as e:
+        print(f"Error fetching user by ID: {e}")
+        return jsonify({'error': str(e)}), 500
+   
 # @app.route('/api/update-account/', methods=['PUT'])
 # def update_account(user_id):
 #     try:
