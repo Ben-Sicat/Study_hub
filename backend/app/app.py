@@ -100,7 +100,7 @@ def get_user_by_id(user_id):
         try:
             cursor = connection.cursor(dictionary=True)
             query = """
-                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation
+                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation, Level
                 FROM Users
                 WHERE UserID = %s
             """
@@ -314,7 +314,7 @@ def sign_in():
                 'PhoneNumber': user_data['PhoneNumber'],
                 'Gender': user_data['Gender'],
                 'Occupation': user_data['Occupation'],
-                
+                'Level': user_data['Level'],
                 # Add other user data fields as needed
             }
         }

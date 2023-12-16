@@ -8,10 +8,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleUsernameChange = (value: string) => {
     setUsername(value);
@@ -33,10 +35,12 @@ function Page() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("login success", data);
-        console.log("data", data.user_data);
-        localStorage.setItem("user", JSON.stringify(data.user_data));
-        window.location.href = "/reservation";
+        if (data.user_data.Level === "User") {
+          console.log("login success", data);
+          console.log("data", data.user_data);
+          localStorage.setItem("user", JSON.stringify(data.user_data));
+          router.push("/reservation");
+        } else router.push("/admin_dashboard");
       } else {
         const errorData = await response.json();
         console.error("Login failed:", errorData.message);
