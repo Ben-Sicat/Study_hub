@@ -8,12 +8,13 @@ import Drop from "../components/dropdown_button";
 import Radio from "../components/radio_button";
 import CheckBox from "../components/checkbox";
 import Link from "next/link";
+import ModalCreate from "../components/modal_createacc";
 
 import { useRouter } from "next/navigation";
 
 function Page() {
   const [isChecked, setChecked] = useState(false); // State for checkbox
-  const [isSelected, setSelected] = useState(false)
+  const [isSelected, setSelected] = useState(false);
 
   const handleCheckboxChange = () => {
     setChecked(!isChecked);
@@ -168,7 +169,7 @@ function Page() {
         gender: formData.gender,
         occupation: formData.occupation,
       };
-  
+
       const response = await fetch("http://localhost:5000/api/create-account", {
         method: "POST",
         headers: {
@@ -178,7 +179,7 @@ function Page() {
       });
 
       console.log(apiData);
-  
+
       if (response.ok) {
         // Successfully created account
         console.log("Account created successfully!");
@@ -190,9 +191,17 @@ function Page() {
     } catch (error) {
       console.error("Error creating account:", error);
     }
-    
+
+    {
+      /*for modal*/
+    }
+    setModalOpen(true);
   };
-  const handleBirthdateChange = (field: keyof typeof formData["birthdate"], value: string) => {
+
+  const handleBirthdateChange = (
+    field: keyof (typeof formData)["birthdate"],
+    value: string
+  ) => {
     setFormData({
       ...formData,
       birthdate: {
@@ -202,6 +211,12 @@ function Page() {
     });
   };
 
+  //for modals
+  const [isModalOpen, setModalOpen] = React.useState(false);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
@@ -259,9 +274,18 @@ function Page() {
       </p>
 
       <div className="flex justify-center space-x-3">
-        <Drop options={options} onSelect={(value) => handleBirthdateChange("month", value)} />
-        <Drop options={options1} onSelect={(value) => handleBirthdateChange("day", value)} />
-        <Drop options={options2} onSelect={(value) => handleBirthdateChange("year", value)} />
+        <Drop
+          options={options}
+          onSelect={(value) => handleBirthdateChange("month", value)}
+        />
+        <Drop
+          options={options1}
+          onSelect={(value) => handleBirthdateChange("day", value)}
+        />
+        <Drop
+          options={options2}
+          onSelect={(value) => handleBirthdateChange("year", value)}
+        />
       </div>
 
       <p className="text-redwood font-normal text-sm text-justify ml-8 mt-4 py-2 px-2">
@@ -269,9 +293,18 @@ function Page() {
       </p>
 
       <div className="flex justify-center space-x-3">
-        <Radio input="Female" onRadioChange={(value) => handleInputChange("gender", value)} />
-        <Radio input="Male" onRadioChange={(value) => handleInputChange("gender", value)} />
-        <Radio input="Others" onRadioChange={(value) => handleInputChange("gender", value)} />
+        <Radio
+          input="Female"
+          onRadioChange={(value) => handleInputChange("gender", value)}
+        />
+        <Radio
+          input="Male"
+          onRadioChange={(value) => handleInputChange("gender", value)}
+        />
+        <Radio
+          input="Others"
+          onRadioChange={(value) => handleInputChange("gender", value)}
+        />
       </div>
 
       <div className="flex justify-center space-x-5 text-xs">
@@ -312,12 +345,17 @@ function Page() {
         disabled={!isChecked} // Disable the button if isChecked is false
       /> */}
 
-      
+      <ModalCreate isOpen={isModalOpen} onClose={handleModalClose} />
 
-      <Butt onClick={handleCreateAccount} title="Create account" Bgcolor="#EBE0D0" width="325px" height="34px" />
+      <Butt
+        onClick={handleCreateAccount}
+        title="Create account"
+        Bgcolor="#EBE0D0"
+        width="325px"
+        height="34px"
+      />
     </div>
   );
 }
-
 
 export default Page;

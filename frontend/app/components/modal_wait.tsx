@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import Butt from "./button";
 import DatePick from "./date_picker";
 import TimePick from "./time_picker";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -24,14 +25,19 @@ interface BasicModalProps {
   onClose: () => void;
 }
 
-function ModalExtend({ isOpen, onClose }: BasicModalProps) {
+function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const router = useRouter();
 
   const [formData, setFormData] = useState<{
-    EndTime: string;
+    Date: string | any;
+    StartTime: string | any;
+    EndTime: string | any;
   }>({
+    Date: "",
+    StartTime: "",
     EndTime: "",
   });
 
@@ -41,13 +47,21 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
       [field]: value,
     });
   };
+  const redirectUrl = "http://localhost:3000/qr_success_reservation"; //change this to a page after ng payment so magamit yung handleCreateAccount function. Dun pa dapat ma-ce-create yung reservation
+  const getName = "Gian"; //change get the name of user from session or local storage kung san man naka store
+  const tableFee = 140; //change den sa calculation
 
   const handleCreateAccount = async () => {
     try {
       const apiData = {
         chair_id: "", // Set a default value if not applicable
+        date: formData.Date,
+        starttime: formData.StartTime,
         endtime: formData.EndTime,
       };
+      router.push(
+        `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+      );
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",
@@ -83,10 +97,24 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
       >
         <Box sx={style}>
           <div className="text-textcolor text-xl font-bold">
-            <h2>Extend Reservation</h2>
+            <h2>Ben Eric Trial</h2>
           </div>
 
           <div className="container">
+            <div className="flex justify-center items-center mt-3">
+              <DatePick
+                text="Date:"
+                onInputChange={(value) => handleInputChange("date", value)}
+              ></DatePick>
+            </div>
+
+            <div className="flex justify-center items-center mt-3">
+              <TimePick
+                text="Start Time:"
+                onInputChange={(value) => handleInputChange("starttime", value)}
+              ></TimePick>
+            </div>
+
             <div className="flex justify-center items-center mt-3">
               <TimePick
                 text="End Time:"
@@ -95,28 +123,17 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
             </div>
           </div>
 
-          <div className="flex justify-center space-x-5 text-xs">
-            <Butt
-              title="Cancel"
-              Bgcolor="#EBE0D0"
-              width="152px"
-              height="30px"
-              borderRadius="10px"
-              onClick={onClose}
-            />
-            <Butt
-              title="Continue"
-              Bgcolor="#F8D8D4"
-              width="152px"
-              height="30px"
-              borderRadius="10px"
-              onClick={handleCreateAccount}
-            />
-          </div>
+          <Butt
+            onClick={handleCreateAccount}
+            title="Reserve"
+            Bgcolor="#EBE0D0"
+            width="325px"
+            height="34px"
+          />
         </Box>
       </Modal>
     </div>
   );
 }
 
-export default ModalExtend;
+export default BasicModal;
