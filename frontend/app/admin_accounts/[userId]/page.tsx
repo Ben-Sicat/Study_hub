@@ -1,5 +1,4 @@
-"use client";
-
+'use client';
 import React, { useState, useEffect } from "react";
 import Teste from "@/app/components/account";
 import CloseIcon from "@mui/icons-material/Close";
@@ -9,47 +8,60 @@ import TextInput from "@/app/components/text_input";
 import Drop from "@/app/components/dropdown_button";
 import Butt from "@/app/components/button";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
+
 function Page() {
   const router = useRouter();
 
   const handleBackButtonClick = () => {
     router.back();
   };
+  const userId = 1; 
+
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    phoneNumber: "",
+    gender: "",
+    occupation: "",
+  });
 
   useEffect(() => {
     document.title = "Edit Profile";
-  }, []);
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/get-user/${userId}`);
+        if (response.ok) {
+          const userData = await response.json();
+          setFormData({
+            userName: userData.Username,
+            email: userData.Email,
+            phoneNumber: userData.PhoneNumber,
+            gender: userData.Gender,
+            occupation: userData.Occupation,
+          });
+        } else {
+          console.error("Error fetching user data:", await response.json());
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
 
   const options = ["Male", "Female", "Others"];
   const options1 = ["Student", "Worker"];
 
-  // Fetch user data from local storage
-  const storedUserData = localStorage.getItem("user");
-  const initialFormData = storedUserData ? JSON.parse(storedUserData) : null;
-
-  const [formData, setFormData] = useState<{
-    userName: string;
-    email: string;
-    phoneNumber: string;
-    gender: string;
-    occupation: string;
-  }>({
-    userName: initialFormData ? initialFormData.Username : "",
-    email: initialFormData ? initialFormData.Email : "",
-    phoneNumber: initialFormData ? initialFormData.PhoneNumber : "",
-    gender: initialFormData ? initialFormData.Gender : options[0],
-    occupation: initialFormData ? initialFormData.Occupation : options1[0],
-  });
-  const userId = initialFormData ? initialFormData.UserID : null; // Adjust this line based on your actual property name
-  console.log(userId);
   const handleInputChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
-  console.log(formData);
+
   const handleUpdateProfile = async () => {
     try {
       const response = await fetch(
@@ -65,9 +77,7 @@ function Page() {
 
       if (response.ok) {
         const updatedUserData = await response.json();
-        localStorage.setItem("user", JSON.stringify(updatedUserData));
         console.log("Profile updated successfully:", updatedUserData);
-        // Optionally, you can update the local state or perform other actions
       } else {
         console.error("Error updating profile:", await response.json());
       }
@@ -144,12 +154,6 @@ function Page() {
             onSelect={(value) => handleInputChange("occupation", value)}
           />
         </div>
-        {/* <TextInput
-          placeholder="School/Company"
-          width="335px"
-          height="35px"
-          onInputChange={(value) => handleInputChange("school", value)}
-        /> */}
       </div>
 
       <div className="mt-16"></div>
