@@ -5,11 +5,35 @@ import TemporaryDrawer from "../components/side_bar";
 import { ChairRight, ChairLeft, ChairDown, ChairUp } from "../components/svgs";
 import BasicModal from "../components/modal";
 
+interface Accounts {
+  UserID: number;
+  Username: string;
+}
+
 function Page() {
   useEffect(() => {
     // Set the title directly for the browser tab
     document.title = "Reservation";
   }, []);
+
+  const [accounts, setAccounts] = useState<Accounts[]>([]);
+
+  /*
+  useEffect(() => {
+    fetch("http://localhost:5000/api/get-reservations")
+      .then((response) => response.json())
+      .then((data: { accounts: Accounts[] }) => {
+        const simplifiedData = data.accounts.map(({ UserID, Username }) => ({
+          UserID,
+          Username,
+        }));
+        setAccounts(simplifiedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  */
 
   const [isModalOpen, setModalOpen] = React.useState(false);
 
