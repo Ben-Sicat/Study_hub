@@ -4,6 +4,7 @@ import mysql.connector
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
+import time
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, methods=["POST", "OPTIONS", "PUT"])
@@ -23,18 +24,52 @@ warehouse_db_config = {
     'user': 'root',
     'password': 'root',
     'host': 'warehouse_db',
-    'port': '3308',
+    'port': '3309',
     'database': 'BrewandBrain_warehouse'
 }
+try:
+    connection = mysql.connector.connect(**warehouse_db_config)
+    print("Connected to the warehouse database successfully!")
+    connection.close()
+except mysql.connector.Error as err:
+    print(f"Error connecting to the warehouse database: {err}")
+def wait_for_databases():
+    max_retries = 30
+    retry_interval = 2  # seconds
 
+    operational_connection = None
+    warehouse_connection = None
+
+    for _ in range(max_retries):
+        try:
+            operational_connection = mysql.connector.connect(**db_config)
+            print("Connected to the operational database successfully!")
+
+            warehouse_connection = mysql.connector.connect(**warehouse_db_config)
+            print("Connected to the warehouse database successfully!")
+
+            operational_connection.close()
+            warehouse_connection.close()
+            return
+        except mysql.connector.Error as err:
+            print(f"Error connecting to databases: {err}")
+            time.sleep(retry_interval)
+
+    print("Unable to connect to databases after retries.")
+
+wait_for_databases()
 
 def get_db_connection(config):
+    connection = None
     try:
         connection = mysql.connector.connect(**config)
-        return connection
     except mysql.connector.Error as err:
         print(f"Error connecting to the database: {err}")
-        return None
+    return connection
+    
+def close_connection(connection):
+    if connection:
+        connection.close()
 
 # User-related functions
 def write_to_users(data):
@@ -144,69 +179,79 @@ def get_all_reservations():
             return results
         except mysql.connector.Error as err:
             print(f"Error Fetching Reservations: {err}")
+
 def perform_warehouse_process():
+    operational_connection = get_db_connection(db_config)
+    warehouse_connection = get_db_connection(warehouse_db_config)
+
     try:
-        # Connect to operational database
-        operational_connection = get_db_connection(db_config)
-        if operational_connection:
-            operational_cursor = operational_connection.cursor(dictionary=True)
+        if not operational_connection or not warehouse_connection:
+            return  # Return early if unable to connect to either database
 
-            # Connect to warehouse database
-            warehouse_connection = get_db_connection(warehouse_db_config)
-            if warehouse_connection:
-                warehouse_cursor = warehouse_connection.cursor()
+        with operational_connection.cursor(dictionary=True) as operational_cursor, \
+             warehouse_connection.cursor() as warehouse_cursor:
 
+            operational_cursor.execute("""
+                SELECT Users.UserID, Users.School, Users.Occupation, Reservations.StartTime, Reservations.EndTime
+                FROM Users
+                LEFT JOIN Reservations ON Users.UserID = Reservations.UserID
+            """)
+            users_data = operational_cursor.fetchall()
+
+            for user in users_data:
                 try:
-                    # Extract data from the operational database
-                    operational_cursor.execute("""
-                        SELECT UserID, School, Occupation
-                        FROM Users
-                    """)
-                    users_data = operational_cursor.fetchall()
+                    warehouse_cursor.execute(
+                        """
+                        INSERT INTO UserSummary (UserID, School, Occupation, StartTime, EndTime)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE School=VALUES(School), Occupation=VALUES(Occupation),
+                                            StartTime=VALUES(StartTime), EndTime=VALUES(EndTime)
+                        """,
+                        (user['UserID'], user['School'], user['Occupation'],
+                         user['StartTime'], user['EndTime'])
+                    )
+                except mysql.connector.Error as e:
+                    print(f"Error processing user {user['UserID']}: {e}")
 
-                    # Transform and load data into the warehouse
-                    for user in users_data:
-                        # Fetch reservations for the current user
-                        operational_cursor.execute("""
-                            SELECT StartTime, EndTime
-                            FROM Reservations
-                            WHERE UserID = %s
-                        """, (user['UserID'],))
-                        reservations_data = operational_cursor.fetchall()
+        warehouse_connection.commit()
+        print("Warehouse process completed successfully.")
+    except mysql.connector.Error as e:
+        print(f"Error during ETL process: {e}")
+        warehouse_connection.rollback()
+    finally:
+        close_connection(operational_connection)
+        close_connection(warehouse_connection)
 
-                        # Insert user and reservation data into the warehouse
-                        for reservation in reservations_data:
-                            warehouse_cursor.execute(
-                                """
-                                INSERT INTO UserSummary (UserID, School, Occupation, StartTime, EndTime)
-                                VALUES (%s, %s, %s, %s, %s)
-                                """,
-                                (user['UserID'], user['School'], user['Occupation'],
-                                 reservation['StartTime'], reservation['EndTime'])
-                            )
-
-                    # Commit changes to the warehouse database
-                    warehouse_connection.commit()
-                    print("Warehouse process completed successfully.")
-                except Exception as e:
-                    print(f"Error during ETL process: {e}")
-                    warehouse_connection.rollback()  # Rollback changes in case of an error
-
-                warehouse_cursor.close()
-                warehouse_connection.close()
-
-            operational_cursor.close()
-            operational_connection.close()
-
-    except Exception as e:
-        print(f"Error performing warehouse process: {e}")
 
 # Initialize the BackgroundScheduler
 scheduler = BackgroundScheduler()
 
-# Add the scheduled job to run the ETL process every 168 hours or 1 week
-scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
+# Add the scheduled job to run the ETL process every 1 week
+scheduler.add_job(perform_warehouse_process, 'interval', weeks=1)
 
+@app.route('/api/get-warehouse-data', methods=['GET'])
+def get_warehouse_data():
+    try:
+        warehouse_connection = get_db_connection(warehouse_db_config)
+        if not warehouse_connection:
+            return jsonify(error='Unable to connect to the warehouse database'), 500
+
+        with warehouse_connection.cursor(dictionary=True) as warehouse_cursor:
+            warehouse_cursor.execute("SELECT * FROM UserSummary")
+            warehouse_data = warehouse_cursor.fetchall()
+
+        return jsonify({'message': 'Warehouse data fetched successfully', 'warehouse_data': warehouse_data})
+
+    except Exception as e:
+        print(f"Error fetching warehouse data: {e}")
+        return jsonify(error='Error fetching warehouse data'), 500
+
+    finally:
+        if warehouse_connection:
+            warehouse_connection.close()
+            print("Warehouse connection closed.")
+
+        
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:

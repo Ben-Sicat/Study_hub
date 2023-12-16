@@ -1,9 +1,8 @@
-version: "2"
+version: "3.8"
+
 services:
   app:
     build: ./app
-    links:
-      - db
     ports:
       - "5000:5000"
     depends_on:
@@ -14,6 +13,12 @@ services:
         limits:
           cpus: "2"
           memory: "512M"
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql://root:root@warehouse_db:3308/BrewandBrain_warehouse
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=development
+    networks:
+      - mynetwork
 
   db:
     image: mysql:8.2
@@ -23,22 +28,19 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    deploy:  
-      resources:
-        limits:
-          cpus: "2"
-          memory: "512M"
+    networks:
+      - mynetwork
 
   warehouse_db:
     image: mysql:8.2
     ports:
-      - "3308:3306"
+      - "3309:3308"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./db/warehouse_init.sql:/docker-entrypoint-initdb.d/warehouse_init.sql
-    deploy:  
-      resources:
-        limits:
-          cpus: "2"
-          memory: "512M"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
