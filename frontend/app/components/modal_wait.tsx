@@ -71,7 +71,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
           </div>
 
           <div className="container">
-            <div className="container bg-gray-200 rounded-lg mt-7 mb-3 text-xs">
+            <div className="container bg-gray-200 rounded-lg mt-8 mb-3 text-xs">
               <InfoTable data={filteredData} />
             </div>
 
