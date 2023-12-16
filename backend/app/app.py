@@ -93,13 +93,14 @@ def get_all_users():
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+
 def get_user_by_id(user_id):
     connection = get_db_connection(db_config)
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
             query = """
-                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation
+                SELECT UserID, GoogleID, Username, Email, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, Occupation, Level
                 FROM Users
                 WHERE UserID = %s
             """
@@ -110,6 +111,9 @@ def get_user_by_id(user_id):
             return result
         except mysql.connector.Error as err:
             print(f"Error fetching user by ID: {err}")
+            return None
+        
+        
 
 def get_user_by_email_or_username(email_or_username):
     connection = get_db_connection(db_config)
@@ -207,6 +211,34 @@ scheduler = BackgroundScheduler()
 # Add the scheduled job to run the ETL process every 168 hours or 1 week
 scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
 
+def create_reservation(user_id, reservation_data):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
+                VALUES (%s, %s, %s, %s)
+            """
+            values = (user_id, reservation_data['starttime'], reservation_data['endtime'], reservation_data.get('seat'))
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+        except mysql.connector.Error as err:
+            print(f"Error creating reservation: {err}")
+
+@app.route('/api/create-reservation', methods=['POST'])
+def create_reservation_route():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')  # Change this to fetch the user_id from your authentication mechanism
+        create_reservation(user_id, data)
+        return jsonify({'message': 'Reservation created successfully'}), 200
+    except Exception as e:
+        print(f"Error creating reservation: {e}")
+        return jsonify(message='Error creating reservation'), 500
+
 @app.route('/api/create-account', methods=['POST'])
 def create_account():
     try:
@@ -245,6 +277,18 @@ def get_reservations():
         print(f"Error fetching reservations: {e}")
         return jsonify(error='Error fetching reservations'), 500
     
+@app.route('/api/get-all-users', methods=['GET'])
+def get_all_users_route():
+    try:
+        all_users = get_all_users()
+        if all_users:
+            return jsonify({'accounts': all_users})
+        else:
+            return jsonify(error='No users found'), 404  # Change to 404 status code
+    except Exception as e:
+        print(f"Error in route: {e}")
+        return jsonify(error='Internal server error'), 500
+
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
     data = request.get_json()
@@ -270,7 +314,7 @@ def sign_in():
                 'PhoneNumber': user_data['PhoneNumber'],
                 'Gender': user_data['Gender'],
                 'Occupation': user_data['Occupation'],
-                
+                'Level': user_data['Level'],
                 # Add other user data fields as needed
             }
         }

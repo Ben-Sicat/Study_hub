@@ -1,9 +1,10 @@
 import Link from "next/link";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 type UserInfo = {
-  id: number;
-  name: string;
+  UserID: number;
+  Username: string;
   // Add more properties as needed
 };
 
@@ -12,6 +13,12 @@ type InfoProps = {
 };
 
 function InfoTable({ data }: InfoProps) {
+  const router = useRouter();
+
+  const handleEditClick = (userId: number) => {
+    // Navigate to the [id] folder
+    router.push(`/admin_accounts/${userId}`);
+  };
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300">
@@ -25,14 +32,17 @@ function InfoTable({ data }: InfoProps) {
         <tbody>
           {data.map((item, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-              <td className="py-2 px-4 border-b text-center">{item.id}</td>
-              <td className="py-2 px-4 border-b text-center">{item.name}</td>
+              <td className="py-2 px-4 border-b text-center">{item.UserID}</td>
               <td className="py-2 px-4 border-b text-center">
-                <Link href="/edit_profile">
-                  <button className="bg-buttonpink text-parrot-pink py-1 px-2 rounded">
-                    Modify
-                  </button>
-                </Link>
+                {item.Username}
+              </td>
+              <td className="py-2 px-4 border-b text-center">
+                <button
+                  className="bg-buttonpink text-parrot-pink py-1 px-2 rounded"
+                  onClick={() => handleEditClick(item.UserID)}
+                >
+                  Modify
+                </button>
               </td>
             </tr>
           ))}
