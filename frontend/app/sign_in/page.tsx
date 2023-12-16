@@ -40,10 +40,19 @@ function Page() {
           console.log("data", data.user_data);
           localStorage.setItem("user", JSON.stringify(data.user_data));
           router.push("/reservation");
-        } else router.push("/admin_dashboard");
+        } else {
+          router.push("/admin_dashboard");
+        }
       } else {
         const errorData = await response.json();
-        console.error("Login failed:", errorData.message);
+        if (response.status === 401) {
+          console.error("Authentication failed:", errorData.message);
+          // Display an alert for incorrect username or password
+          alert("The User Name or Password is incorrect.");
+        } else {
+          console.error("Login failed:", errorData.message);
+          // Handle other types of errors here
+        }
       }
     } catch (error) {
       console.error(error);

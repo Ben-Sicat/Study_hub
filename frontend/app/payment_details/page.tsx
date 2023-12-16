@@ -26,8 +26,8 @@ function Page() {
         title="Payment Details"
         subTitle1="Select your preferred payment method"
       />
-
-      <Reserv></Reserv>
+      <Reserv />{" "}
+      {/*insert values for RESERVED TIME and its PRICE inside "Reserv".. props are "time" and "price"*/}
     </div>
   );
 }
