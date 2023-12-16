@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Butt from "./button";
+import Link from "next/link";
 import ModalExtend from "./modal_extend"; // Import your ModalExtend component
 
 const style = {
@@ -23,7 +24,7 @@ interface BasicModalProps {
   onClose: () => void;
 }
 
-function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
+function ModalCreate({ isOpen, onClose }: BasicModalProps) {
   const [showExtendModal, setShowExtendModal] = useState(false);
 
   const handleOpen = () => {
@@ -45,43 +46,26 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
       >
         <Box sx={style}>
           <div className="text-textcolor text-xl font-bold">
-            <h2>Control Reservation</h2>
+            <h2>Create Account</h2>
           </div>
 
           <div className="container">
             <div className="flex justify-center items-center mt-5">
               <div className="text-textcolor text-base font-bold">
-                <h2>Time Usage/Reservation</h2>
+                <h2>Account Created Successfully!</h2>
               </div>
             </div>
 
             <div className="flex justify-center space-x-5 text-xs">
-              <Butt
-                title="Terminate"
-                Bgcolor="#A081AB"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-              />
-              <Butt
-                title="Extend"
-                Bgcolor="#F8D8D4"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-                onClick={handleOpen} // Show the extend modal on Extend button click
-              />
-            </div>
-
-            <div className="flex justify-center items-center">
-              <Butt
-                title="Cancel"
-                Bgcolor="#EBE0D0"
-                width="320px"
-                height="30px"
-                borderRadius="10px"
-                onClick={onClose} // Close the main modal on Cancel button click
-              />
+              <Link href="/sign_in">
+                <Butt
+                  title="Back to Sign In"
+                  Bgcolor="#EBE0D0"
+                  width="160px"
+                  height="30px"
+                  borderRadius="10px"
+                />
+              </Link>
             </div>
           </div>
         </Box>
@@ -97,4 +81,4 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
   );
 }
 
-export default ModalAdmin;
+export default ModalCreate;

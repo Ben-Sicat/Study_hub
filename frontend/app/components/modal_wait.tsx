@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Butt from "./button";
+import Link from "next/link";
 import ModalExtend from "./modal_extend"; // Import your ModalExtend component
+import InfoTable from "./waitlist_table";
+
+type UserInfo = {
+  id: number;
+  name: string;
+  // Add more properties as needed
+};
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,7 +31,7 @@ interface BasicModalProps {
   onClose: () => void;
 }
 
-function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
+function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const [showExtendModal, setShowExtendModal] = useState(false);
 
   const handleOpen = () => {
@@ -35,6 +43,20 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
     onClose();
   };
 
+  const userData = [
+    { id: 1, name: "John Doe" },
+    { id: 2, name: "Jane Smith" },
+    { id: 101, name: "Gian Limbaga" },
+    { id: 102, name: "The Fourth" },
+    { id: 103, name: "Melaissa Rioveros" },
+    { id: 104, name: "Chen Leonor" },
+    { id: 105, name: "Eric Ramos" },
+    // Add more user data as needed
+  ];
+
+  const [data, setData] = useState<UserInfo[]>(userData);
+  const [filteredData, setFilteredData] = useState<UserInfo[]>(data);
+
   return (
     <div>
       <Modal
@@ -45,42 +67,28 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
       >
         <Box sx={style}>
           <div className="text-textcolor text-xl font-bold">
-            <h2>Control Reservation</h2>
+            <h2>Waitlist View</h2>
           </div>
 
           <div className="container">
-            <div className="flex justify-center items-center mt-5">
-              <div className="text-textcolor text-base font-bold">
-                <h2>Time Usage/Reservation</h2>
-              </div>
+            <div className="container bg-gray-200 rounded-lg mt-8 mb-3 text-xs">
+              <InfoTable data={filteredData} />
             </div>
 
             <div className="flex justify-center space-x-5 text-xs">
               <Butt
-                title="Terminate"
-                Bgcolor="#A081AB"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-              />
-              <Butt
-                title="Extend"
-                Bgcolor="#F8D8D4"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-                onClick={handleOpen} // Show the extend modal on Extend button click
-              />
-            </div>
-
-            <div className="flex justify-center items-center">
-              <Butt
-                title="Cancel"
+                title="Exit"
                 Bgcolor="#EBE0D0"
-                width="320px"
+                width="160px"
                 height="30px"
                 borderRadius="10px"
-                onClick={onClose} // Close the main modal on Cancel button click
+              />
+              <Butt
+                title="Enter"
+                Bgcolor="#EBE0D0"
+                width="160px"
+                height="30px"
+                borderRadius="10px"
               />
             </div>
           </div>
@@ -97,4 +105,4 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
   );
 }
 
-export default ModalAdmin;
+export default BasicModal;

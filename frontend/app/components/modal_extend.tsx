@@ -95,13 +95,24 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
             </div>
           </div>
 
-          <Butt
-            onClick={handleCreateAccount}
-            title="Continue"
-            Bgcolor="#EBE0D0"
-            width="325px"
-            height="34px"
-          />
+          <div className="flex justify-center space-x-5 text-xs">
+            <Butt
+              title="Cancel"
+              Bgcolor="#EBE0D0"
+              width="152px"
+              height="30px"
+              borderRadius="10px"
+              onClick={onClose}
+            />
+            <Butt
+              title="Continue"
+              Bgcolor="#F8D8D4"
+              width="152px"
+              height="30px"
+              borderRadius="10px"
+              onClick={handleCreateAccount}
+            />
+          </div>
         </Box>
       </Modal>
     </div>
