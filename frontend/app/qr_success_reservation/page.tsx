@@ -24,10 +24,11 @@ function Page() {
   }, []);
 
   const reservationData = {
-    reservationId: "12345",
+    reservationId: "7",
     name: "John Doe",
-    checkInDate: "2023-11-05",
-    tableNumber: "1",
+    Stime: "1:15",
+    ETime: "3:15",
+    tableNumber: "h2",
     reservedTime: "12:00",
     duration: "2 hours",
     paymentDetails: "GCash",

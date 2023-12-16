@@ -7,10 +7,13 @@ import { Logo, Painting } from "../components/svgs";
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { signIn, useSession } from "next-auth/react";
 
 function Page() {
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  
 
   const handleUsernameChange = (value: string) => {
     setUsername(value);
@@ -19,6 +22,7 @@ function Page() {
   const handlePasswordChange = (value: string) => {
     setPassword(value);
   };
+
   const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/sign-in", {
@@ -26,21 +30,33 @@ function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ login:username, password }),
+        body: JSON.stringify({ login: username, password }),
       });
+  
       if (response.ok) {
         const data = await response.json();
-        console.log("login success");
-        console.log("data", data);
-        console.log("data", data.acces_token);
-        document.cookie = `access_token=${data.access_token}; path=/; HttpOnly`;
+        console.log("login success", data);
+        console.log("data", data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
         window.location.href = "/reservation";
-
+      }else {
+        const errorData = await response.json();
+        console.error("Login failed:", errorData.message);
       }
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
     }
   };
+  
+
+  
+ 
+
+  // const session = useSession();
+  // console.log("Current session token:", session.user);
+
+
+  
   useEffect(() => {
 
     // Set the title directly for the browser tab

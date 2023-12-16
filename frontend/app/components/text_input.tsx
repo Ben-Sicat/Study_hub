@@ -7,6 +7,7 @@ type TextInputProps = {
   height?: string;
   labelFontSize?: string;
   onInputChange: (value: string) => void;
+  value?: string; // Added value prop
 };
 
 function TextInput({
@@ -15,6 +16,7 @@ function TextInput({
   height = "2.5rem",
   labelFontSize = "14px",
   onInputChange,
+  value = "", // Default value is an empty string
 }: TextInputProps) {
   const inputLabelProps = {
     style: {
@@ -22,11 +24,8 @@ function TextInput({
     },
   };
 
-  const [inputValue, setInputValue] = useState("");
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setInputValue(newValue);
     onInputChange(newValue);
   };
 
@@ -44,7 +43,7 @@ function TextInput({
           },
         }}
         InputLabelProps={inputLabelProps}
-        value={inputValue}
+        value={value} // Use the value prop
         onChange={handleInputChange}
       />
     </div>

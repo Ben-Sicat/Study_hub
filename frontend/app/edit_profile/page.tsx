@@ -1,5 +1,7 @@
+
+
 "use client";
-"use client";
+
 import React, { useState, useEffect } from "react";
 import Teste from "../components/account";
 import CloseIcon from "@mui/icons-material/Close";
@@ -10,7 +12,6 @@ import Drop from "../components/dropdown_button";
 import Butt from "../components/button";
 
 import { useRouter } from "next/navigation";
-
 function Page() {
   const router = useRouter();
 
@@ -19,13 +20,15 @@ function Page() {
   };
 
   useEffect(() => {
-    // Set the title directly for the browser tab
     document.title = "Edit Profile";
   }, []);
 
   const options = ["Male", "Female", "Others"];
-
   const options1 = ["Student", "Worker"];
+
+  // Fetch user data from local storage
+  const storedUserData = localStorage.getItem('user');
+  const initialFormData = storedUserData ? JSON.parse(storedUserData) : null;
 
   const [formData, setFormData] = useState<{
     userName: string;
@@ -34,20 +37,25 @@ function Page() {
     gender: string;
     occupation: string;
   }>({
-    userName: "",
-    email: "",
-    phoneNumber: "",
-    gender: options[0],
-    occupation: options1[0],
+
+    userName: initialFormData ? initialFormData.Username : "",
+    email: initialFormData ? initialFormData.Email : "",
+    phoneNumber: initialFormData ? initialFormData.PhoneNumber : "",
+    gender: initialFormData ? initialFormData.Gender : options[0],
+    occupation: initialFormData ? initialFormData.Occupation : options1[0]
+
   });
+
   const handleInputChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
+
   const handleUpdateProfile = () => {
     console.log(formData);
+    // Perform the update logic with formData
   };
 
   return (
@@ -83,25 +91,28 @@ function Page() {
           placeholder="Username"
           width="335px"
           height="35px"
-          onInputChange={function (value: string): void {
-            throw new Error("Function not implemented.");
-          }}
+
+          value={formData.userName}
+          onInputChange={(value) => handleInputChange("userName", value)}
+
         />
         <TextInput
           placeholder="Email"
           width="335px"
           height="35px"
-          onInputChange={function (value: string): void {
-            throw new Error("Function not implemented.");
-          }}
+
+          value={formData.email}
+          onInputChange={(value) => handleInputChange("email", value)}
+
         />
         <TextInput
           placeholder="Phone Number"
           width="335px"
           height="35px"
-          onInputChange={function (value: string): void {
-            throw new Error("Function not implemented.");
-          }}
+
+          value={formData.phoneNumber}
+          onInputChange={(value) => handleInputChange("phoneNumber", value)}
+
         />
 
         <div className="flex text-redwood text-xs ml-12 space-x-32 mt-2">
