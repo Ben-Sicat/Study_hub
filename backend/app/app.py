@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import time
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, methods=["POST", "OPTIONS", "PUT"])
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, methods=["POST", "OPTIONS", "PUT", "GET", "DELETE"])
 
 jwt = JWTManager(app)
 
@@ -240,7 +240,7 @@ def create_reservation(user_id, reservation_data):
             cursor = connection.cursor()
             query = """
                 INSERT INTO Reservations (UserID, StartTime, EndTime, Seat, TableFee, ResDate)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s)
             """
             values = (
                 user_id,
@@ -259,6 +259,64 @@ def create_reservation(user_id, reservation_data):
             print(f"Error creating reservation: {err}")
             connection.rollback()
             return {'error': f"Error creating reservation: {err}"}
+
+def create_waitlist_entry(user_id, username):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO Waitlist (UserID, Username)
+                VALUES (%s, %s)
+            """
+            values = (user_id, username)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return {'message': 'Waitlist entry created successfully'}
+        except mysql.connector.Error as err:
+            print(f"Error creating waitlist entry: {err}")
+            connection.rollback()
+            return {'error': f"Error creating waitlist entry: {err}"}
+
+def get_all_waitlist_entries():
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute('SELECT * FROM Waitlist')
+            entries = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return entries
+        except mysql.connector.Error as err:
+            print(f"Error fetching waitlist entries: {err}")
+            return None
+
+@app.route('/api/get-waitlist-entries', methods=['GET'])
+def get_waitlist_entries_route():
+    try:
+        entries = get_all_waitlist_entries()
+        if entries:
+            return jsonify({'waitlist_entries': entries})
+        else:
+            return jsonify(error='No waitlist entries found'), 404
+    except Exception as e:
+        print(f"Error fetching waitlist entries: {e}")
+        return jsonify(error='Error fetching waitlist entries'), 500
+
+@app.route('/api/create-waitlist-entry', methods=['POST'])
+def create_waitlist_entry_route():
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')  # Change this to fetch the user_id from your authentication mechanism
+        username = data.get('username')
+        create_waitlist_entry(user_id, username)
+        return jsonify({'message': 'Waitlist entry created successfully'}), 200
+    except Exception as e:
+        print(f"Error creating waitlist entry: {e}")
+        return jsonify(message='Error creating waitlist entry'), 500
 
 
 @app.route('/api/create-reservation', methods=['POST'])

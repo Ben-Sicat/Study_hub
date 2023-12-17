@@ -70,9 +70,9 @@ const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => 
       };
       console.log(apiData)
       console.log(tableFee)
-      // router.push(
-      //   `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-      // );
+      router.push(
+        `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+      );
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",
