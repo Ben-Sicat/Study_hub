@@ -39,6 +39,20 @@ CREATE TABLE QR_Codes (
     FOREIGN KEY (ReservationID) REFERENCES Reservations(ReservationID)
 );
 
+CREATE TABLE Waitlist (
+  WaitlistID INT AUTO_INCREMENT PRIMARY KEY,
+  UserID INT,
+  Username VARCHAR(225) NOT NULL,
+  Seat VARCHAR(50)
+);
+
+
+INSERT INTO Waitlist(UserID, Username,Seat)
+VALUES
+(1, 'user_1' ,'chair1'),
+(2, 'user_2','chair2'),
+(3, 'user_3','chair3'),
+(4, 'user_4','chair4');
 
 INSERT INTO Users (GoogleID, Username, Email, Password, FirstName, LastName, PhoneNumber, UName, Birthday, Gender, School, Occupation, Level)
 VALUES 
@@ -53,6 +67,6 @@ INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
 VALUES 
 (1, '08:00:00', '12:00:00', 'chair1'),
 (2, '09:00:00', '3:00:00', 'chair10'),
-
 (3, '2023-01-03 10:00:00', '2023-01-03 14:00:00', 'chair4'),
 (4, '2023-01-04 11:00:00', '2023-01-04 15:00:00', 'chair5');
+

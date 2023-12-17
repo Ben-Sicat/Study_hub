@@ -1,16 +1,21 @@
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Butt from "./button";
-import Link from "next/link";
-import ModalExtend from "./modal_extend"; // Import your ModalExtend component
+import ModalExtend from "./modal_extend";
 import InfoTable from "./waitlist_table";
 
 type UserInfo = {
   id: number;
   name: string;
   // Add more properties as needed
+};
+
+type WaitlistEntry = {
+  WaitlistID: number;
+  UserID: number;
+  Username: string;
+  Seat: string;
 };
 
 const style = {
@@ -33,6 +38,40 @@ interface BasicModalProps {
 
 function BasicModal({ isOpen, onClose }: BasicModalProps) {
   const [showExtendModal, setShowExtendModal] = useState(false);
+  const [waitlistEntries, setWaitlistEntries] = useState<UserInfo[]>([]);
+
+  const fetchWaitlistEntries = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/get-all-waitlist-entries`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch waitlist entries: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      // Map WaitlistEntry to UserInfo
+      const mappedEntries = data.waitlist_entries.map((entry: WaitlistEntry) => ({
+        id: entry.UserID,
+        name: entry.Username,
+      }));
+      setWaitlistEntries(mappedEntries);
+    } catch (error) {
+      console.error(error);
+      setWaitlistEntries([]); // Set an empty array in case of an error
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      // Fetch waitlist entries when the component mounts
+      fetchWaitlistEntries();
+    }
+  }, [isOpen]);
 
   const handleOpen = () => {
     setShowExtendModal(true);
@@ -42,20 +81,47 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
     setShowExtendModal(false);
     onClose();
   };
+  
+  const handleEnterButtonClick = async () => {
+    try {
+      const storedUserData = localStorage.getItem('user');
+      const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
+      const initialFormData = parsedUserData?.updated_user || null;
+      let userID = initialFormData ? initialFormData.UserID : "";
+      if (userID == undefined || userID == null || userID === "") {
+        userID = parsedUserData ? parsedUserData.UserID : "";
+      }
 
-  const userData = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-    { id: 101, name: "Gian Limbaga" },
-    { id: 102, name: "The Fourth" },
-    { id: 103, name: "Melaissa Rioveros" },
-    { id: 104, name: "Chen Leonor" },
-    { id: 105, name: "Eric Ramos" },
-    // Add more user data as needed
-  ];
+      let username = initialFormData ? initialFormData.Username : "";
+      if (username == undefined || username == null || username === "") {
+        username = parsedUserData ? parsedUserData.Username : "";
+      }
+      
 
-  const [data, setData] = useState<UserInfo[]>(userData);
-  const [filteredData, setFilteredData] = useState<UserInfo[]>(data);
+      // Make a POST request to add the user to the waitlist
+      const response = await fetch(`http://localhost:5000/api/create-waitlist-entry`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userID,
+          username: username,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add user to waitlist: ${response.statusText}`);
+      }
+
+      // Optionally, update the waitlist entries in the local state
+      // You may need to fetch the updated waitlist entries again
+      fetchWaitlistEntries();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   return (
     <div>
@@ -72,7 +138,8 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
 
           <div className="container">
             <div className="container bg-gray-200 rounded-lg mt-8 mb-3 text-xs">
-              <InfoTable data={filteredData} />
+              {/* Pass the modified waitlistEntries to InfoTable */}
+              <InfoTable data={waitlistEntries} />
             </div>
 
             <div className="flex justify-center space-x-5 text-xs">
@@ -89,6 +156,7 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
                 width="160px"
                 height="30px"
                 borderRadius="10px"
+                onClick={handleEnterButtonClick}
               />
             </div>
           </div>
