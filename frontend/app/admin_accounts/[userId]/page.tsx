@@ -8,15 +8,17 @@ import TextInput from "@/app/components/text_input";
 import Drop from "@/app/components/dropdown_button";
 import Butt from "@/app/components/button";
 
-import { useRouter } from "next/router";
+
 
 function Page() {
-  const router = useRouter();
-
+  
   const handleBackButtonClick = () => {
-    router.back();
-  };
-  const userId = 1; 
+    console.log("back button clicked")
+  }
+
+  
+  const userId = localStorage.getItem('user_id')
+  console.log(userId)
 
   const [formData, setFormData] = useState({
     userName: "",
@@ -34,12 +36,15 @@ function Page() {
         const response = await fetch(`http://localhost:5000/api/get-user/${userId}`);
         if (response.ok) {
           const userData = await response.json();
+          const datas = userData.user
+          console.log("User Data:", userData); // Log the received user data
+          console.log("User Data1:", datas); // Log the received user data
           setFormData({
-            userName: userData.Username,
-            email: userData.Email,
-            phoneNumber: userData.PhoneNumber,
-            gender: userData.Gender,
-            occupation: userData.Occupation,
+            userName: datas.Username,
+            email: datas.Email,
+            phoneNumber: datas.PhoneNumber,
+            gender: datas.Gender,
+            occupation: datas.Occupation,
           });
         } else {
           console.error("Error fetching user data:", await response.json());

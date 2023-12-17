@@ -22,9 +22,11 @@ CREATE TABLE Users (
 CREATE TABLE Reservations (
   ReservationID INT AUTO_INCREMENT PRIMARY KEY,
   UserID INT, 
+  ResDate VARCHAR(225),
   StartTime VARCHAR(255) NOT NULL,
   EndTime VARCHAR(225) NOT NULL,
   Seat VARCHAR(50),
+  TableFee DECIMAL(10,2) DEFAULT 0.00,
   FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
 
 );
@@ -49,8 +51,8 @@ VALUES
 
 INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
 VALUES 
-(1, '2023-01-01 08:00:00', '2023-01-01 12:00:00', 'A1'),
-(2, '2023-01-02 09:00:00', '2023-01-02 13:00:00', 'B2'),
+(1, '08:00:00', '12:00:00', 'chair1'),
+(2, '09:00:00', '3:00:00', 'chair10'),
 
-(3, '2023-01-03 10:00:00', '2023-01-03 14:00:00', 'C3'),
-(4, '2023-01-04 11:00:00', '2023-01-04 15:00:00', 'D4');
+(3, '2023-01-03 10:00:00', '2023-01-03 14:00:00', 'chair4'),
+(4, '2023-01-04 11:00:00', '2023-01-04 15:00:00', 'chair5');

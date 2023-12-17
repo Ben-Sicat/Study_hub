@@ -29,6 +29,7 @@
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.16",
     "isomorphic-unfetch": "^4.0.2",
+    "moment": "^2.29.4",
     "next": "^14.0.1",
     "next-auth": "^4.24.5",
     "react": "^18",

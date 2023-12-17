@@ -9,6 +9,8 @@ interface Reservation {
   StartTime: string;
   EndTime: string;
   Username: string;
+  Price: number;
+  ResDate: string;
 }
 
 const columns: GridColDef[] = [
@@ -17,6 +19,8 @@ const columns: GridColDef[] = [
   { field: "Username", headerName: "Username", width: 150 },
   { field: "StartTime", headerName: "Start Time", width: 200 },
   { field: "EndTime", headerName: "End Time", width: 200 },
+  { field: "ResDate", headerName: "Date", width: 150},
+  { field: "Price", headerName: "Price", width: 150 },
 ];
 
 export default function DataGridDemo() {

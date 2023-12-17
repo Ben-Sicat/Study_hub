@@ -36,7 +36,22 @@ function Page() {
   */
 
   const [isModalOpen, setModalOpen] = React.useState(false);
+  const [ chairId, setChairId ] = React.useState("");
 
+  //now we need a function to handle the opening of the modal per chair... the funciton must contain a paramete that will be the chair id and the state of the chair if open or close
+
+  const handleChairClick = (chairId: string, isChairOpen: boolean) => {
+    console.log("chairId", chairId);
+    setChairId(chairId);
+    console.log("isChairOpen", isChairOpen);
+    setModalOpen(!isModalOpen);
+    if(isChairOpen == true){
+      setModalOpen(true);
+    }else[
+      setModalOpen(false)
+    ]
+  }
+  
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -73,90 +88,90 @@ function Page() {
           border: "2px solid #DC9D94",
         }}
       >
-        <BasicModal isOpen={isModalOpen} onClose={handleModalClose} />
+        <BasicModal isOpen={isModalOpen} onClose={handleModalClose} chairId={chairId} />
 
         <ChairRight
           width="30px"
           height="30px"
           className="relative top-28 left-64"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair1", true)}
         />
 
         <ChairRight
           width="30px"
           height="30px"
           className="relative left-64 top-32"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair2", true)}
         />
 
         <ChairLeft
           width="30px"
           height="30px"
           className="relative bottom-5"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair3", true)}
         />
 
         <ChairLeft
           width="30px"
           height="30px"
           className="relative left-16 bottom-12"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair4", true)}
         />
 
         <ChairLeft
           width="30px"
           height="30px"
           className="relative left-10 bottom-2"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair5", true)}
         />
 
         <ChairLeft
           width="30px"
           height="30px"
           className="relative top-1 left-10"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair6", true)}
         />
 
         <ChairUp
           width="30px"
           height="30px"
           className="relative top-5 left-32"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair7", true)}
         />
 
         <ChairUp
           width="30px"
           height="30px"
           className="relative left-44 bottom-2"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair8", true)}
         />
 
         <ChairUp
           width="30px"
           height="30px"
           className="relative left-48 bottom-48"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair9", true)}
         />
 
         <ChairUp
           width="30px"
           height="30px"
           className="relative left-64 bottom-56"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair10", true)}
         />
 
         <ChairDown
           width="30px"
           height="30px"
           className="relative left-32 bottom-44"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair11", true)}
         />
 
         <ChairDown
           width="30px"
           height="30px"
           className="relative left-44 bottom-52"
-          onClick={handleModalOpen}
+          onClick={() => handleChairClick("chair12", true)}
         />
       </div>
 

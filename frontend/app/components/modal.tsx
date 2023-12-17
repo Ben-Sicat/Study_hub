@@ -1,11 +1,18 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Butt from "./button";
 import DatePick from "./date_picker";
 import TimePick from "./time_picker";
 import { useRouter } from "next/navigation";
+import moment from "moment";
+import middleware from "@/middleware";
+
+interface BasicModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  chairId: string;
+}
 
 const style = {
   position: "absolute" as "absolute",
@@ -20,48 +27,52 @@ const style = {
   p: 4,
 };
 
-interface BasicModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-function BasicModal({ isOpen, onClose }: BasicModalProps) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => {
+  const [formData, setFormData] = useState({
+    Date: null as Date | null,
+    StartTime: null as string | null,
+    EndTime: null as string | null,
+  });
   const router = useRouter();
 
-  const [formData, setFormData] = useState<{
-    Date: string | any;
-    StartTime: string | any;
-    EndTime: string | any;
-  }>({
-    Date: "",
-    StartTime: "",
-    EndTime: "",
-  });
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
+  const handleInputChange = (field: keyof typeof formData, value: Date | string | null) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [field]: value,
-    });
+    }));
   };
-  const redirectUrl = "http://localhost:3000/qr_success_reservation"; //change this to a page after ng payment so magamit yung handleCreateAccount function. Dun pa dapat ma-ce-create yung reservation
-  const getName = "Gian"; //change get the name of user from session or local storage kung san man naka store
-  const tableFee = 140; //change den sa calculation
 
-  const handleCreateAccount = async () => {
+  const redirectUrl = "http://localhost:3000/qr_success_reservation";
+  const baseTableFee = 50; // Base price per hour
+
+  const handleCreateReservation = async () => {
     try {
+      const storedUserData = localStorage.getItem('user');
+      const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
+      const initialFormData = parsedUserData?.updated_user || null;
+      let userID = initialFormData ? initialFormData.UserID : "";
+      if (userID == undefined || userID == null || userID === "") {
+        userID = parsedUserData ? parsedUserData.UserID : "";
+      }
+
+      const startMoment = moment(formData.StartTime, "HH:mm");
+      const endMoment = moment(formData.EndTime, "HH:mm");
+      const durationInHours = moment.duration(endMoment.diff(startMoment)).asHours();
+      const tableFee = Math.ceil(durationInHours) * baseTableFee;
+
       const apiData = {
-        chair_id: "", // Set a default value if not applicable
-        date: formData.Date,
+        seat: chairId,
+        resdate: formData.Date ? moment(formData.Date).format("YYYY-MM-DD") : null,
         starttime: formData.StartTime,
         endtime: formData.EndTime,
+        user_id: userID,
+        tablefee: tableFee,
       };
-      router.push(
-        `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-      );
+      console.log(apiData)
+      console.log(tableFee)
+      // router.push(
+      //   `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+      // );
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",
@@ -75,11 +86,8 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
       );
 
       if (response.ok) {
-        // Successfully created account
         console.log("Reserved successfully!");
-        // Optionally, you can redirect the user to a login page or another page
       } else {
-        // Handle error cases
         console.error("Error Reservation", await response.json());
       }
     } catch (error) {
@@ -88,52 +96,50 @@ function BasicModal({ isOpen, onClose }: BasicModalProps) {
   };
 
   return (
-    <div>
-      <Modal
-        open={isOpen}
-        onClose={onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <div className="text-textcolor text-xl font-bold">
-            <h2>Arrange Reservation</h2>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className="text-textcolor text-xl font-bold">
+          <h2>Arrange Reservation</h2>
+        </div>
+
+        <div className="container">
+          <div className="flex justify-center items-center mt-3">
+            <DatePick
+              text="Date:"
+              onDateChange={(value) => handleInputChange("Date", value)}
+            />
           </div>
 
-          <div className="container">
-            <div className="flex justify-center items-center mt-3">
-              <DatePick
-                text="Date:"
-                onInputChange={(value) => handleInputChange("date", value)}
-              ></DatePick>
-            </div>
-
-            <div className="flex justify-center items-center mt-3">
-              <TimePick
-                text="Start Time:"
-                onInputChange={(value) => handleInputChange("starttime", value)}
-              ></TimePick>
-            </div>
-
-            <div className="flex justify-center items-center mt-3">
-              <TimePick
-                text="End Time:"
-                onInputChange={(value) => handleInputChange("endtime", value)}
-              ></TimePick>
-            </div>
+          <div className="flex justify-center items-center mt-3">
+            <TimePick
+              text="Start Time:"
+              onInputChange={(value) => handleInputChange("StartTime", value)}
+            />
           </div>
 
-          <Butt
-            onClick={handleCreateAccount}
-            title="Reserve"
-            Bgcolor="#EBE0D0"
-            width="325px"
-            height="34px"
-          />
-        </Box>
-      </Modal>
-    </div>
+          <div className="flex justify-center items-center mt-3">
+            <TimePick
+              text="End Time:"
+              onInputChange={(value) => handleInputChange("EndTime", value)}
+            />
+          </div>
+        </div>
+
+        <Butt
+          onClick={handleCreateReservation}
+          title="Reserve"
+          Bgcolor="#EBE0D0"
+          width="325px"
+          height="34px"
+        />
+      </Box>
+    </Modal>
   );
-}
+};
 
 export default BasicModal;
