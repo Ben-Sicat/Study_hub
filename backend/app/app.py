@@ -173,7 +173,7 @@ def get_all_reservations():
         try:
             cursor = connection.cursor(dictionary=True)
             cursor.execute("""
-                            SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat
+                            SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat, Reservations.TableFee, Reservations.ResDate
                             FROM Reservations
                             JOIN Users ON Reservations.UserID = Users.UserID
                         """)
@@ -239,16 +239,27 @@ def create_reservation(user_id, reservation_data):
         try:
             cursor = connection.cursor()
             query = """
-                INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO Reservations (UserID, StartTime, EndTime, Seat, TableFee, ResDate)
+                VALUES (%s, %s, %s, %s, %s)
             """
-            values = (user_id, reservation_data['starttime'], reservation_data['endtime'], reservation_data.get('seat'))
+            values = (
+                user_id,
+                reservation_data['starttime'],
+                reservation_data['endtime'],
+                reservation_data['seat'],
+                reservation_data['tablefee'],
+                reservation_data['resdate']
+            )
             cursor.execute(query, values)
             connection.commit()
             cursor.close()
             connection.close()
+            return {'message': 'Reservation created successfully'}
         except mysql.connector.Error as err:
             print(f"Error creating reservation: {err}")
+            connection.rollback()
+            return {'error': f"Error creating reservation: {err}"}
+
 
 @app.route('/api/create-reservation', methods=['POST'])
 def create_reservation_route():

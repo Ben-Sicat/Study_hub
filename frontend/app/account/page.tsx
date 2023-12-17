@@ -19,6 +19,14 @@ function page() {
     document.title = "Account";
   }, []);
 
+  const handleLogout = () => {
+    // Clear user key from local storage
+    localStorage.removeItem("user");
+
+    // Redirect to home page
+    window.location.href = "/";
+  };
+
   const parseJwt = (token: string) => {
     try {
       return JSON.parse(atob(token.split(".")[1]));
@@ -103,7 +111,7 @@ function page() {
 
       <div className="mt-20"></div>
 
-      <Butt title="Log Out" Bgcolor="#FFF1E4" width="325px" height="34px" />
+      <Butt title="Log Out" Bgcolor="#FFF1E4" width="325px" height="34px" onClick={handleLogout} />
     </div>
   );
 }

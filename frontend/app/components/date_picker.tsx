@@ -1,5 +1,8 @@
+// date_picker.tsx
 import React, { useState } from "react";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -7,26 +10,18 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 type PickProps = {
   text?: string;
   labelFontSize?: string;
-  onInputChange: (value: string) => string | any;
+  onDateChange: (value: Date | null) => void;
 };
 
-function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
-  const PickStyle = {
+dayjs.extend(utc);
+
+function DatePick({ text, labelFontSize = "14px", onDateChange }: PickProps) {
+  const pickStyle = {
     text: text || "Date",
   };
 
-  const inputLabelProps = {
-    style: {
-      fontSize: labelFontSize,
-    },
-  };
-
-  const [inputValue, setInputValue] = useState("");
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setInputValue(newValue);
-    onInputChange(newValue);
+  const handleDateChange = (date: Date | null) => {
+    onDateChange(date);
   };
 
   return (
@@ -34,8 +29,9 @@ function DatePick({ text, labelFontSize = "14px", onInputChange }: PickProps) {
       <DemoContainer components={["DatePicker"]}>
         <div className="w-21">
           <DatePicker
-            label={PickStyle.text}
+            label={pickStyle.text}
             slotProps={{ textField: { size: "small" } }}
+            onChange={handleDateChange}
           />
         </div>
       </DemoContainer>

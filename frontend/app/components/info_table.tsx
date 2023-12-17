@@ -17,6 +17,7 @@ function InfoTable({ data }: InfoProps) {
 
   const handleEditClick = (userId: number) => {
     // Navigate to the [id] folder
+    localStorage.setItem("user_id", String(userId));
     router.push(`/admin_accounts/${userId}`);
   };
   return (
