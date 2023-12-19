@@ -34,9 +34,10 @@ const style = {
 interface BasicModalProps {
   isOpen: boolean;
   onClose: () => void;
+  chairID: string;
 }
 
-function BasicModal({ isOpen, onClose }: BasicModalProps) {
+function BasicModal({ isOpen, onClose, chairID }: BasicModalProps) {
   const [showExtendModal, setShowExtendModal] = useState(false);
   const [waitlistEntries, setWaitlistEntries] = useState<UserInfo[]>([]);
 

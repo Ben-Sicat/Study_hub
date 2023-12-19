@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Butt from "./button";
@@ -21,20 +21,37 @@ const style = {
 interface BasicModalProps {
   isOpen: boolean;
   onClose: () => void;
+  Seat?: string | null;
+  reservationData: any | null;
 }
 
-function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
+
+function ModalAdmin({ isOpen, onClose, reservationData}: BasicModalProps) {
+  // const [reservation, setReservation] = useState<any>([null]); 
   const [showExtendModal, setShowExtendModal] = useState(false);
 
   const handleOpen = () => {
     setShowExtendModal(true);
   };
+  const handleTerminate = async () =>{
+    try{
+      const response = await fetch(`http://localhost:5000/api/remove-reservation/${reservationData.Seat}`, {
+        method: 'DELETE',
+        });
+        if(response.ok){
+        const data = await response.json();
+      }else{
+        console.error("Error fetching reservation data:", await response.json());
+      }
+    }catch(error){
+      console.error("Error fetching reservation data:", error);
+    }
+  }
 
   const handleClose = () => {
     setShowExtendModal(false);
     onClose();
-  };
-
+    };
   return (
     <div>
       <Modal
@@ -48,50 +65,51 @@ function ModalAdmin({ isOpen, onClose }: BasicModalProps) {
             <h2>Control Reservation</h2>
           </div>
 
-          <div className="container">
-            <div className="flex justify-center items-center mt-5">
-              <div className="text-textcolor text-base font-bold">
-                <h2>Time Usage/Reservation</h2>
-              </div>
+          {reservationData && (
+            <div className="flex flex-col items-center mt-3">
+              <p className="text-textcolor text-base font-bold">
+                Time Usage: {reservationData.StartTime} - {reservationData.EndTime}
+              </p>
+              <p className="text-textcolor text-base font-bold">
+                Reservation Text: {reservationData.Username}
+              </p>
             </div>
+          )}
 
-            <div className="flex justify-center space-x-5 text-xs">
-              <Butt
-                title="Terminate"
-                Bgcolor="#A081AB"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-              />
-              <Butt
-                title="Extend"
-                Bgcolor="#F8D8D4"
-                width="152px"
-                height="30px"
-                borderRadius="10px"
-                onClick={handleOpen} // Show the extend modal on Extend button click
-              />
-            </div>
+          <div className="flex justify-center space-x-5 text-xs">
+            <Butt
+              title="Terminate"
+              Bgcolor="#A081AB"
+              width="152px"
+              height="30px"
+              borderRadius="10px"
+              onClick={handleTerminate}
+            />
+            <Butt
+              title="Extend"
+              Bgcolor="#F8D8D4"
+              width="152px"
+              height="30px"
+              borderRadius="10px"
+              onClick={handleOpen}
+            />
+          </div>
 
-            <div className="flex justify-center items-center">
-              <Butt
-                title="Cancel"
-                Bgcolor="#EBE0D0"
-                width="320px"
-                height="30px"
-                borderRadius="10px"
-                onClick={onClose} // Close the main modal on Cancel button click
-              />
-            </div>
+          <div className="flex justify-center items-center">
+            <Butt
+              title="Cancel"
+              Bgcolor="#EBE0D0"
+              width="320px"
+              height="30px"
+              borderRadius="10px"
+              onClick={onClose}
+            />
           </div>
         </Box>
       </Modal>
 
       {showExtendModal && (
-        <ModalExtend
-          isOpen={true /* or use a state variable for this */}
-          onClose={handleClose}
-        />
+        <ModalExtend isOpen={true} onClose={handleClose} Seat={reservationData.Seat} />
       )}
     </div>
   );

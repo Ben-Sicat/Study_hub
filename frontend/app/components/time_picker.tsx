@@ -19,7 +19,14 @@ function TimePick({ text = "Time", labelFontSize = "14px", onInputChange }: Time
   const [inputValue, setInputValue] = useState<Date | null>(null);
 
   const handleInputChange = (value: any) => {
-    const selectedTime = value ? dayjs.utc(value).format("HH:mm") : "";
+    let selectedTime = "";
+  
+    if (value && value.$d instanceof Date) {
+      const hours = value.$d.getHours().toString().padStart(2, '0');
+      const minutes = value.$d.getMinutes().toString().padStart(2, '0');
+      selectedTime = `${hours}:${minutes}`;
+    }
+  
     setInputValue(value);
     onInputChange(selectedTime);
   };
