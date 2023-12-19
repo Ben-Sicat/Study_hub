@@ -20,7 +20,6 @@ function Page() {
     document.title = "Admin Area Map";
   }, []);
 
-
   const [isModalOpen, setModalOpen] = React.useState(false);
 
   //now we need a function to handle the opening of the modal per chair... the funciton must contain a paramete that will be the chair id and the state of the chair if open or close
@@ -29,14 +28,14 @@ function Page() {
     console.log("chairId", chairId);
     setModalOpen(!isModalOpen);
     console.log("isChairOpen", isChairOpen);
-     // Toggle the modal state
-     if (isChairOpen) {
+    // Toggle the modal state
+    if (isChairOpen) {
       setModalOpen(true);
     } else {
       setModalOpen(false);
     }
-  }
-  
+  };
+
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -73,9 +72,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-5 text-xs text-black font-bold mt-2">
-        <Link href="/admin_dashboard">
-          <p>Dashboard</p>
-        </Link>
         <Link href="/admin_areamap">
           <p className="text-amber-500">Area Map</p>
         </Link>
@@ -88,7 +84,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-8 text-xs text-black font-bold mb-2">
-        <p className="text-backcolor">_________</p>
         <p className="text-amber-500">________</p>
         <p className="text-backcolor">____________</p>
         <p className="text-backcolor">____________</p>
@@ -107,96 +102,93 @@ function Page() {
             border: "2px solid #DC9D94",
           }}
         >
-
           {/* now we need to refractor this modaladmin t only open if the parameter in the onlcick of the button is set to true */}
-          
+
           <ModalAdmin isOpen={isModalOpen} onClose={handleModalClose} />
 
-          
-        <ChairRight
-  width="30px"
-  height="30px"
-  className="relative top-28 left-64"
-  onClick={() => handleChairClick("chair1", true)}
-/>
+          <ChairRight
+            width="30px"
+            height="30px"
+            className="relative top-28 left-64"
+            onClick={() => handleChairClick("chair1", true)}
+          />
 
-<ChairRight
-  width="30px"
-  height="30px"
-  className="relative left-64 top-32"
-  onClick={() => handleChairClick("chair2", true)}
-/>
+          <ChairRight
+            width="30px"
+            height="30px"
+            className="relative left-64 top-32"
+            onClick={() => handleChairClick("chair2", true)}
+          />
 
-<ChairLeft
-  width="30px"
-  height="30px"
-  className="relative bottom-5"
-  onClick={() => handleChairClick("chair3", true)}
-/>
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative bottom-5"
+            onClick={() => handleChairClick("chair3", true)}
+          />
 
-<ChairLeft
-  width="30px"
-  height="30px"
-  className="relative left-16 bottom-12"
-  onClick={() => handleChairClick("chair4", true)}
-/>
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative left-16 bottom-12"
+            onClick={() => handleChairClick("chair4", true)}
+          />
 
-<ChairLeft
-  width="30px"
-  height="30px"
-  className="relative left-10 bottom-2"
-  onClick={() => handleChairClick("chair5", true)}
-/>
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative left-10 bottom-2"
+            onClick={() => handleChairClick("chair5", true)}
+          />
 
-<ChairLeft
-  width="30px"
-  height="30px"
-  className="relative top-1 left-10"
-  onClick={() => handleChairClick("chair6", true)}
-/>
+          <ChairLeft
+            width="30px"
+            height="30px"
+            className="relative top-1 left-10"
+            onClick={() => handleChairClick("chair6", true)}
+          />
 
-<ChairUp
-  width="30px"
-  height="30px"
-  className="relative top-5 left-32"
-  onClick={() => handleChairClick("chair7", true)}
-/>
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative top-5 left-32"
+            onClick={() => handleChairClick("chair7", true)}
+          />
 
-<ChairUp
-  width="30px"
-  height="30px"
-  className="relative left-44 bottom-2"
-  onClick={() => handleChairClick("chair8", true)}
-/>
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-44 bottom-2"
+            onClick={() => handleChairClick("chair8", true)}
+          />
 
-<ChairUp
-  width="30px"
-  height="30px"
-  className="relative left-48 bottom-48"
-  onClick={() => handleChairClick("chair9", true)}
-/>
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-48 bottom-48"
+            onClick={() => handleChairClick("chair9", true)}
+          />
 
-<ChairUp
-  width="30px"
-  height="30px"
-  className="relative left-64 bottom-56"
-  onClick={() => handleChairClick("chair10", true)}
-/>
+          <ChairUp
+            width="30px"
+            height="30px"
+            className="relative left-64 bottom-56"
+            onClick={() => handleChairClick("chair10", true)}
+          />
 
-<ChairDown
-  width="30px"
-  height="30px"
-  className="relative left-32 bottom-44"
-  onClick={() => handleChairClick("chair11", true)}
-/>
+          <ChairDown
+            width="30px"
+            height="30px"
+            className="relative left-32 bottom-44"
+            onClick={() => handleChairClick("chair11", true)}
+          />
 
-<ChairDown
-  width="30px"
-  height="30px"
-  className="relative left-44 bottom-52"
-  onClick={() => handleChairClick("chair12", true)}
-/>
-
+          <ChairDown
+            width="30px"
+            height="30px"
+            className="relative left-44 bottom-52"
+            onClick={() => handleChairClick("chair12", true)}
+          />
         </div>
       </div>
 

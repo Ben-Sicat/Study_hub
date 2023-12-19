@@ -10,6 +10,7 @@ import Drop from "../components/dropdown_button";
 import Butt from "../components/button";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 function Page() {
   const router = useRouter();
 
@@ -25,7 +26,7 @@ function Page() {
   const options1 = ["Student", "Worker"];
 
   // Fetch user data from local storage
-  const storedUserData = localStorage.getItem('user');
+  const storedUserData = localStorage.getItem("user");
   const initialFormData = storedUserData ? JSON.parse(storedUserData) : null;
 
   const [formData, setFormData] = useState<{
@@ -35,38 +36,40 @@ function Page() {
     gender: string;
     occupation: string;
   }>({
-
     userName: initialFormData ? initialFormData.Username : "",
     email: initialFormData ? initialFormData.Email : "",
     phoneNumber: initialFormData ? initialFormData.PhoneNumber : "",
     gender: initialFormData ? initialFormData.Gender : options[0],
-    occupation: initialFormData ? initialFormData.Occupation : options1[0]
-
+    occupation: initialFormData ? initialFormData.Occupation : options1[0],
   });
   const userId = initialFormData ? initialFormData.UserID : null; // Adjust this line based on your actual property name
-  console.log(userId)
+  console.log(userId);
   const handleInputChange = (field: string, value: string) => {
     setFormData({
       ...formData,
       [field]: value,
     });
   };
-  console.log(formData)
+  console.log(formData);
   const handleUpdateProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/update-account/${userId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/update-account/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         const updatedUserData = await response.json();
-        localStorage.setItem('user', JSON.stringify(updatedUserData));
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
         console.log("Profile updated successfully:", updatedUserData);
         // Optionally, you can update the local state or perform other actions
+        alert("Profile updated!");
       } else {
         console.error("Error updating profile:", await response.json());
       }
@@ -108,28 +111,22 @@ function Page() {
           placeholder="Username"
           width="335px"
           height="35px"
-
           value={formData.userName}
           onInputChange={(value) => handleInputChange("userName", value)}
-
         />
         <TextInput
           placeholder="Email"
           width="335px"
           height="35px"
-
           value={formData.email}
           onInputChange={(value) => handleInputChange("email", value)}
-
         />
         <TextInput
           placeholder="Phone Number"
           width="335px"
           height="35px"
-
           value={formData.phoneNumber}
           onInputChange={(value) => handleInputChange("phoneNumber", value)}
-
         />
 
         <div className="flex text-redwood text-xs ml-12 space-x-32 mt-2">
@@ -159,13 +156,15 @@ function Page() {
 
       <div className="mt-16"></div>
 
-      <Butt
-        title="Update Profile"
-        Bgcolor="#FFF1E4"
-        width="325px"
-        height="34px"
-        onClick={handleUpdateProfile}
-      />
+      <Link href="/reservation">
+        <Butt
+          title="Update Profile"
+          Bgcolor="#FFF1E4"
+          width="325px"
+          height="34px"
+          onClick={handleUpdateProfile}
+        />
+      </Link>
     </div>
   );
 }
