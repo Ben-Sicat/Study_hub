@@ -22,11 +22,11 @@ function Page() {
 
   const reservationData = {
     reservationId: "12345",
-    name: "John Doe",
-    checkInDate: "2023-11-05",
-    tableNumber: "1",
-    reservedTime: "12:00",
-    duration: "2 hours",
+    name: "user_wan",
+    checkInDate: "2023-12-18",
+    tableNumber: "chair_3",
+    reservedTime: "22:00",
+    duration: "1.5 hours",
     paymentDetails: "GCash",
   };
   const qrCodeData = JSON.stringify(reservationData);

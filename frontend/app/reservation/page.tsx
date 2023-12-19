@@ -36,7 +36,7 @@ function Page() {
   */
 
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const [ chairId, setChairId ] = React.useState("");
+  const [chairId, setChairId] = React.useState("");
 
   //now we need a function to handle the opening of the modal per chair... the funciton must contain a paramete that will be the chair id and the state of the chair if open or close
 
@@ -45,13 +45,11 @@ function Page() {
     setChairId(chairId);
     console.log("isChairOpen", isChairOpen);
     setModalOpen(!isModalOpen);
-    if(isChairOpen == true){
+    if (isChairOpen == true) {
       setModalOpen(true);
-    }else[
-      setModalOpen(false)
-    ]
-  }
-  
+    } else [setModalOpen(false)];
+  };
+
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -88,7 +86,11 @@ function Page() {
           border: "2px solid #DC9D94",
         }}
       >
-        <BasicModal isOpen={isModalOpen} onClose={handleModalClose} chairId={chairId} />
+        <BasicModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          chairId={chairId}
+        />
 
         <ChairRight
           width="30px"
@@ -103,6 +105,8 @@ function Page() {
           className="relative left-64 top-32"
           onClick={() => handleChairClick("chair2", true)}
         />
+
+        {/* DITO KA MAG HARD CODE MAMAYA*/}
 
         <ChairLeft
           width="30px"
