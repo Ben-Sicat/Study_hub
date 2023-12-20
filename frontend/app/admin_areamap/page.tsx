@@ -15,9 +15,32 @@ import Butt from "../components/button";
 import ModalAdmin from "../components/modal_admin";
 
 function Page() {
+  const checkReservationsEnd = () => {
+    const currentTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour12: false });
+    console.log("Current time:", currentTime);
+    fetch("http://localhost:5000/api/check-reservations-end", {
+      method: "POST",  
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ current_time: currentTime }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  }
   useEffect(() => {
     // Set the title directly for the browser tab
     document.title = "Admin Area Map";
+
+    const intervalId = setInterval(checkReservationsEnd, 30000); // Check every 30 seconds
+
+    return () => clearInterval(intervalId);
+
   }, []);
 
 

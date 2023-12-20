@@ -302,6 +302,13 @@ def remove_reservation(chair_id):
         connection.rollback()
         return {'error': f"Error removing reservation: {err}"}
     
+def is_overlapping(start_time, end_time, e_start_time, e_end_time):
+    start_time = datetime.strptime(start_time, '%H:%M:%S')
+    end_time = datetime.strptime(end_time, '%H:%M:%S')
+    e_end_time = datetime.strptime(e_end_time, '%H:%M:%S')
+    e_start_time = datetime.strptime(e_start_time, '%H:%M:%S')
+    return start_time < e_end_time and e_start_time < end_time
+    
 
 def create_reservation(user_id, reservation_data):
     connection = get_db_connection(db_config)
@@ -363,7 +370,75 @@ def get_all_waitlist_entries():
         except mysql.connector.Error as err:
             print(f"Error fetching waitlist entries: {err}")
             return None
+
+def move_to_completed_reservations(reservation_id):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            
+            query = """
+                SELECT * FROM Reservations WHERE ReservationID = %s
+            """
+            cursor.execute(query, (reservation_id,))
+            reservation = cursor.fetchone()
+            
+            if reservation:
+                # Convert tuple to dictionary for easier access
+                reservation_dict = dict(zip(cursor.column_names, reservation))
+                
+                insert_query = """
+                    INSERT INTO Completed_Reservations(ReservationID, UserID, StartTime, EndTime, Seat, TableFee, ResDate)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                values = ( 
+                    reservation_dict['ReservationID'], reservation_dict['UserID'], reservation_dict['StartTime'], reservation_dict['EndTime'], reservation_dict['Seat'], reservation_dict['TableFee'], reservation_dict['ResDate']
+                    )
+                cursor.execute(insert_query, values)
+                
+                delete_query = """
+                    DELETE FROM Reservations WHERE ReservationID = %s
+                """
+                cursor.execute(delete_query, (reservation_id,))
+                
+                connection.commit()
+                cursor.close()
+                connection.close()
+                
+                print("Reservation moved to completed reservation")
+        except mysql.connector.Error as err:
+            print(f"Error moving reservation to completed reservation {err}")
+            connection.rollback()
+
+
+@app.route('/api/check-reservations-end', methods=['POST'])
+def check_reservation_end_route():
+    try:
+        current_time = request.json.get('current_time', None)
+        curr = datetime.strptime(current_time, '%H:%M:%S')
         
+        query = """
+            SELECT * FROM Reservations WHERE EndTime <= %s
+        """
+        connection = get_db_connection(db_config)
+        cursor = connection.cursor(dictionary=True)  # Use dictionary cursor
+        
+        cursor.execute(query, (curr,))
+        reservations = cursor.fetchall()
+        
+        print(f"Fetched Reservations: {reservations}")  # Debugging line
+        
+        for reservation in reservations:
+            move_to_completed_reservations(reservation['ReservationID'])
+        
+        cursor.close()
+        connection.close()
+        
+        return jsonify({'message': 'Checked and processed reservations successfully.'}), 200
+    except Exception as e:
+        print(f"Error checking reservations end: {e}")
+        return jsonify(error='Error checking reservations end'), 500
+
 @app.route('/api/remove-reservation/<string:chair_id>', methods=['DELETE'])
 def remove_reservation_route(chair_id):
     try:
@@ -425,11 +500,22 @@ def create_waitlist_entry_route():
         return jsonify(message='Error creating waitlist entry'), 500
 
 
+
 @app.route('/api/create-reservation', methods=['POST'])
 def create_reservation_route():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')  # Change this to fetch the user_id from your authentication mechanism
+        user_id = data.get('user_id')
+        start_time = data.get('starttime')
+        end_time = data.get('endtime')
+        tablefee = data.get('tablefee')
+        seat = data.get('seat')
+        
+        existing_reservation = get_reservation_by_seat(seat)
+
+        if existing_reservation and is_overlapping(start_time, end_time, existing_reservation['StartTime'], existing_reservation['EndTime']):
+            return jsonify({'error': 'Seat already booked for this time range!'}), 400
+
         create_reservation(user_id, data)
         return jsonify({'message': 'Reservation created successfully'}), 200
     except Exception as e:

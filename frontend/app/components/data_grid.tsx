@@ -20,7 +20,7 @@ const columns: GridColDef[] = [
   { field: "StartTime", headerName: "Start Time", width: 200 },
   { field: "EndTime", headerName: "End Time", width: 200 },
   { field: "ResDate", headerName: "Date", width: 150},
-  { field: "Price", headerName: "Price", width: 150 },
+  { field: "TableFee", headerName: "Price", width: 150 },
 ];
 
 export default function DataGridDemo() {
@@ -46,8 +46,7 @@ export default function DataGridDemo() {
         rows={rows}
         columns={columns}
         getRowId={getRowId}
-        pageSize={5}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[20]}
         checkboxSelection
         disableRowSelectionOnClick
       />
