@@ -81,9 +81,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-5 text-xs text-black font-bold mt-2">
-        <Link href="/admin_dashboard">
-          <p>Dashboard</p>
-        </Link>
         <Link href="/admin_areamap">
           <p>Area Map</p>
         </Link>
@@ -95,7 +92,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-8 text-xs text-black font-bold mb-2">
-        <p className="text-backcolor">_________</p>
         <p className="text-backcolor">________</p>
         <p className="text-backcolor">____________</p>
         <p className="text-amber-500">____________</p>
