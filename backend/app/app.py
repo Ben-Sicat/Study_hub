@@ -233,6 +233,83 @@ scheduler = BackgroundScheduler()
 # Add the scheduled job to run the ETL process every 168 hours or 1 week
 scheduler.add_job(perform_warehouse_process, 'interval', hours=168)
 
+def get_reservation_by_seat(seat):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = """
+                SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat, Reservations.TableFee, Reservations.ResDate
+                FROM Reservations
+                JOIN Users ON Reservations.UserID = Users.UserID
+                WHERE Reservations.Seat = %s 
+                LIMIT 1
+                
+            """
+            cursor.execute (query, (seat,))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            return result
+        except mysql.connector.Error as err:
+            print(f"Error fetching reservation by seat: {err}")
+            return None
+
+def update_reservation_endtime(chair_id, endtime): 
+    connection = get_db_connection(db_config)
+    try:
+        cursor = connection.cursor()
+        current_reservation = get_reservation_by_seat(chair_id)
+        if current_reservation:
+            query = """
+                UPDATE Reservations
+                SET EndTime = %s
+                WHERE Seat = %s
+            """
+            values = (endtime, chair_id)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return {'message': 'Reservation updated successfully'}
+        else:
+            return {'error': 'Reservation not found for the specified seat'}
+    except mysql.connector.Error as err:
+        print(f"Error updating reservation: {err}")
+        connection.rollback()
+        return {'error': f"Error updating reservation: {err}"}
+
+def remove_reservation(chair_id):
+    connection = get_db_connection(db_config)
+    try: 
+        cursor = connection.cursor()
+        current_reservation = get_reservation_by_seat(chair_id)
+        if current_reservation:
+            query = """
+                DELETE FROM Reservations
+                WHERE Seat = %s
+            """
+            values = (chair_id,)
+            cursor.execute(query, values)
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return {'message': 'Reservation removed successfully'}
+        else:
+            return {'error': 'Reservation not found for the specified seat'}
+    except mysql.connector.Error as err:
+        print(f"Error removing reservation: {err}")
+        connection.rollback()
+        return {'error': f"Error removing reservation: {err}"}
+    
+def is_overlapping(start_time, end_time, e_start_time, e_end_time):
+    start_time = datetime.strptime(start_time, '%H:%M:%S')
+    end_time = datetime.strptime(end_time, '%H:%M:%S')
+    e_end_time = datetime.strptime(e_end_time, '%H:%M:%S')
+    e_start_time = datetime.strptime(e_start_time, '%H:%M:%S')
+    return start_time < e_end_time and e_start_time < end_time
+    
+
 def create_reservation(user_id, reservation_data):
     connection = get_db_connection(db_config)
     if connection:
@@ -294,6 +371,110 @@ def get_all_waitlist_entries():
             print(f"Error fetching waitlist entries: {err}")
             return None
 
+def move_to_completed_reservations(reservation_id):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            
+            query = """
+                SELECT * FROM Reservations WHERE ReservationID = %s
+            """
+            cursor.execute(query, (reservation_id,))
+            reservation = cursor.fetchone()
+            
+            if reservation:
+                # Convert tuple to dictionary for easier access
+                reservation_dict = dict(zip(cursor.column_names, reservation))
+                
+                insert_query = """
+                    INSERT INTO Completed_Reservations(ReservationID, UserID, StartTime, EndTime, Seat, TableFee, ResDate)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                values = ( 
+                    reservation_dict['ReservationID'], reservation_dict['UserID'], reservation_dict['StartTime'], reservation_dict['EndTime'], reservation_dict['Seat'], reservation_dict['TableFee'], reservation_dict['ResDate']
+                    )
+                cursor.execute(insert_query, values)
+                
+                delete_query = """
+                    DELETE FROM Reservations WHERE ReservationID = %s
+                """
+                cursor.execute(delete_query, (reservation_id,))
+                
+                connection.commit()
+                cursor.close()
+                connection.close()
+                
+                print("Reservation moved to completed reservation")
+        except mysql.connector.Error as err:
+            print(f"Error moving reservation to completed reservation {err}")
+            connection.rollback()
+
+
+@app.route('/api/check-reservations-end', methods=['POST'])
+def check_reservation_end_route():
+    try:
+        current_time = request.json.get('current_time', None)
+        curr = datetime.strptime(current_time, '%H:%M:%S')
+        
+        query = """
+            SELECT * FROM Reservations WHERE EndTime <= %s
+        """
+        connection = get_db_connection(db_config)
+        cursor = connection.cursor(dictionary=True)  # Use dictionary cursor
+        
+        cursor.execute(query, (curr,))
+        reservations = cursor.fetchall()
+        
+        print(f"Fetched Reservations: {reservations}")  # Debugging line
+        
+        for reservation in reservations:
+            move_to_completed_reservations(reservation['ReservationID'])
+        
+        cursor.close()
+        connection.close()
+        
+        return jsonify({'message': 'Checked and processed reservations successfully.'}), 200
+    except Exception as e:
+        print(f"Error checking reservations end: {e}")
+        return jsonify(error='Error checking reservations end'), 500
+
+@app.route('/api/remove-reservation/<string:chair_id>', methods=['DELETE'])
+def remove_reservation_route(chair_id):
+    try:
+        result = remove_reservation(chair_id)
+        if 'error' in result:
+            return jsonify(result), 404
+        else:
+            return jsonify(result), 200
+    except Exception as e:
+        print(f"Error removing reservation: {e}")
+        return jsonify(error='Error removing reservation'), 500
+    
+@app.route('/api/update-reservation-endtime/<string:chair_id>/<string:endtime>', methods=['PUT'])
+def update_endtime_route(chair_id, endtime):
+    try:
+        result = update_reservation_endtime(chair_id, endtime)
+        if 'error' in result:
+            return jsonify(result), 404
+        else:
+            return jsonify(result), 200
+    except Exception as e:
+        print(f"Error updating reservation: {e}")
+        return jsonify(error='Error updating reservation'), 500
+        
+@app.route('/api/get-reservation-by-seat/<string:seat>', methods=['GET'])
+def get_reservation_by_seat_route(seat):
+    try:
+        reservation = get_reservation_by_seat(seat)
+        if reservation:
+            return jsonify({'reservation': reservation}), 200
+        else:
+            return jsonify({'error': 'Reservation not found for the specified seat'}), 404
+    except Exception as e:
+        print(f"Error fetching reservation by seat: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/get-waitlist-entries', methods=['GET'])
 def get_waitlist_entries_route():
     try:
@@ -319,11 +500,22 @@ def create_waitlist_entry_route():
         return jsonify(message='Error creating waitlist entry'), 500
 
 
+
 @app.route('/api/create-reservation', methods=['POST'])
 def create_reservation_route():
     try:
         data = request.get_json()
-        user_id = data.get('user_id')  # Change this to fetch the user_id from your authentication mechanism
+        user_id = data.get('user_id')
+        start_time = data.get('starttime')
+        end_time = data.get('endtime')
+        tablefee = data.get('tablefee')
+        seat = data.get('seat')
+        
+        existing_reservation = get_reservation_by_seat(seat)
+
+        if existing_reservation and is_overlapping(start_time, end_time, existing_reservation['StartTime'], existing_reservation['EndTime']):
+            return jsonify({'error': 'Seat already booked for this time range!'}), 400
+
         create_reservation(user_id, data)
         return jsonify({'message': 'Reservation created successfully'}), 200
     except Exception as e:
@@ -427,43 +619,7 @@ def get_user_by_id_route(user_id):
     except Exception as e:
         print(f"Error fetching user by ID: {e}")
         return jsonify({'error': str(e)}), 500
-   
-# @app.route('/api/update-account/', methods=['PUT'])
-# def update_account(user_id):
-#     try:
-#         updated_data = request.get_json()
-#         update_user_details(user_id, updated_data)
-#         updated_user = get_user_by_id(user_id)
-#         return jsonify({'message': 'Account updated successfully', 'updated_user': updated_user}), 200
-#     except Exception as e:
-#         print(f"Error updating account: {e}")
-#         return jsonify(message='Error updating account'), 500
 
-# @app.route('/api/get-reservations/<int:user_id>', methods=['GET'])
-# def get_reservations(user_id):
-#     try:
-#         reservations = get_user_reservations(user_id)
-#         return jsonify(reservations)
-#     except Exception as e:
-#         print(f"Error fetching reservations: {e}")
-#         return jsonify(error='Error fetching reservations'), 500
-
-# @app.route('/api/reservations', methods=['POST'])
-# def make_reservation():
-#     try:
-#         data = request.get_json()
-#         user_id = 5  # Replace with the actual user ID; you need to identify the user somehow
-#         result = create_reservation(user_id, data)
-#         return jsonify(result)
-#     except Exception as e:
-#         print(f"Error creating reservation: {e}")
-#         return jsonify(error='Error creating reservation'), 500 
-
-
-# Additional user-related functions
-
-# Reservation-related functions (as per your existing code)
-# ...
 
 # Main route for testing
 @app.route('/')

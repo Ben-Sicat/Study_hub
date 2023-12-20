@@ -31,6 +31,19 @@ CREATE TABLE Reservations (
 
 );
 
+CREATE TABLE Completed_Reservations (
+  ReservationID INT,
+  UserID INT, 
+  ResDate VARCHAR(225),
+  StartTime TIME NOT NULL,
+  EndTime TIME NOT NULL,
+  Seat VARCHAR(50),
+  TableFee DECIMAL(10,2) DEFAULT 0.00,
+  FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+
+);
+
+
 
 CREATE TABLE QR_Codes (
 	QRCodeID INT AUTO_INCREMENT PRIMARY KEY,

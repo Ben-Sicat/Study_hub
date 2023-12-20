@@ -22,56 +22,38 @@ const style = {
 interface BasicModalProps {
   isOpen: boolean;
   onClose: () => void;
+  Seat: string | null;
 }
 
-function ModalExtend({ isOpen, onClose }: BasicModalProps) {
+function ModalExtend({ isOpen, onClose, Seat }: BasicModalProps) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [formData, setFormData] = useState<{
-    EndTime: string;
-  }>({
-    EndTime: "",
-  });
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+  const[endtime, setEndTime] = useState<string>("");
+
+  const handleInputChange = (value: string) => {
+    setEndTime(value.toString());
+    console.log(endtime)
   };
 
-  const handleCreateAccount = async () => {
-    try {
-      const apiData = {
-        chair_id: "", // Set a default value if not applicable
-        endtime: formData.EndTime,
-      };
+  const handleExtend = async () =>{
 
-      const response = await fetch(
-        "http://localhost:5000/api/create-reservation",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(apiData),
-        }
-      );
-
-      if (response.ok) {
-        // Successfully created account
-        console.log("Reserved successfully!");
-        // Optionally, you can redirect the user to a login page or another page
-      } else {
-        // Handle error cases
-        console.error("Error Reservation", await response.json());
+    try{
+      const response = await fetch(`http://localhost:5000/api/update-reservation-endtime/${Seat}/${endtime}`, {
+        method: 'PUT',
+      });
+        if(response.ok){
+        const data = await response.json();
+        console.log("Reservation Data:", data);
+      }else{
+        console.error("Error fetching reservation data:", await response.json());
       }
-    } catch (error) {
-      console.error("Error Reservation", error);
+    }catch(error){
+      console.error("Error fetching reservation data:", error);
     }
-  };
+  }
 
   return (
     <div>
@@ -90,7 +72,7 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
             <div className="flex justify-center items-center mt-3">
               <TimePick
                 text="End Time:"
-                onInputChange={(value) => handleInputChange("endtime", value)}
+                onInputChange={(value) => handleInputChange(value.toString())}
               ></TimePick>
             </div>
           </div>
@@ -110,7 +92,7 @@ function ModalExtend({ isOpen, onClose }: BasicModalProps) {
               width="152px"
               height="30px"
               borderRadius="10px"
-              onClick={handleCreateAccount}
+              onClick={handleExtend}
             />
           </div>
         </Box>
