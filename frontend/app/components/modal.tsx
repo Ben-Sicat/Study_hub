@@ -28,7 +28,11 @@ const style = {
   p: 4,
 };
 
-const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => {
+const BasicModal: React.FC<BasicModalProps> = ({
+  isOpen,
+  onClose,
+  chairId,
+}) => {
   const [formData, setFormData] = useState({
     Date: null as Date | null,
     StartTime: null as string | null,
@@ -36,7 +40,10 @@ const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => 
   });
   const router = useRouter();
 
-  const handleInputChange = (field: keyof typeof formData, value: Date | string | null) => {
+  const handleInputChange = (
+    field: keyof typeof formData,
+    value: Date | string | null
+  ) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [field]: value,
@@ -48,7 +55,7 @@ const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => 
 
   const handleCreateReservation = async () => {
     try {
-      const storedUserData = localStorage.getItem('user');
+      const storedUserData = localStorage.getItem("user");
       const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
       const initialFormData = parsedUserData?.updated_user || null;
       let userID = initialFormData ? initialFormData.UserID : "";
@@ -58,20 +65,26 @@ const BasicModal: React.FC<BasicModalProps> = ({ isOpen, onClose, chairId }) => 
 
       const startMoment = moment(formData.StartTime, "HH:mm");
       const endMoment = moment(formData.EndTime, "HH:mm");
-      const durationInHours = moment.duration(endMoment.diff(startMoment)).asHours();
+      const durationInHours = moment
+        .duration(endMoment.diff(startMoment))
+        .asHours();
       const tableFee = Math.ceil(durationInHours) * baseTableFee;
 
       const apiData = {
         seat: chairId,
-        resdate: formData.Date ? moment(formData.Date).format("YYYY-MM-DD") : null,
+        resdate: formData.Date
+          ? moment(formData.Date).format("YYYY-MM-DD")
+          : null,
         starttime: formData.StartTime,
         endtime: formData.EndTime,
         user_id: userID,
         tablefee: tableFee,
       };
+
       console.log(apiData)
       console.log(tableFee)
       
+
 
       const response = await fetch(
         "http://localhost:5000/api/create-reservation",

@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect } from "react";
 import TextInput from "../components/text_input";
@@ -24,6 +23,42 @@ function Page() {
     setPassword(value);
   };
 
+  // const handleLogin = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/sign-in", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ login: username, password }),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       if (data.user_data.Level === "User") {
+  //         console.log("login success", data);
+  //         console.log("data", data.user_data);
+  //         localStorage.setItem("user", JSON.stringify(data.user_data));
+  //         router.push("/reservation");
+  //       } else {
+  //         router.push("/admin_dashboard");
+  //       }
+  //     } else {
+  //       const errorData = await response.json();
+  //       if (response.status === 401) {
+  //         console.error("Authentication failed:", errorData.message);
+  //         // Display an alert for incorrect username or password
+  //         alert("The User Name or Password is incorrect.");
+  //       } else {
+  //         console.error("Login failed:", errorData.message);
+  //         // Handle other types of errors here
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/sign-in", {
@@ -42,7 +77,7 @@ function Page() {
           localStorage.setItem("user", JSON.stringify(data.user_data));
           router.push("/reservation");
         } else {
-          router.push("/admin_dashboard");
+          router.push("/admin_areamap");
         }
       } else {
         const errorData = await response.json();

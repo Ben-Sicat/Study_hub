@@ -43,23 +43,30 @@ function BasicModal({ isOpen, onClose, chairID }: BasicModalProps) {
 
   const fetchWaitlistEntries = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/get-all-waitlist-entries`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/get-all-waitlist-entries`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch waitlist entries: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch waitlist entries: ${response.statusText}`
+        );
       }
 
       const data = await response.json();
       // Map WaitlistEntry to UserInfo
-      const mappedEntries = data.waitlist_entries.map((entry: WaitlistEntry) => ({
-        id: entry.UserID,
-        name: entry.Username,
-      }));
+      const mappedEntries = data.waitlist_entries.map(
+        (entry: WaitlistEntry) => ({
+          id: entry.UserID,
+          name: entry.Username,
+        })
+      );
       setWaitlistEntries(mappedEntries);
     } catch (error) {
       console.error(error);
@@ -82,10 +89,10 @@ function BasicModal({ isOpen, onClose, chairID }: BasicModalProps) {
     setShowExtendModal(false);
     onClose();
   };
-  
+
   const handleEnterButtonClick = async () => {
     try {
-      const storedUserData = localStorage.getItem('user');
+      const storedUserData = localStorage.getItem("user");
       const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
       const initialFormData = parsedUserData?.updated_user || null;
       let userID = initialFormData ? initialFormData.UserID : "";
@@ -97,22 +104,26 @@ function BasicModal({ isOpen, onClose, chairID }: BasicModalProps) {
       if (username == undefined || username == null || username === "") {
         username = parsedUserData ? parsedUserData.Username : "";
       }
-      
 
       // Make a POST request to add the user to the waitlist
-      const response = await fetch(`http://localhost:5000/api/create-waitlist-entry`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: userID,
-          username: username,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/create-waitlist-entry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: userID,
+            username: username,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error(`Failed to add user to waitlist: ${response.statusText}`);
+        throw new Error(
+          `Failed to add user to waitlist: ${response.statusText}`
+        );
       }
 
       // Optionally, update the waitlist entries in the local state
@@ -122,7 +133,6 @@ function BasicModal({ isOpen, onClose, chairID }: BasicModalProps) {
       console.error(error);
     }
   };
-
 
   return (
     <div>

@@ -25,12 +25,12 @@ function Page() {
 
   const reservationData = {
     reservationId: "7",
-    name: "John Doe",
-    Stime: "1:15",
-    ETime: "3:15",
+    name: "user_1",
+    Stime: "10:00 PM",
+    ETime: "11:30 PM",
     tableNumber: "h2",
-    reservedTime: "12:00",
-    duration: "2 hours",
+    reservedTime: "10:00",
+    duration: "1 hour and 30 min",
     paymentDetails: "GCash",
   };
 

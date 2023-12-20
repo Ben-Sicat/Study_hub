@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState, useEffect } from "react";
 import Teste from "@/app/components/account";
 import CloseIcon from "@mui/icons-material/Close";
@@ -7,18 +7,15 @@ import CircleIcon from "@mui/icons-material/Circle";
 import TextInput from "@/app/components/text_input";
 import Drop from "@/app/components/dropdown_button";
 import Butt from "@/app/components/button";
-
-
+import Link from "next/link";
 
 function Page() {
-  
   const handleBackButtonClick = () => {
-    console.log("back button clicked")
-  }
+    console.log("back button clicked");
+  };
 
-  
-  const userId = localStorage.getItem('user_id')
-  console.log(userId)
+  const userId = localStorage.getItem("user_id");
+  console.log(userId);
 
   const [formData, setFormData] = useState({
     userName: "",
@@ -33,10 +30,12 @@ function Page() {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/get-user/${userId}`);
+        const response = await fetch(
+          `http://localhost:5000/api/get-user/${userId}`
+        );
         if (response.ok) {
           const userData = await response.json();
-          const datas = userData.user
+          const datas = userData.user;
           console.log("User Data:", userData); // Log the received user data
           console.log("User Data1:", datas); // Log the received user data
           setFormData({
@@ -83,6 +82,7 @@ function Page() {
       if (response.ok) {
         const updatedUserData = await response.json();
         console.log("Profile updated successfully:", updatedUserData);
+        alert("Customer's profile updated.");
       } else {
         console.error("Error updating profile:", await response.json());
       }
@@ -163,13 +163,15 @@ function Page() {
 
       <div className="mt-16"></div>
 
-      <Butt
-        title="Update Profile"
-        Bgcolor="#FFF1E4"
-        width="325px"
-        height="34px"
-        onClick={handleUpdateProfile}
-      />
+      <Link href="/admin_accounts">
+        <Butt
+          title="Update Profile"
+          Bgcolor="#FFF1E4"
+          width="325px"
+          height="34px"
+          onClick={handleUpdateProfile}
+        />
+      </Link>
     </div>
   );
 }

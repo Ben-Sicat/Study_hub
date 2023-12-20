@@ -43,7 +43,6 @@ function Page() {
 
   }, []);
 
-
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [chairId, setChairId] = React.useState<string | null>(null);
   const [ reservationData, setReservationData] = React.useState<any>(null);
@@ -70,16 +69,18 @@ function Page() {
     setModalOpen(!isModalOpen);
     console.log("isChairOpen", isChairOpen);
 
+
     await fetchReservation(chairId);
     console.log("reservationData", reservationData)
      // Toggle the modal state
      if (isChairOpen) {
+
       setModalOpen(true);
     } else {
       setModalOpen(false);
     }
-  }
-  
+  };
+
   const handleModalOpen = () => {
     setModalOpen(true);
   };
@@ -117,9 +118,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-5 text-xs text-black font-bold mt-2">
-        <Link href="/admin_dashboard">
-          <p>Dashboard</p>
-        </Link>
         <Link href="/admin_areamap">
           <p className="text-amber-500">Area Map</p>
         </Link>
@@ -132,7 +130,6 @@ function Page() {
       </div>
 
       <div className="container flex items-center justify-center space-x-8 text-xs text-black font-bold mb-2">
-        <p className="text-backcolor">_________</p>
         <p className="text-amber-500">________</p>
         <p className="text-backcolor">____________</p>
         <p className="text-backcolor">____________</p>
@@ -151,8 +148,8 @@ function Page() {
             border: "2px solid #DC9D94",
           }}
         >
-
           {/* now we need to refractor this modaladmin t only open if the parameter in the onlcick of the button is set to true */}
+
           
           <ModalAdmin isOpen={isModalOpen} onClose={handleModalClose} reservationData={reservationData}/>
           <ChairRight
@@ -238,6 +235,7 @@ function Page() {
           className="relative left-44 bottom-52"
           onClick={() => handleChairClick("chair12", true)}
         />
+
         </div>
       </div>
 

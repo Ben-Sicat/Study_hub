@@ -9,7 +9,7 @@ interface Reservation {
   StartTime: string;
   EndTime: string;
   Username: string;
-  Price: number;
+  TableFee: number;
   ResDate: string;
 }
 
@@ -19,7 +19,9 @@ const columns: GridColDef[] = [
   { field: "Username", headerName: "Username", width: 150 },
   { field: "StartTime", headerName: "Start Time", width: 200 },
   { field: "EndTime", headerName: "End Time", width: 200 },
+
   { field: "ResDate", headerName: "Date", width: 150},
+
   { field: "TableFee", headerName: "Price", width: 150 },
 ];
 

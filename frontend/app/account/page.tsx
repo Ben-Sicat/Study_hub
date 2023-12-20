@@ -14,8 +14,8 @@ import TemporaryDrawer from "../components/side_bar";
 function page() {
   const [username, setUsername] = useState("");
   useEffect(() => {
-    const accessToken = localStorage.getItem('user');
-    setUsername(accessToken ? JSON.parse(accessToken).Username : "")
+    const accessToken = localStorage.getItem("user");
+    setUsername(accessToken ? JSON.parse(accessToken).Username : "");
     document.title = "Account";
   }, []);
 
@@ -61,16 +61,6 @@ function page() {
           </Link>
           <Line></Line>
         </div>
-
-        <div className="text-sm mt-4">
-          <Link href="#">
-            <Dropdown
-              title="Rewards"
-              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
-            />
-          </Link>
-          <Line></Line>
-        </div>
       </div>
 
       <div className="mt-7">
@@ -97,21 +87,17 @@ function page() {
           </Link>
           <Line></Line>
         </div>
-
-        <div className="text-sm mt-4">
-          <Link href="#">
-            <Dropdown
-              title="Notifications"
-              LeftArrow={<KeyboardArrowRightIcon style={{ fontSize: 23 }} />}
-            />
-          </Link>
-          <Line></Line>
-        </div>
       </div>
 
       <div className="mt-20"></div>
 
-      <Butt title="Log Out" Bgcolor="#FFF1E4" width="325px" height="34px" onClick={handleLogout} />
+      <Butt
+        title="Log Out"
+        Bgcolor="#FFF1E4"
+        width="325px"
+        height="34px"
+        onClick={handleLogout}
+      />
     </div>
   );
 }
