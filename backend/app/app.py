@@ -172,17 +172,23 @@ def get_all_reservations():
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
-            cursor.execute("""
-                            SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat, Reservations.TableFee, Reservations.ResDate
-                            FROM Reservations
-                            JOIN Users ON Reservations.UserID = Users.UserID
-                        """)
+            query = """
+                SELECT Reservations.ReservationID, Users.Username, Reservations.StartTime, Reservations.EndTime, Reservations.Seat, Reservations.TableFee, Reservations.ResDate
+                FROM Reservations
+                JOIN Users ON Reservations.UserID = Users.UserID
+                UNION
+                SELECT Completed_Reservations.ReservationID, Users.Username, Completed_Reservations.StartTime, Completed_Reservations.EndTime, Completed_Reservations.Seat, Completed_Reservations.TableFee, Completed_Reservations.ResDate
+                FROM Completed_Reservations
+                JOIN Users ON Completed_Reservations.UserID = Users.UserID
+            """
+            cursor.execute(query)
             results = cursor.fetchall()
             cursor.close()
             connection.close()
             return results
         except mysql.connector.Error as err:
             print(f"Error Fetching Reservations: {err}")
+
 
 def perform_warehouse_process():
     operational_connection = get_db_connection(db_config)
