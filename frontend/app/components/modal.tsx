@@ -99,9 +99,9 @@ const BasicModal: React.FC<BasicModalProps> = ({
 
       if (response.ok) {
         console.log("Reserved successfully!");
-        router.push(
-          `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-        );
+        // router.push(
+        //   `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+        // );
       } else {
         console.error("Error Reservation", await response.json());
         <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>

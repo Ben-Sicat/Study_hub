@@ -402,6 +402,7 @@ def move_to_completed_reservations(reservation_id):
         try:
             cursor = connection.cursor()
             
+            # Fetch reservation details
             query = """
                 SELECT * FROM Reservations WHERE ReservationID = %s
             """
@@ -409,59 +410,76 @@ def move_to_completed_reservations(reservation_id):
             reservation = cursor.fetchone()
             
             if reservation:
-                # Convert tuple to dictionary for easier access
-                reservation_dict = dict(zip(cursor.column_names, reservation))
-                
+                # Insert into Completed_Reservations table
                 insert_query = """
-                    INSERT INTO Completed_Reservations(ReservationID, UserID, StartTime, EndTime, Seat, TableFee, ResDate)
+                    INSERT INTO Completed_Reservations(ReservationID, UserID, ResDate, StartTime, EndTime, Seat, TableFee)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """
-                values = ( 
-                    reservation_dict['ReservationID'], reservation_dict['UserID'], reservation_dict['StartTime'], reservation_dict['EndTime'], reservation_dict['Seat'], reservation_dict['TableFee'], reservation_dict['ResDate']
-                    )
+                values = (
+                    reservation[0], reservation[1], reservation[2], reservation[3], reservation[4], reservation[5], reservation[6]
+                )
                 cursor.execute(insert_query, values)
                 
-                remove_reservation_by_id(reservation_id)
+                # Delete from Reservations table
+                delete_query = """
+                    DELETE FROM Reservations WHERE ReservationID = %s
+                """
+                cursor.execute(delete_query, (reservation_id,))
                 
-                connection.commit()
+                connection.commit()  # Commit changes
                 cursor.close()
                 connection.close()
                 
-                print("Reservation moved to completed reservation")
+                print(f"Reservation {reservation_id} moved to completed reservations.")
+                
         except mysql.connector.Error as err:
-            print(f"Error moving reservation to completed reservation {err}")
-            connection.rollback()
+            print(f"Error moving reservation {reservation_id} to completed reservation: {err}")
+            connection.rollback()  # Rollback in case of error
 
 
 @app.route('/api/check-reservations-end', methods=['POST'])
 def check_reservation_end_route():
     try:
-        current_time = request.json.get('current_time', None)
-        curr = datetime.strptime(current_time, '%H:%M:%S')
+        current_time_str = request.json.get('current_time', None)
+        current_hours, current_minutes = map(int, current_time_str.split(':'))
+        
+        connection = get_db_connection(db_config)
+        cursor = connection.cursor(dictionary=True)
         
         query = """
-            SELECT * FROM Reservations WHERE EndTime <= %s
+            SELECT * FROM Reservations
         """
-        connection = get_db_connection(db_config)
-        cursor = connection.cursor(dictionary=True)  # Use dictionary cursor
+        cursor.execute(query)
         
-        cursor.execute(query, (curr,))
         reservations = cursor.fetchall()
-        
-        print(f"Fetched Reservations: {reservations}")  # Debugging line
-        
-        for reservation in reservations:
-            print(f"EndTime of Reservation {reservation['ReservationID']}: {reservation['EndTime']}")
-            move_to_completed_reservations(reservation['ReservationID'])
-        
         cursor.close()
         connection.close()
         
+        for reservation in reservations:
+            end_time_str = reservation['EndTime']
+            if is_before_or_equal(end_time_str, current_hours, current_minutes):
+                move_to_completed_reservations(reservation['ReservationID'])
+            
         return jsonify({'message': 'Checked and processed reservations successfully.'}), 200
+        
     except Exception as e:
         print(f"Error checking reservations end: {e}")
-        return jsonify(error='Error checking reservations end'), 500
+        return jsonify(error=f'Error checking reservations end: {e}'), 500
 
+
+
+def is_before_or_equal(end_time_str, current_hours, current_minutes):
+    """
+    Check if the end_time_str (format: 'HH:MM') is before or equal to the current time components.
+    """
+    end_hours, end_minutes = map(int, end_time_str.split(':'))
+    
+    if end_hours < current_hours:
+        return True
+    elif end_hours == current_hours and end_minutes <= current_minutes:
+        return True
+    else:
+        return False
 
 @app.route('/api/remove-reservation/<string:chair_id>', methods=['DELETE'])
 def remove_reservation_route(chair_id):
