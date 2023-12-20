@@ -377,6 +377,25 @@ def get_all_waitlist_entries():
             print(f"Error fetching waitlist entries: {err}")
             return None
 
+def remove_reservation_by_id(reservation_id):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                DELETE FROM Reservations
+                WHERE ReservationID = %s
+            """
+            cursor.execute(query, (reservation_id,))
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return {'message': 'Reservation removed successfully'}
+        except mysql.connector.Error as err:
+            print(f"Error removing reservation: {err}")
+            connection.rollback()
+            return {'error': f"Error removing reservation: {err}"}
+
 def move_to_completed_reservations(reservation_id):
     connection = get_db_connection(db_config)
     if connection:
@@ -402,10 +421,7 @@ def move_to_completed_reservations(reservation_id):
                     )
                 cursor.execute(insert_query, values)
                 
-                delete_query = """
-                    DELETE FROM Reservations WHERE ReservationID = %s
-                """
-                cursor.execute(delete_query, (reservation_id,))
+                remove_reservation_by_id(reservation_id)
                 
                 connection.commit()
                 cursor.close()
@@ -435,6 +451,7 @@ def check_reservation_end_route():
         print(f"Fetched Reservations: {reservations}")  # Debugging line
         
         for reservation in reservations:
+            print(f"EndTime of Reservation {reservation['ReservationID']}: {reservation['EndTime']}")
             move_to_completed_reservations(reservation['ReservationID'])
         
         cursor.close()
@@ -444,6 +461,7 @@ def check_reservation_end_route():
     except Exception as e:
         print(f"Error checking reservations end: {e}")
         return jsonify(error='Error checking reservations end'), 500
+
 
 @app.route('/api/remove-reservation/<string:chair_id>', methods=['DELETE'])
 def remove_reservation_route(chair_id):
