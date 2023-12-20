@@ -35,8 +35,8 @@ CREATE TABLE Completed_Reservations (
   ReservationID INT,
   UserID INT, 
   ResDate VARCHAR(225),
-  StartTime TIME NOT NULL,
-  EndTime TIME NOT NULL,
+  StartTime VARCHAR(225) NOT NULL,
+  EndTime VARCHAR(225) NOT NULL,
   Seat VARCHAR(50),
   TableFee DECIMAL(10,2) DEFAULT 0.00,
   FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
@@ -76,10 +76,5 @@ VALUES
 ('google_id_4', 'user_4', 'user4@example.com', 'password4', 'Bob', 'Smith', '6666666666', 'UName4', '1975-12-10', 'Male', 'School4', 'Occupation4', 'User');
 
 
-INSERT INTO Reservations (UserID, StartTime, EndTime, Seat)
-VALUES 
-(1, '08:00:00', '12:00:00', 'chair1'),
-(2, '09:00:00', '3:00:00', 'chair10'),
-(3, '2023-01-03 10:00:00', '2023-01-03 14:00:00', 'chair4'),
-(4, '2023-01-04 11:00:00', '2023-01-04 15:00:00', 'chair5');
+
 

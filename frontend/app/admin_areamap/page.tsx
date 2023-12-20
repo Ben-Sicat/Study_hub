@@ -16,7 +16,17 @@ import ModalAdmin from "../components/modal_admin";
 
 function Page() {
   const checkReservationsEnd = () => {
-    const currentTime = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour12: false });
+    const currentDate = new Date();
+
+    const options = { 
+      timeZone: 'Asia/Manila', 
+      hour12: false, 
+      hour: '2-digit' as const, 
+      minute: '2-digit' as const
+    };
+    
+    const currentTime = currentDate.toLocaleTimeString('en-US', options);
+
     console.log("Current time:", currentTime);
     fetch("http://localhost:5000/api/check-reservations-end", {
       method: "POST",  
@@ -68,8 +78,6 @@ function Page() {
     console.log("chairId", chairId);
     setModalOpen(!isModalOpen);
     console.log("isChairOpen", isChairOpen);
-
-
     await fetchReservation(chairId);
     console.log("reservationData", reservationData)
      // Toggle the modal state
