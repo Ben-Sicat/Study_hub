@@ -50,7 +50,6 @@ const BasicModal: React.FC<BasicModalProps> = ({
     }));
   };
 
-  const redirectUrl = "http://localhost:3000/qr_success_reservation";
   const baseTableFee = 50; // Base price per hour
 
   const handleCreateReservation = async () => {
@@ -79,8 +78,9 @@ const BasicModal: React.FC<BasicModalProps> = ({
         endtime: formData.EndTime,
         user_id: userID,
         tablefee: tableFee,
-      };
 
+      };
+        
       console.log(apiData)
       console.log(tableFee)
       
@@ -99,9 +99,24 @@ const BasicModal: React.FC<BasicModalProps> = ({
 
       if (response.ok) {
         console.log("Reserved successfully!");
-        // router.push(
-        //   `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-        // );
+        const responseData = await response.json();
+
+        //push the reservationid to the local storage
+
+        if(localStorage.getItem("reservation_id") === null){
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }else{
+          localStorage.removeItem("reservation_id")
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }
+        console.log(responseData.reservation_id)
+        const redirectUrl = `http://localhost:3000/qr_success_reservation`;
+
+
+        const reservationID = responseData.reservation_id;
+        router.push(
+          `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+        );
       } else {
         console.error("Error Reservation", await response.json());
         <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>
