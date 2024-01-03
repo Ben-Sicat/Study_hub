@@ -141,7 +141,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
       const durationInHours = moment
         .duration(endMoment.diff(startMoment))
         .asHours();
-      const tableFee = Math.ceil(durationInHours) * baseTableFee;
+      const tableFee = Math.ceil(durationInHours) * baseTableFee; // "cash"
 
       const apiData = {
         seat: chairId,
@@ -184,7 +184,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
           localStorage.setItem("reservation_id", responseData.reservation_id)
         }
         console.log(responseData.reservation_id)
-   
+        console.log(localStorage.getItem("reservation_id"))
 
 
         const reservationID = responseData.reservation_id;
