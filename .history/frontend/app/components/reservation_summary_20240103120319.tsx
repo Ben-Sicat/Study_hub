@@ -5,7 +5,7 @@ import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import Line from "./line";
-import Link from "next/link";
+
 type ResProps = {
   time?: string;
   price?: string;
@@ -16,8 +16,6 @@ function Reserv({ time, price }: ResProps) {
     time: time || "0",
     price: price || "0",
   };
-
-  const redirectUrl = "http://localhost:3000/qr_success_reservation"
 
   return (
     <div>
@@ -50,7 +48,6 @@ function Reserv({ time, price }: ResProps) {
         Payment method
       </p> */}
 
-      <Link href= "/qr_success_reservation">
       <IcoButt
         Icon={
           <PaymentsOutlinedIcon
@@ -61,22 +58,20 @@ function Reserv({ time, price }: ResProps) {
         title="Cash"
         marginRight="230px"
       ></IcoButt>
-      </Link>
-      
 
-      <Link href={`https://payment-gateway-weld.vercel.app/gcash/login?amountDue=Php150&merchant=Brew%20and%20Brains&redirectUrl=${redirectUrl}`}>
-  <IcoButt
-    Icon={
-      <AccountBalanceOutlinedIcon
-        className="mr-3"
-        style={{ fontSize: 28, color: "#EDC2B5" }}
-      />
-    }
-    title="GCash"
-    marginRight="220px"
-  ></IcoButt>
-</Link>
+        <Link href="https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}">
+        <IcoButt
+        Icon={
+          <AccountBalanceOutlinedIcon
+            className="mr-3"
+            style={{ fontSize: 28, color: "#EDC2B5" }}
+          />
+        }
+        title="GCash"
+        marginRight="220px"
+      ></IcoButt>
 
+        </Link>
     
     </div>
   );

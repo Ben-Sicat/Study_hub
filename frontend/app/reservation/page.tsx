@@ -4,6 +4,7 @@ import Butt from "../components/button";
 import TemporaryDrawer from "../components/side_bar";
 import { ChairRight, ChairLeft, ChairDown, ChairUp } from "../components/svgs";
 import BasicModal from "../components/modal";
+
 interface Accounts {
   UserID: number;
   Username: string;
@@ -60,6 +61,7 @@ function Page() {
   const refreshPage = () => {
     location.reload();
   };
+
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">

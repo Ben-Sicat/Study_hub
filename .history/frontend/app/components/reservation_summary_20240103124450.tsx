@@ -17,8 +17,6 @@ function Reserv({ time, price }: ResProps) {
     price: price || "0",
   };
 
-  const redirectUrl = "http://localhost:3000/qr_success_reservation"
-
   return (
     <div>
       <p className=" text-textcolor text-sm font-semibold py-2 px-2 ml-7 mt-3">
@@ -64,7 +62,7 @@ function Reserv({ time, price }: ResProps) {
       </Link>
       
 
-      <Link href={`https://payment-gateway-weld.vercel.app/gcash/login?amountDue=Php150&merchant=Brew%20and%20Brains&redirectUrl=${redirectUrl}`}>
+      <Link href={`https://payment-gateway-weld.vercel.app/gcash/login?amountDue=changeThisAmount&merchant=Brew%20and%20Brains&redirectUrl=${redirectUrl}`}>
   <IcoButt
     Icon={
       <AccountBalanceOutlinedIcon

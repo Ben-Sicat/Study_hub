@@ -17,7 +17,7 @@ function Reserv({ time, price }: ResProps) {
     price: price || "0",
   };
 
-  const redirectUrl = "http://localhost:3000/qr_success_reservation"
+  const redirectUrl = "/qr_success_reservation"
 
   return (
     <div>

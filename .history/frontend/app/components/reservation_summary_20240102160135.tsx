@@ -5,7 +5,7 @@ import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 import Line from "./line";
-import Link from "next/link";
+
 type ResProps = {
   time?: string;
   price?: string;
@@ -17,15 +17,13 @@ function Reserv({ time, price }: ResProps) {
     price: price || "0",
   };
 
-  const redirectUrl = "http://localhost:3000/qr_success_reservation"
-
   return (
     <div>
       <p className=" text-textcolor text-sm font-semibold py-2 px-2 ml-7 mt-3">
-        Payment Method
+        Reservation Summary
       </p>
 
-      {/* <div className="flex text-xs ml-14 mt-2 justify-between">
+      <div className="flex text-xs ml-14 mt-2 justify-between">
         <div>
           <div className="flex font-bold space-x-2">
             <p>Time Reserved:</p>
@@ -48,9 +46,8 @@ function Reserv({ time, price }: ResProps) {
 
       <p className=" text-textcolor text-sm font-extrabold py-2 px-2 ml-7 mt-3">
         Payment method
-      </p> */}
+      </p>
 
-      <Link href= "/qr_success_reservation">
       <IcoButt
         Icon={
           <PaymentsOutlinedIcon
@@ -61,23 +58,17 @@ function Reserv({ time, price }: ResProps) {
         title="Cash"
         marginRight="230px"
       ></IcoButt>
-      </Link>
-      
 
-      <Link href={`https://payment-gateway-weld.vercel.app/gcash/login?amountDue=Php150&merchant=Brew%20and%20Brains&redirectUrl=${redirectUrl}`}>
-  <IcoButt
-    Icon={
-      <AccountBalanceOutlinedIcon
-        className="mr-3"
-        style={{ fontSize: 28, color: "#EDC2B5" }}
-      />
-    }
-    title="GCash"
-    marginRight="220px"
-  ></IcoButt>
-</Link>
-
-    
+      <IcoButt
+        Icon={
+          <AccountBalanceOutlinedIcon
+            className="mr-3"
+            style={{ fontSize: 28, color: "#EDC2B5" }}
+          />
+        }
+        title="GCash"
+        marginRight="220px"
+      ></IcoButt>
     </div>
   );
 }
