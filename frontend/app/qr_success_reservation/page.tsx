@@ -1,59 +1,93 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Teste from "../components/account";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import Link from "next/link";
-
-// ... other imports ...
-
 import QR from "../components/QR";
 import Butt from "../components/button";
-
+import Info from "../components/qr_info";
 import { useRouter } from "next/navigation";
 
 function Page() {
   const router = useRouter();
+
+  const [reservationData, setReservationData] = useState({
+    reservationId: "",
+    startTime: "",
+    endTime: "",
+    seat: "",
+    resDate: "",
+    tableFee: "",
+    userId: "",
+  });
 
   const handleBackButtonClick = () => {
     router.back();
   };
 
   useEffect(() => {
-    // Set the title directly for the browser tab
-    document.title = "Success Reservation";
+    document.title = "Today's Reservation";
+
+    // Get reservation_id from localStorage
+    const resId = localStorage.getItem('reservation_id');
+
+    if (resId) {
+      // Fetch reservation details using the endpoint
+      fetch(`http://localhost:5000/api/get-reservation-by-id/${resId}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data && data.reservation) {
+            const fetchedReservation = data.reservation;
+            setReservationData({
+              reservationId: fetchedReservation.ReservationID.toString(),
+              startTime: fetchedReservation.StartTime,
+              endTime: fetchedReservation.EndTime,
+              seat: fetchedReservation.Seat,
+              resDate: fetchedReservation.ResDate,
+              tableFee: fetchedReservation.TableFee,
+              userId: fetchedReservation.UserID.toString(),
+            });
+          } else {
+            console.log("Reservation not found");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching reservation:", error);
+        });
+    }
   }, []);
 
-  const reservationData = {
-    reservationId: "7",
-    name: "user_1",
-    Stime: "10:00 PM",
-    ETime: "11:30 PM",
-    tableNumber: "h2",
-    reservedTime: "10:00",
-    duration: "1 hour and 30 min",
-    paymentDetails: "GCash",
-  };
-
   const qrCodeData = JSON.stringify(reservationData);
+  console.log(qrCodeData);
 
   return (
     <div className="flex min-h-full flex-col bg-backcolor">
       <Teste
         backButtonIcon={<ArrowBackIosIcon style={{ fontSize: 20 }} />}
         onBackButtonClick={handleBackButtonClick}
-        title="Reserved Successfully"
+        title="Today's Reservation"
         subTitle1="Simply scan the QR Code, and our friendly staff will be delighted to assist you with any inquiries or requests you may have during your time with us."
       />
 
-      <div className="text-center text-qr mt-7 mb-5">
+      <div className="text-center text-qr mt-7 mb-10">
         <div className="flex justify-center items-center">
           <QR data={qrCodeData} size={200} />
         </div>
       </div>
 
-      <Link href="/todays_reservation">
-        <Butt title="View Transaction" Bgcolor="#FFF1E4" />
-      </Link>
+      <Info title={`Seat: `} value={reservationData.seat} />
+      <Info title={`Start Time: `} value={reservationData.startTime} />
+      <Info title={`End Time: `} value={reservationData.endTime} />
+      <Info title={`Date: `} value={reservationData.resDate} />
+      <Info title={`Table Fee: `} value={reservationData.tableFee} />
+
+      <div className="mt-5"></div>
+
+      <Butt title="Cancel Reservation" Bgcolor="#FFF1E4" />
     </div>
   );
 }

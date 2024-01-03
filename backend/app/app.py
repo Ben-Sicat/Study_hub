@@ -334,10 +334,12 @@ def create_reservation(user_id, reservation_data):
                 reservation_data['resdate']
             )
             cursor.execute(query, values)
+            reservation_id = cursor.lastrowid
+
             connection.commit()
             cursor.close()
             connection.close()
-            return {'message': 'Reservation created successfully'}
+            return {'message': 'Reservation created successfully', 'reservation_id': reservation_id}
         except mysql.connector.Error as err:
             print(f"Error creating reservation: {err}")
             connection.rollback()
@@ -375,6 +377,22 @@ def get_all_waitlist_entries():
             return entries
         except mysql.connector.Error as err:
             print(f"Error fetching waitlist entries: {err}")
+            return None
+def get_reservation_by_id(reservation_id):
+    connection = get_db_connection(db_config)
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = """
+                SELECT * FROM Reservations WHERE ReservationID = %s
+            """
+            cursor.execute(query, (reservation_id,))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            return result
+        except mysql.connector.Error as err:
+            print(f"Error fetching reservation by ID: {err}")
             return None
 
 def remove_reservation_by_id(reservation_id):
@@ -504,6 +522,20 @@ def update_endtime_route(chair_id, endtime):
     except Exception as e:
         print(f"Error updating reservation: {e}")
         return jsonify(error='Error updating reservation'), 500
+
+
+@app.route('/api/get-reservation-by-id/<int:reservation_id>', methods=['GET'])
+def get_reservation_by_id_route(reservation_id):
+    try:
+        reservation = get_reservation_by_id(reservation_id)
+        if reservation:
+            return jsonify({'reservation': reservation}), 200
+        else:
+            return jsonify({'error': 'Reservation not found'}), 404
+    except Exception as e:
+        print(f"Error fetching reservation by ID: {e}")
+        return jsonify({'error': str(e)}), 500
+
         
 @app.route('/api/get-reservation-by-seat/<string:seat>', methods=['GET'])
 def get_reservation_by_seat_route(seat):
@@ -558,8 +590,12 @@ def create_reservation_route():
         if existing_reservation and is_overlapping(start_time, end_time, existing_reservation['StartTime'], existing_reservation['EndTime']):
             return jsonify({'error': 'Seat already booked for this time range!'}), 400
 
-        create_reservation(user_id, data)
-        return jsonify({'message': 'Reservation created successfully'}), 200
+        response = create_reservation(user_id, data)
+         
+        if 'error' in response:
+            return jsonify(response), 500
+        else:
+            return jsonify(response), 200
     except Exception as e:
         print(f"Error creating reservation: {e}")
         return jsonify(message='Error creating reservation'), 500

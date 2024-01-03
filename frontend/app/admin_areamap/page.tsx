@@ -18,8 +18,8 @@ function Page() {
   const checkReservationsEnd = () => {
     const currentDate = new Date();
 
-    const options = { 
-      timeZone: 'Asia/Manila', 
+    const options = {  
+      timeZone: 'Asia/Manila',
       hour12: false, 
       hour: '2-digit' as const, 
       minute: '2-digit' as const

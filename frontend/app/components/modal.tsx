@@ -50,7 +50,6 @@ const BasicModal: React.FC<BasicModalProps> = ({
     }));
   };
 
-  const redirectUrl = "http://localhost:3000/qr_success_reservation";
   const baseTableFee = 50; // Base price per hour
 
   const handleCreateReservation = async () => {
@@ -79,8 +78,9 @@ const BasicModal: React.FC<BasicModalProps> = ({
         endtime: formData.EndTime,
         user_id: userID,
         tablefee: tableFee,
-      };
 
+      };
+        
       console.log(apiData)
       console.log(tableFee)
       
@@ -99,9 +99,24 @@ const BasicModal: React.FC<BasicModalProps> = ({
 
       if (response.ok) {
         console.log("Reserved successfully!");
-        // router.push(
-        //   `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
-        // );
+        const responseData = await response.json();
+
+        //push the reservationid to the local storage
+
+        if(localStorage.getItem("reservation_id") === null){
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }else{
+          localStorage.removeItem("reservation_id")
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }
+        console.log(responseData.reservation_id)
+        const redirectUrl = `http://localhost:3000/qr_success_reservation`;
+
+
+        const reservationID = responseData.reservation_id;
+        router.push(
+          `https://payment-gateway-weld.vercel.app/gcash/login?amountDue=${tableFee}&merchant=Brew and Brains&redirectUrl=${redirectUrl}`
+        );
       } else {
         console.error("Error Reservation", await response.json());
         <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>
@@ -111,6 +126,81 @@ const BasicModal: React.FC<BasicModalProps> = ({
       <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>
     }
   };
+  const handleCreateReservationCash = async () => {
+    try {
+      const storedUserData = localStorage.getItem("user");
+      const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
+      const initialFormData = parsedUserData?.updated_user || null;
+      let userID = initialFormData ? initialFormData.UserID : "";
+      if (userID == undefined || userID == null || userID === "") {
+        userID = parsedUserData ? parsedUserData.UserID : "";
+      }
+
+      const startMoment = moment(formData.StartTime, "HH:mm");
+      const endMoment = moment(formData.EndTime, "HH:mm");
+      const durationInHours = moment
+        .duration(endMoment.diff(startMoment))
+        .asHours();
+      const tableFee = Math.ceil(durationInHours) * baseTableFee;
+
+      const apiData = {
+        seat: chairId,
+        resdate: formData.Date
+          ? moment(formData.Date).format("YYYY-MM-DD")
+          : null,
+        starttime: formData.StartTime,
+        endtime: formData.EndTime,
+        user_id: userID,
+        tablefee: tableFee,
+
+      };
+        
+      console.log(apiData)
+      console.log(tableFee)
+      
+
+
+      const response = await fetch(
+        "http://localhost:5000/api/create-reservation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(apiData),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Reserved successfully!");
+        const responseData = await response.json();
+
+        //push the reservationid to the local storage
+
+        if(localStorage.getItem("reservation_id") === null){
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }else{
+          localStorage.removeItem("reservation_id")
+          localStorage.setItem("reservation_id", responseData.reservation_id)
+        }
+        console.log(responseData.reservation_id)
+   
+
+
+        const reservationID = responseData.reservation_id;
+        router.push(
+            `http://localhost:3000/qr_success_reservation`
+          );
+      } else {
+        console.error("Error Reservation", await response.json());
+        <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>
+      }
+    } catch (error) {
+      console.error("Error Reservation", error);
+      <BasicModalWait isOpen={true} onClose={onClose} chairID={chairId}/>
+    }
+  };
+
 
   return (
     <Modal
@@ -149,11 +239,18 @@ const BasicModal: React.FC<BasicModalProps> = ({
 
         <Butt
           onClick={handleCreateReservation}
-          title="Reserve"
+          title="Gcash"
           Bgcolor="#EBE0D0"
           width="325px"
           height="34px"
         />
+        <Butt
+          onClick={handleCreateReservationCash}
+          title="Cash"
+          Bgcolor="#EBE0D0"
+          width="325px"
+          height="34px"
+          />
       </Box>
     </Modal>
   );
